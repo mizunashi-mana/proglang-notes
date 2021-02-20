@@ -1,0 +1,77 @@
+\documentclass[
+  dvipdfmx,
+  uplatex,
+  japanese,
+  titlepage
+]{jsbook}
+
+\input{config/common.tex}
+\input{config/layout.tex}
+\input{config/macro.tex}
+\IfFileExists{config/macro.local.tex}{
+  \input{config/macro.local.tex}
+}{}
+\input{config/math.tex}
+
+\include{article/title}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\thispagestyle{empty}
+
+\pagenumbering{Roman}
+\thispagestyle{empty}
+\input{article/abstract.tex}
+
+\pagenumbering{arabic}
+\tableofcontents
+\clearpage
+
+% Add articles
+\chapter{Preliminaries}
+\include{article/preliminaries}
+
+\chapter{Basic Calculus}
+\include{article/untyped-lambda}
+\include{article/simply-typed-lambda}
+\include{article/system-t}
+\include{article/pcf}
+\include{article/system-f}
+\include{article/system-fomega}
+\include{article/lambda-mu-calculus}
+\include{article/lambda-bar-mu-mu-tilde}
+\include{article/pi-calculus}
+
+\chapter{Modules and Phase Distinction}
+\include{article/fing-modules}
+
+\chapter{First Class Control}
+
+\chapter{Type Checking and Inference}
+
+\chapter{Static Memory Management and Regions}
+
+\chapter{Dynamic Memory Management and Gabage Collection}
+
+\chapter{I/O Management and Concurrency}
+
+\chapter{Code Generation and Virtual Machines}
+
+\chapter{Program Stability and Compatibility}
+
+\chapter{Program Separation and Linking}
+
+\chapter{Syntax and Parsing}
+
+\chapter{Analysis and Optimizations}
+
+\chapter{Generic Programming}
+
+\chapter{Advanced Calculus}
+
+% foot contents
+\include{article/reference}
+\include{article/appendix}
+
+\end{document}

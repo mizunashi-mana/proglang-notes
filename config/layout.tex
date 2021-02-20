@@ -1,0 +1,15 @@
+% font settings
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[notext]{stix2}
+\usepackage{lipsum}
+
+% japanese fonts not support italic
+\DeclareFontShape{JT2}{gt}{m}{it}{<->ssub*gt/m/n}{}
+\DeclareFontShape{JY2}{gt}{m}{it}{<->ssub*gt/m/n}{}
+\DeclareFontShape{JT2}{mc}{b}{it}{<->ssub*mc/b/n}{}
+\DeclareFontShape{JY2}{mc}{b}{it}{<->ssub*mc/b/n}{}
+
+\usepackage[margin=5em,includefoot]{geometry}
+
+\bibliographystyle{amsalpha-nodash}

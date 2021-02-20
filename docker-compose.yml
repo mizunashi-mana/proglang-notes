@@ -1,0 +1,7 @@
+version: '3'
+services:
+  builder:
+    image: docker.pkg.github.com/mizunashi-mana/docker-texlive/full
+    volumes:
+      - .:/workdir
+    entrypoint: make -C /workdir

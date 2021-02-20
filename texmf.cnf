@@ -1,0 +1,11 @@
+% for tex capacity
+stack_size = 10000
+
+% It's probably inadvisable to change these. At any rate, we must have:
+% 45 < error_line      < 255;
+% 30 < half_error_line < error_line - 15;
+% 60 <= max_print_line;
+% These apply to TeX, Metafont, and MetaPost.
+max_print_line = 1000
+error_line = 254
+half_error_line = 238

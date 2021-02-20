@@ -1,0 +1,39 @@
+# output
+.installed-stamp
+*.pdf
+*.backup.tex
+*.diff.tex
+*.expand.tex
+*.handout.tex
+!asset/**/*.pdf
+
+# local config
+.latexmkrc.local
+
+# for TeX
+*.bbl
+*.bcf
+*.run.xml
+*.aux
+*.blg
+*.log
+*.dvi
+*.nav
+*.snm
+*.out
+*.toc
+*.vrb
+*.synctex*
+*.*pk
+*.thm
+*.tfm
+*.tmp
+*.ps
+*.xbb
+
+# for LatexMk
+*.fls
+*.fdb_latexmk
+
+# for Pygmentize
+*.pyg

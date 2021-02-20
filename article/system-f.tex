@@ -1,0 +1,584 @@
+\section{System-F}
+
+Alias: F，Second Order Typed Lambda Calculus，$\lambda 2$ \cite{Girard:1989}
+
+\subsection{Syntax}
+
+\begin{align*}
+  e
+  &\BNFassign x &(\text{variable}) \\
+  &\BNFor \lambda x: \tau\ldotp e &(\text{abstraction}) \\
+  &\BNFor e\; e &(\text{application}) \\
+  &\BNFor \Lambda t\ldotp e &(\text{universal abstraction}) \\
+  &\BNFor e\; \tau &(\text{universal application}) \\
+  \tau
+  &\BNFassign t &(\text{type variable}) \\
+  &\BNFor \tau \to \tau &(\text{function type}) \\
+  &\BNFor \forall t\ldotp \tau &(\text{polymorphic type}) \\
+  \Gamma
+  &\BNFassign \cdot &(\text{empty}) \\
+  &\BNFor \Gamma, x: \tau &(\text{variable cons}) \\
+  &\BNFor \Gamma, t: \Omega &(\text{type variable cons})
+\end{align*}
+
+Convention:
+
+\begin{align*}
+  \tau_1 \to \tau_2 \to \cdots \to \tau_n &\defrel{=} \tau_1 \to (\tau_2 \to (\cdots \to \tau_n) \cdots ) \\
+  e_1\; e_2\; \cdots \; e_n &\defrel{=} (\cdots(e_1\; e_2)\cdots)\; e_n)
+\end{align*}
+
+Environment Reference:
+
+$\fbox{$\Gamma(x) = \tau$}$
+
+\begin{gather*}
+  \infer{(\Gamma, x': \tau)(x) = \tau}{
+    x = x'
+  }
+  \hspace{2em}
+  \infer{(\Gamma, x': \tau)(x) = \tau}{
+    x \neq x'
+    &
+    \Gamma(x) = \tau
+  }
+  \hspace{2em}
+  \infer{(\Gamma, t: \Omega)(x) = \tau}{
+    \Gamma(x) = \tau
+  }
+  \\
+  \infer{(\Gamma, t': \Omega)(t) = \Omega}{
+    t = t'
+  }
+  \hspace{2em}
+  \infer{(\Gamma, t': \Omega)(t) = \Omega}{
+    t \neq t'
+    &
+    \Gamma(t) = \Omega
+  }
+  \hspace{2em}
+  \infer{(\Gamma, x: \tau)(t) = \Omega}{
+    \Gamma(t) = \Omega
+  }
+\end{gather*}
+
+Free Variable:
+
+$\fbox{$\freevar(e) = \{\overline{x}\}$}$
+
+\begin{gather*}
+  \infer{\freevar(x) = \{x\}}{}
+  \hspace{2em}
+  \infer{\freevar(e_1\; e_2) = X_1 \cup X_2}{
+    \freevar(e_1) = X_1
+    &
+    \freevar(e_2) = X_2
+  }
+  \hspace{2em}
+  \infer{\freevar(\lambda x: \tau\ldotp e) = X \rcomplement \{x\}}{
+    \freevar(e) = X
+  }
+  \hspace{2em}
+  \infer{\freevar(e\; \tau) = X}{
+    \freevar(e) = X
+  }
+  \hspace{2em}
+  \infer{\freevar(\Lambda t\ldotp e) = X}{
+    \freevar(e) = X
+  }
+\end{gather*}
+
+Substitution:
+
+部分関数 $\{x_1 \mapsto e_1, \ldots, x_n \mapsto e_n\}$ を，$[x_1 \assign e_1, \ldots, x_n \assign e_n]$ または $[x_1, \ldots, x_n \assign e_1, \ldots, e_n]$ と表記する．
+
+$\fbox{$e[\overline{x' \assign e'}] = e''$}$
+
+\begin{gather*}
+  \infer{x[\overline{x'} \assign \overline{e'}] = e}{
+    [\overline{x'} \assign \overline{e'}](x) = e
+  }
+  \hspace{2em}
+  \infer{x[\overline{x'} \assign \overline{e'}]= x}{
+    x \not\in \dom([\overline{x'} \assign \overline{e'}])
+  }
+  \\
+  \infer{(e_1\; e_2)[\overline{x'} \assign \overline{e'}] = e''_1\; e''_2}{
+    e_1[\overline{x'} \assign \overline{e'}] = e''_1
+    &
+    e_2[\overline{x'} \assign \overline{e'}] = e''_2
+  }
+  \hspace{2em}
+  \infer{(\lambda x: \tau\ldotp e)[\overline{x'} \assign \overline{e'}] = \lambda x: \tau\ldotp e''}{
+    e([\overline{x'} \assign \overline{e'}]\restrict_{\dom([\overline{x'} \assign \overline{e'}]) \rcomplement \{x\}}) = e''
+  }
+  \\
+  \infer{(e\; \tau)[\overline{x'} \assign \overline{e'}] = e''\; \tau}{
+    e[\overline{x'} \assign \overline{e'}] = e''
+  }
+  \hspace{2em}
+  \infer{(\Lambda t\ldotp e)[\overline{x'} \assign \overline{e'}] = \Lambda t\ldotp e''}{
+    e[\overline{x'} \assign \overline{e'}] = e''
+  }
+\end{gather*}
+
+Type Free Variable:
+
+$\fbox{$\typefreevar(e) = \{\overline{x}\}$}$
+
+\begin{gather*}
+  \infer{\typefreevar(x) = \emptyset}{}
+  \hspace{2em}
+  \infer{\typefreevar(e_1\; e_2) = T_1 \cup T_2}{
+    \typefreevar(e_1) = T_1
+    &
+    \typefreevar(e_2) = T_2
+  }
+  \hspace{2em}
+  \infer{\typefreevar(\lambda x: \tau\ldotp e) = T_1 \cup T_2}{
+    \typefreevar(\tau) = T_1
+    &
+    \typefreevar(e) = T_2
+  }
+  \\
+  \infer{\typefreevar(e\; \tau) = T_1 \cup T_2}{
+    \typefreevar(e) = T_1
+    &
+    \typefreevar(\tau) = T_2
+  }
+  \hspace{2em}
+  \infer{\typefreevar(\Lambda t\ldotp e) = T \rcomplement \{t\}}{
+    \typefreevar(e) = T
+  }
+  \\
+  \infer{\typefreevar(t) = \{t\}}{}
+  \hspace{2em}
+  \infer{\typefreevar(\tau_1 \to \tau_2) = T_1 \cup T_2}{
+    \typefreevar(\tau_1) = T_1
+    &
+    \typefreevar(\tau_2) = T_2
+  }
+  \hspace{2em}
+  \infer{\typefreevar(\forall t\ldotp \tau) = T \rcomplement \{t\}}{
+    \typefreevar(\tau) = T
+  }
+\end{gather*}
+
+Type Substitution:
+
+部分関数 $\{t_1 \mapsto \tau_1, \ldots, t_n \mapsto \tau_n\}$ を，$[t_1 \assign \tau_1, \ldots, t_n \assign \tau_n]$ または $[t_1, \ldots, t_n \assign t_1, \ldots, t_n]$ と表記する．
+
+$\fbox{$e[\overline{t \assign \tau}] = e'$}$
+
+\begin{gather*}
+  \infer{x[\overline{t'} \assign \overline{\tau'}] = x}{}
+  \hspace{2em}
+  \infer{(e_1\; e_2)[\overline{t'} \assign \overline{\tau'}] = e''_1\; e''_2}{
+    e_1[\overline{t'} \assign \overline{\tau'}] = e''_1
+    &
+    e_2[\overline{t'} \assign \overline{\tau'}] = e''_2
+  }
+  \hspace{2em}
+  \infer{(\lambda x: \tau\ldotp e)[\overline{t'} \assign \overline{\tau'}] = \lambda x: \tau''\ldotp e''}{
+    \tau[\overline{t'} \assign \overline{\tau'}] = \tau''
+    &
+    e[\overline{t'} \assign \overline{\tau'}] = e''
+  }
+  \\
+  \infer{(e\; \tau)[\overline{t'} \assign \overline{\tau'}] = e''\; \tau''}{
+    e[\overline{t'} \assign \overline{\tau'}] = e''
+    &
+    \tau[\overline{t'} \assign \overline{\tau'}] = \tau''
+  }
+  \hspace{2em}
+  \infer{(\Lambda t\ldotp e)[\overline{t'} \assign \overline{\tau'}] = \Lambda t\ldotp e''}{
+    e([\overline{t'} \assign \overline{\tau'}]\restrict_{\dom([\overline{t'} \assign \overline{\tau'}]) \rcomplement \{t\}}) = e''
+  }
+\end{gather*}
+
+$\fbox{$\tau[\overline{t' \assign \tau'}] = \tau''$}$
+
+\begin{gather*}
+  \infer{t[\overline{t'} \assign \overline{\tau'}] = \tau}{
+    [\overline{t'} \assign \overline{\tau'}](t) = \tau
+  }
+  \hspace{2em}
+  \infer{t[\overline{t'} \assign \overline{\tau'}] = t}{
+    t \not\in \dom([\overline{t'} \assign \overline{\tau'}])
+  }
+  \hspace{2em}
+  \infer{(\tau_1 \to \tau_2)[\overline{t'} \assign \overline{\tau'}] = \tau''_1 \to \tau''_2}{
+    \tau_1[\overline{t'} \assign \overline{\tau'}] = \tau''_1
+    &
+    \tau_2[\overline{t'} \assign \overline{\tau'}] = \tau''_2
+  }
+  \hspace{2em}
+  \infer{(\forall t\ldotp \tau)[\overline{t'} \assign \overline{\tau'}] = \forall t\ldotp \tau''}{
+    \tau([\overline{t'} \assign \overline{\tau'}]\restrict_{\dom([\overline{t'} \assign \overline{\tau'}]) \rcomplement \{t\}}) = \tau''
+  }
+\end{gather*}
+
+$\alpha$-Equality:
+
+$\fbox{$e_1 \equiv_\alpha e_2$}$
+
+\begin{gather*}
+  \infer{x_1 \equiv_\alpha x_2}{
+    x_1 = x_2
+  }
+  \hspace{2em}
+  \infer{e_1\; e'_1 \equiv_\alpha e_2\; e'_2}{
+    e_1 \equiv_\alpha e_2
+    &
+    e'_1 \equiv_\alpha e'_2
+  }
+  \hspace{2em}
+  \infer{\lambda x_1: \tau_1\ldotp e_1 \equiv_\alpha \lambda x_2: \tau_2\ldotp e_2}{
+    \tau_1 \equiv_\alpha \tau_2
+    &
+    x' \not\in \freevar(e_1) \cup \freevar(e_2)
+    &
+    e_1[x_1 \assign x'] \equiv_\alpha e_2[x_2 \assign x']
+  }
+  \\
+  \infer{e_1\; \tau_1 \equiv_\alpha e_2\; \tau_2}{
+    e_1 \equiv_\alpha e_2
+    &
+    \tau_1 \equiv_\alpha \tau_2
+  }
+  \hspace{2em}
+  \infer{\Lambda t_1\ldotp e_1 \equiv_\alpha \Lambda t_2\ldotp e_2}{
+    t' \not\in \typefreevar(e_1) \cup \typefreevar(e_2)
+    &
+    e_1[t_1 \assign t'] \equiv_\alpha e_2[t_2 \assign t']
+  }
+\end{gather*}
+
+$\fbox{$\tau_1 \equiv_\alpha \tau_2$}$
+
+\begin{gather*}
+  \infer{t_1 \equiv_\alpha t_2}{
+    t_1 = t_2
+  }
+  \hspace{2em}
+  \infer{\tau_1 \to \tau'_1 \equiv_\alpha \tau_2 \to \tau'_2}{
+    \tau_1 \equiv_\alpha \tau_2
+    &
+    \tau'_1 \equiv_\alpha \tau'_2
+  }
+  \hspace{2em}
+  \infer{\forall t_1\ldotp \tau_1 \equiv_\alpha \forall t_2\ldotp \tau_2}{
+    t' \not\in \typefreevar(\tau_1) \cup \typefreevar(\tau_2)
+    &
+    \tau_1[t_1 \assign t'] \equiv_\alpha \tau_2[t_2 \assign t']
+  }
+\end{gather*}
+
+\begin{theorem}[Correctness of Substitution]
+  置換 $[\overline{x'} \assign \overline{e'}]$ について，$X = \dom([\overline{x'} \assign \overline{e'}])$ とした時，
+  \begin{align*}
+    \freevar(e[\overline{x'} \assign \overline{e'}]) = (\freevar(e) \rcomplement X) \cup \bigcup_{x \in \freevar(e) \cap X} \freevar([\overline{x'} \assign \overline{e'}](x))\text{．}
+  \end{align*}
+\end{theorem}
+
+\begin{theorem}[Correctness of Type Substitution]
+  式 $e$，型 $\tau$，型置換 $[\overline{t'} \assign \overline{\tau'}]$ について，$T = \dom([\overline{t'} \assign \overline{\tau'}])$ とした時，
+  \begin{align*}
+    \typefreevar(e[\overline{t'} \assign \overline{\tau'}]) &= (\typefreevar(e) \rcomplement T) \cup \bigcup_{t \in \typefreevar(e) \cap T} \typefreevar([\overline{t'} \assign \overline{\tau'}](t)) \\
+    \typefreevar(\tau[\overline{t'} \assign \overline{\tau'}]) &= (\typefreevar(\tau) \rcomplement T) \cup \bigcup_{t \in \typefreevar(\tau) \cap T} \typefreevar([\overline{t'} \assign \overline{\tau'}](t))\text{．}
+  \end{align*}
+\end{theorem}
+
+\begin{theorem}[$\alpha$-Equality Does Not Touch Free Variables]
+  \hwordspace{}
+  \begin{itemize}
+    \item $\tau_1 \equiv_\alpha \tau_2$ ならば $\typefreevar(\tau_1) = \typefreevar(\tau_2)$．
+    \item $e_1 \equiv_\alpha e_2$ ならば，$\freevar(e_1) = \freevar(e_2)$，$\typefreevar(e_1) = \typefreevar(e_2)$．
+  \end{itemize}
+\end{theorem}
+
+\subsection{Typing Semantics}
+
+$\fbox{$\Gamma \vdash e: \tau$}$
+
+\begin{gather*}
+  \infer[\text{T-Var}]{\Gamma \vdash x: \tau}{
+    \Gamma(x) = \tau
+  }
+  \\
+  \infer[\text{T-Abs}]{\Gamma \vdash \lambda x: \tau_1\ldotp e: \tau_1 \to \tau_2}{
+    \Gamma, x: \tau_1 \vdash e: \tau_2
+  }
+  \\
+  \infer[\text{T-App}]{\Gamma \vdash e_1\; e_2: \tau}{
+    \Gamma \vdash e_1: \tau_2 \to \tau
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \\
+  \infer[\text{T-UnivAbs}]{\Gamma \vdash \Lambda t\ldotp e: \forall t\ldotp \tau}{
+    \Gamma, t: \Omega \vdash e: \tau
+  }
+  \\
+  \infer[\text{T-UnivApp}]{\Gamma \vdash e\; \tau_2: \tau_1[t \assign \tau_2]}{
+    \Gamma \vdash e: \forall t\ldotp \tau_1
+  }
+  \\
+  \infer[\text{T-$\alpha$-Equiv}]{\Gamma \vdash e: \tau}{
+    \Gamma \vdash \tau \equiv_\alpha \tau': \Omega
+    &
+    \Gamma \vdash e: \tau'
+  }
+\end{gather*}
+
+特に，$\cdot \vdash e: \tau$ の時，$e: \tau$ と表記．
+
+\subsection{Evaluation Semantics (Call-By-Value)}
+
+\begin{align*}
+  v
+  &\BNFassign \lambda x: \tau\ldotp e \\
+  &\BNFor \Lambda t\ldotp e \\
+  C
+  &\BNFassign [] \\
+  &\BNFor C\; e \\
+  &\BNFor v\; C \\
+  &\BNFor C\; \tau
+\end{align*}
+
+Small Step:
+
+$\fbox{$e \smalleval e'$}$
+
+\begin{gather*}
+  \infer{(\lambda x: \tau\ldotp e)\; v \smalleval e[x \assign v]}{}
+  \\
+  \infer{(\Lambda t\ldotp e)\; \tau \smalleval e[t \assign \tau]}{}
+  \\
+  \infer{C[e] \smalleval C[e']}{
+    e \smalleval e'
+  }
+\end{gather*}
+
+Big Step:
+
+$\fbox{$e \bigeval v$}$
+
+\begin{gather*}
+  \infer{e_1\; e_2 \bigeval v}{
+    e_1 \bigeval \lambda x:\tau\ldotp e'_1
+    &
+    e_2 \bigeval v_2
+    &
+    e'_1[x \assign v_2] \bigeval v
+  }
+  \\
+  \infer{e\; \tau \bigeval v}{
+    e \bigeval \Lambda t\ldotp e'_1
+    &
+    e'_1[t \assign \tau] \bigeval v
+  }
+\end{gather*}
+
+\begin{theorem}[Adequacy of Small Step and Big Step]
+  $e \smalleval^* v \textiff e \bigeval v$．
+\end{theorem}
+
+\begin{theorem}[Type Soundness]
+  $e: \tau$ の時，$e \smalleval^* v$，$e \bigeval v$ となる $v = \normalform(\smalleval, e)$ が存在し，
+  \begin{itemize}
+    \item $\tau = \tau_1 \to \tau_2$ の時，$v \equiv_\alpha \lambda x':\tau_1\ldotp e'$ となる $\lambda x':\tau_1\ldotp e'$ が存在する．
+    \item $\tau = \forall t\ldotp \tau_1$ の時，$v \equiv_\alpha \Lambda t\ldotp e'$ となる $\Lambda t\ldotp e'$ が存在する．
+  \end{itemize}
+\end{theorem}
+
+\subsection{Equational Reasoning}
+
+$\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
+
+\begin{gather*}
+  \infer[\text{Eq-$\beta$-Lam}]{\Gamma \vdash (\lambda x: \tau_2\ldotp e_1)\; e_2 \equiv e_1[x \assign e_2]: \tau}{
+    \Gamma, x: \tau_2 \vdash e_1: \tau
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \hspace{2em}
+  \infer[\text{Eq-$\eta$-Lam}]{\Gamma \vdash (\lambda x: \tau_1\ldotp e\; x) \equiv e: \tau_1 \to \tau_2}{
+    x \not\in \freevar(e)
+    &
+    \Gamma \vdash e: \tau_1 \to \tau_2
+  }
+  \\
+  \infer[\text{Eq-$\beta$-UnivLam}]{\Gamma \vdash (\Lambda t\ldotp e)\; \tau_2 \equiv e[t \assign \tau_2]: \tau[t \assign \tau_2]}{
+    \Gamma, t: \Omega \vdash e: \tau
+  }
+  \hspace{2em}
+  \infer[\text{Eq-$\eta$-UnivLam}]{\Gamma \vdash (\Lambda t\ldotp e\; t) \equiv e: \forall t'\ldotp \tau}{
+    t \not\in \typefreevar(e)
+    &
+    \Gamma \vdash e: \forall t'\ldotp \tau
+  }
+  \\
+  \infer[\text{Eq-$\alpha$-Refl}]{\Gamma \vdash e_1 \equiv e_2: \tau}{
+    e_1 \equiv_\alpha e_2
+    &
+    \Gamma \vdash e_1: \tau
+    &
+    \Gamma \vdash e_2: \tau
+  }
+  \hspace{2em}
+  \infer[\text{Eq-$\alpha$-Type}]{\Gamma \vdash e_1 \equiv e_2: \tau}{
+    \tau \equiv_\alpha \tau'
+    &
+    \Gamma \vdash e_1 \equiv e_2: \tau'
+  }
+  \\
+  \infer[\text{Eq-Sym}]{\Gamma \vdash e_1 \equiv e_2: \tau}{
+    \Gamma \vdash e_2 \equiv e_1: \tau
+  }
+  \hspace{2em}
+  \infer[\text{Eq-Trans}]{\Gamma \vdash e_1 \equiv e_3: \tau}{
+    \Gamma \vdash e_1 \equiv e_2: \tau
+    &
+    \Gamma \vdash e_2 \equiv e_3: \tau
+  }
+  \\
+  \infer[\text{Eq-Cong-Abs}]{\Gamma \vdash \lambda x: \tau\ldotp e_1 \equiv \lambda x: \tau\ldotp e_2: \tau \to \tau'}{
+    \Gamma, x: \tau \vdash e_1 \equiv e_2: \tau'
+  }
+  \hspace{2em}
+  \infer[\text{Eq-Cong-App}]{\Gamma \vdash e_1\; e'_1 \equiv e_2\; e'_2: \tau}{
+    \Gamma \vdash e_1 \equiv e_2: \tau' \to \tau
+    &
+    \Gamma \vdash e'_1 \equiv e'_2: \tau'
+  }
+  \\
+  \infer[\text{Eq-Cong-UnivAbs}]{\Gamma \vdash \Lambda t\ldotp e_1 \equiv \Lambda t\ldotp e_2: \forall(t. \tau)}{
+    \Gamma, t: \Omega \vdash e_1 \equiv e_2: \tau
+  }
+  \hspace{2em}
+  \infer[\text{Eq-Cong-UnivApp}]{\Gamma \vdash e_1\; \tau' \equiv e_2\; \tau': \tau[t \assign \tau']}{
+    \Gamma \vdash e_1 \equiv e_2: \forall t\ldotp \tau
+  }
+\end{gather*}
+
+特に，$\cdot \vdash e_1 \equiv e_2: \tau$ の時，$e_1 \equiv e_2: \tau$ と表記．
+
+\begin{theorem}[Respect Typing]
+  $\Gamma \vdash e_1 \equiv e_2: \tau$ ならば，$\Gamma \vdash e_1: \tau$ かつ $\Gamma \vdash e_2: \tau$．
+\end{theorem}
+
+\begin{theorem}[Respect Evaluation]
+  \theolabel{systemf:smallstep-equiv}
+  $e_1 \equiv e_2: \tau$ の時，$e'_1 \smalleval^* e_1$，$e_2 \smalleval^* e'_2$ ならば $e'_1 \equiv e'_2: \tau$．
+\end{theorem}
+
+\begin{corollary}
+  $e_1 \equiv e_2: \tau$ の時，$e_1 \smalleval^* e'_1$，$e_2 \smalleval^* e'_2$ ならば $e'_1 \equiv e'_2: \tau$．
+\end{corollary}
+\begin{proof}
+  $e_1 \smalleval^* e_1$ より，\theoref{systemf:smallstep-equiv}から $e_1 \equiv e'_2: \tau$．よって，T-Sym から $e'_2 \equiv e_1: \tau$ であり，$e'_2 \smalleval^* e'_2$ より\theoref{systemf:smallstep-equiv}から $e'_2 \equiv e'_1: \tau$．故に，T-Sym から $e'_1 \equiv e'_2: \tau$．
+\end{proof}
+
+\subsection{Definability}
+
+\subsubsection{Product}
+
+Product of $\tau_1$ and $\tau_2$:
+
+\begin{align*}
+  \tau_1 \times \tau_2 &\defrel{=} \forall t\ldotp (\tau_1 \to \tau_2 \to t) \to t \\
+  \langle e_1, e_2\rangle &\defrel{=} \Lambda t\ldotp \lambda x: \tau_1 \to \tau_2 \to t\ldotp x\; e_1\; e_2 \\
+  \pi_1 e &\defrel{=} e\; \tau_1\; \lambda x_1\ldotp \lambda x_2\ldotp x_1 \\
+  \pi_2 e &\defrel{=} e\; \tau_2\; \lambda x_1\ldotp \lambda x_2\ldotp x_2
+\end{align*}
+
+Admissible typing rule:
+
+$\fbox{$\Gamma \vdash e: \tau$}$
+
+\begin{gather*}
+  \infer[\text{T-Product}]{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \times \tau_2}{
+    \Gamma \vdash e_1: \tau_1
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \hspace{2em}
+  \infer[\text{T-Proj-1}]{\Gamma \vdash \pi_1 e: \tau_1}{
+    \Gamma \vdash e: \tau_1 \times \tau_2
+  }
+  \hspace{2em}
+  \infer[\text{T-Proj-2}]{\Gamma \vdash \pi_2 e: \tau_2}{
+    \Gamma \vdash e: \tau_1 \times \tau_2
+  }
+\end{gather*}
+
+Admissible equality:
+
+$\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
+
+\begin{gather*}
+  \infer[\text{Eq-$\beta$-Product-1}]{\Gamma \vdash \pi_1 \langle e_1, e_2\rangle \equiv e_1: \tau_1}{
+    \Gamma \vdash e_1: \tau_1
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \hspace{2em}
+  \infer[\text{Eq-$\beta$-Product-2}]{\Gamma \vdash \pi_2 \langle e_1, e_2\rangle \equiv e_2: \tau_2}{
+    \Gamma \vdash e_1: \tau_1
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \\
+  \infer[\text{Eq-$\eta$-Product}]{\Gamma \vdash \langle \pi_1 e, \pi_2 e\rangle \equiv e: \tau_1 \times \tau_2}{
+    \Gamma \vdash e: \tau_1 \times \tau_2
+  }
+\end{gather*}
+
+\subsubsection{Existential Type}
+
+Existence of $\exists t\ldotp\tau$:
+
+\begin{align*}
+  \exists t\ldotp \tau &\defrel{=} \forall t'\ldotp (\forall t\ldotp \tau \to t') \to t' \\
+  \sympack\langle \tau_t, e\rangle &\defrel{=} \Lambda t'\ldotp \lambda x: (\forall t\ldotp \tau \to t')\ldotp x\; \tau_t\; e \\
+  \symunpack\langle t, x\rangle = e_1\ldotp \tau_2\ldotp e_2 &\defrel{=} e_1\; \tau_2\; (\Lambda t\ldotp \lambda x: \tau\ldotp e_2)
+\end{align*}
+
+Admissible typing rule:
+
+$\fbox{$\Gamma \vdash e: \tau$}$
+
+\begin{gather*}
+  \infer[\text{T-Pack}]{\Gamma \vdash \sympack\langle \tau_t, e\rangle: \exists t\ldotp \tau}{
+    \Gamma \vdash e: \tau[t \assign \tau_t]
+  }
+  \hspace{2em}
+  \infer[\text{T-Unpack}]{\Gamma \vdash \symunpack\langle t, x\rangle = e_1\ldotp \tau_2\ldotp e_2: \tau_2}{
+    \Gamma \vdash e_1: \exists t\ldotp \tau
+    &
+    \Gamma, t: \Omega, x: \tau \vdash e_2: \tau_2
+    &
+    t \not\in \typefreevar(\tau_2)
+  }
+\end{gather*}
+
+Admissible equality:
+
+$\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
+
+\begin{gather*}
+  \infer[\text{Eq-$\beta$-Exist}]{\Gamma \vdash \symunpack\langle t, x\rangle = \sympack\langle \tau_t, e_1\rangle\ldotp \tau_2\ldotp e_2 \equiv e_2[t \assign \tau_t][x \assign e_1]: \tau_2}{
+    \Gamma \vdash e_1: \tau_1[t \assign \tau_t]
+    &
+    \Gamma, t: \Omega, x: \tau_1 \vdash e_2: \tau_2
+    &
+    t \not\in \typefreevar(\tau_2)
+  }
+  \\
+  \infer[\text{Eq-$\eta$-Exist}]{\Gamma \vdash \symunpack\langle t, x\rangle = e\ldotp\tau'\ldotp \sympack\langle t, x\rangle \equiv e: \exists t'\ldotp \tau}{
+    \Gamma \vdash e: \exists t'\ldotp \tau
+    &
+    \tau' \equiv_\alpha \exists t'\ldotp \tau
+  }
+\end{gather*}

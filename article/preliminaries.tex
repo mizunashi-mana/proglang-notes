@@ -1,0 +1,70 @@
+\section{基本的な表記}
+
+\emph{量化子\emphp{quantifier}}の束縛をコンマ (,) で続けて書く．束縛の終わりをピリオド (.) で示す．例えば，
+\begin{align*}
+  \forall x_1 \in X_1, x_2 \in X_2\ldotp \exists y_1 \in Y_1, y_2 \in Y_2\ldotp x_1 = y_1 \land x_2 = y_2
+\end{align*}
+は，
+\begin{align*}
+  \forall x_1 \in X_1\ldotp \forall x_2 \in X_2\ldotp \exists y_1 \in Y_1\ldotp \exists y_2 \in Y_2\ldotp x_1 = y_1 \land x_2 = y_2
+\end{align*}
+と等しい．また，量化子の束縛において，\emph{such that}を省略し，コンマ (,) で繋げて書く．例えば，
+\begin{align*}
+  \forall x \in \{0, 1\}, x \neq 0\ldotp x = 1
+\end{align*}
+は，
+\begin{align*}
+  \forall x \in \{0, 1\}\ldotp x \neq 0 \implies x = 1
+\end{align*}
+と等しい．また，$\implies$，$\iff$ が他の記号と混同する場合，それぞれ $\textimplies$，$\textiff$ を使用する．
+
+\emph{集合\emphp{set}}について，以下の表記を用いる．
+\begin{itemize}
+  \item 集合 $A$ について，その\emph{濃度\emphp{cardinality}}を $|A|$ と表記する．なお，$A$ が\emph{有限集合\emphp{finite set}}の時，濃度とは要素の個数のことである．
+  \item 集合 $A$ について，$a \in A$ を $a: A$ と表記する．
+  \item \emph{自然数\emphp{natural number}}の集合を $\Natural = \{0, 1, \ldots\}$ と表記する．
+  \item 自然数 $n \in \Natural$ について，$\{1, \ldots, n\}$ を $[n]$ と表記する．
+  \item 集合 $A$ の\emph{冪集合}を $\Power(A) = \{X \mid X \subseteq A\}$，有限冪集合を $\PowerFin(A) = \{X \in \Power(X) \mid \text{$X$ は有限集合}\}$ と表記する．
+  \item 集合 $A_1, \ldots, A_n$ の\emph{直積\emphp{cartesian product}}を $A_1 \times \cdots \times A_n = \{(a_1, \ldots, a_n) \mid a_1 \in A_1, \ldots, a_n \in A_n\}$ と表記する．集合 $A$ の $n$ 直積を $A^n = \underbrace{A \times \cdots \times A}_{\text{$n$項}}$ と表記する．特に，$A^0 = \{\epsilon\}$ である．
+  \item 集合 $A_1, \ldots, A_n$ の\emph{直和\emphp{disjoin union}}を $A_1 \uplus \cdots \uplus A_n = (A_1 \times \{1\}) \cup \cdots (A_n \times \{n\})$ と表記する．なお，文脈から明らかな場合，直和の添字を省略し，$a \in A_i$ に対して，$a \in A_1 \uplus \cdots \uplus A_n$ と表記する．
+  \item 集合 $A$ の $B$ との\emph{差集合}を $A \rcomplement B = \{a \in A \mid a \not\in B\}$ と表記する．
+\end{itemize}
+
+集合 $\Sigma$ について，$\bigcup_{n \in \Natural} \Sigma^n$ を $\Sigma^*$ と表記する．この時，$\alpha \in \Sigma^*$ を $\Sigma$ による\emph{列\emphp{sequence}}と呼ぶ．列について，以下の表記を用いる．
+\begin{itemize}
+  \item $(\sigma_1, \ldots, \sigma_n) \in \Sigma^n$ について，$(\sigma_1, \ldots, \sigma_n)$ を $\sigma_1 \cdots \sigma_n$ と表記する．
+  \item 列 $\alpha = \sigma_1 \cdots \sigma_n \in \Sigma^*$ について，その長さを $|\alpha| = n$ と表記する．
+\end{itemize}
+
+集合 $A, B$ について，$R \subseteq A \times B$ を\emph{関係\emphp{relation}}と呼ぶ．また，
+\begin{align*}
+  A \pto B \defrel{=} \{R \in \Power(A \times B) \mid \forall x \in A, (x, y_1), (x, y_2) \in R\ldotp y_1 = y_2\}
+\end{align*}
+という表記を導入し，関係 $f: A \pto B$ を $A$ から $B$ への\emph{部分関数\emphp{partial function}}と呼ぶ．さらに，
+\begin{align*}
+  A \to B \defrel{=} \{f: A \pto B \mid \forall x \in A\ldotp\exists y \in B\ldotp (x, y) \in f\}
+\end{align*}
+という表記を導入し，部分関数 $f: A \to B$ を \emph{\textup{(}全\textup{)} 関数\emphp{function}}と呼ぶ．関係について，以下の表記を用いる．
+\begin{itemize}
+  \item 関係 $R \subseteq A \times B$ について，$(a, b) \in R$ を $a \mathrel{R} b$ と表記する．
+  \item 関係 $R \subseteq A \times B$ について，\emph{定義域\emphp{domain}}を $\dom(R) = \{a \mid \exists b\ldotp (a, b) \in R\}$，\emph{値域\emphp{range}}を $\cod(R) = \{b \mid \exists a\ldotp (a, b) \in R\}$ と表記する．
+  \item 部分関数 $f: A \rightharpoonup B$ について，$(a, b) \in f$ を $f(a) = b$ と表記する．
+  \item 関係 $R_1 \subseteq A \times B$，$R_2 \subseteq B \times C$ について，その\emph{合成\emphp{composition}}を $R_1; R_2 = R_2 \circ R_1 = \{(x, z) \in A \times C \mid \exists y \in B\ldotp (x, y) \in R_1, (y, z) \in R_2\}$ と表記する．
+  \item 関係 $R \subseteq A \times B$，集合 $X \subseteq A$ について，$R$ の $X$ による\emph{制限\emphp{restriction}}を $R\restrict_X = \{(a, b) \in R \mid a \in X\}$ と表記する．特に関数 $f: A \to B$ の $X \subseteq A$ による制限は，関数 $f\restrict_X: X \to B$ になる．
+  \item $a \in A$，$b \in B$ について，その組を $a \mapsto b = (a, b)$，関数 $f: A \to B$ を $f = x \mapsto f(x)$ と表記する．
+  \item 2項関係 $R \subseteq A^2$ について，その\emph{推移閉包\emphp{transitive closure}}，つまり以下を満たす最小の2項関係を $R^+ \subseteq A^2$ と表記する．
+  \begin{itemize}
+    \item 任意の $(a, b) \in R$ について，$(a, b) \in R^+$．
+    \item 任意の $(a, b) \in R^+$，$(b, c) \in R^+$ について，$(a, c) \in R^+$．
+  \end{itemize}
+  \item 2項関係 $R \subseteq A^2$ について，その\emph{反射推移閉包\emphp{reflexive transitive closure}}を $R^* = R^+ \cup \{(a, a) \mid a \in A\}$ と表記する．
+\end{itemize}
+
+集合 $I$ について，その要素で添字付けられた対象の列 $\indexedfamily{i \in I}{a_i}$ を $I$ で添字づけられた\emph{族\emphp{indexed family}}と呼ぶ．族について，以下の表記を用いる．
+\begin{itemize}
+  \item 族の集合を $\indexedfamilyclass{i \in I}{A_i} = \{\indexedfamily{i \in I}{a_i} \mid \forall i \in I, a_i \in A_i\}$ と表記する．
+  \item 集合の族 $A = \indexedfamily{i \in I}{A_i}$ について，次の条件を満たす時，$A$ は\emph{互いに素\emphp{pairwise disjoint}}であるという．
+  \begin{align*}
+    \forall i_1, i_2 \in I, i_1 \neq i_2\ldotp A_{i_1} \cap A_{i_2} = \emptyset
+  \end{align*}
+\end{itemize}

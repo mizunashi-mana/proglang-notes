@@ -1,0 +1,223 @@
+% magic code
+\makeatletter\chardef\pdf@shellescape=\@ne\makeatother
+\usepackage{pdftexcmds}
+
+%----- packages -----
+\usepackage[l2tabu, orthodox]{nag}
+\usepackage[all, warning]{onlyamsmath}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{array}
+\usepackage{amsfonts}
+\usepackage{ascmac}
+\usepackage{bm}
+\usepackage[ruled]{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpascal}
+\usepackage{algpseudocode}
+\usepackage[cache=false]{minted}
+\usepackage{listings}
+\usepackage[export]{adjustbox}
+\usepackage{color}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{xifthen}
+\usepackage{tikz}
+\usepackage{pxpgfmark}
+\usetikzlibrary{cd}
+\usetikzlibrary{fit}
+\usetikzlibrary{matrix}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{automata}
+\usepackage{mathtools}
+\usepackage{changepage}
+\usepackage{proof}
+\usepackage[version=4]{mhchem}
+\usepackage[all]{xy}
+
+%----- commands -----
+
+% tikz sets
+\tikzset{dottedboxgroup/.style={draw, densely dotted}}
+
+% refs
+\newcommand{\funcref}[1]{式(\funcrref{#1})}
+\newcommand{\funcrref}[1]{\ref{function:#1}}
+\newcommand{\funclabel}[1]{\label{function:#1}}
+\newcommand{\algoref}[1]{アルゴリズム\algorref{#1}}
+\newcommand{\algorref}[1]{\ref{algorithm:#1}}
+\newcommand{\algolabel}[1]{\label{algorithm:#1}}
+\newcommand{\sectref}[1]{\sectrref{#1}}
+\newcommand{\sectrref}[1]{\ref{section:#1}}
+\newcommand{\sectlabel}[1]{\label{section:#1}}
+\newcommand{\chapref}[1]{第\chaprref{#1}章}
+\newcommand{\chaprref}[1]{\ref{chapter:#1}}
+\newcommand{\chaplabel}[1]{\label{chapter:#1}}
+\newcommand{\tblref}[1]{表\tblrref{#1}}
+\newcommand{\tblrref}[1]{\ref{table:#1}}
+\newcommand{\tbllabel}[1]{\label{table:#1}}
+\newcommand{\figref}[1]{図\figrref{#1}}
+\newcommand{\figrref}[1]{\ref{figure:#1}}
+\newcommand{\figlabel}[1]{\label{figure:#1}}
+\newcommand{\lstref}[1]{リスト\lstrref{#1}}
+\newcommand{\lstrref}[1]{\ref{listing:#1}}
+\newcommand{\lstlabel}[1]{\label{listing:#1}}
+\newcommand{\theolabel}[1]{\label{theorem:#1}}
+\newcommand{\theoref}[1]{定理\theorref{#1}}
+\newcommand{\theorref}[1]{\ref{theorem:#1}}
+\newcommand{\lemlabel}[1]{\label{lemma:#1}}
+\newcommand{\lemref}[1]{補題\lemrref{#1}}
+\newcommand{\lemrref}[1]{\ref{lemma:#1}}
+\newcommand{\defilabel}[1]{\label{definition:#1}}
+\newcommand{\defiref}[1]{定義\defirref{#1}}
+\newcommand{\defirref}[1]{\ref{definition:#1}}
+\newcommand{\proplabel}[1]{\label{proposition:#1}}
+\newcommand{\propref}[1]{命題\proprref{#1}}
+\newcommand{\proprref}[1]{\ref{proposition:#1}}
+\newcommand{\corolabel}[1]{\label{corollary:#1}}
+\newcommand{\cororef}[1]{系\cororref{#1}}
+\newcommand{\cororref}[1]{\ref{corollary:#1}}
+\newcommand{\examlabel}[1]{\label{example:#1}}
+\newcommand{\examref}[1]{例\examrref{#1}}
+\newcommand{\examrref}[1]{\ref{example:#1}}
+\newcommand{\prinlabel}[1]{\label{principle:#1}}
+\newcommand{\prinref}[1]{原理\prinrref{#1}}
+\newcommand{\prinrref}[1]{\ref{principle:#1}}
+\newcommand{\clailabel}[1]{\label{claim:#1}}
+\newcommand{\clairef}[1]{主張\clairref{#1}}
+\newcommand{\clairref}[1]{\ref{claim:#1}}
+\newcommand{\conjlabel}[1]{\label{conjecture:#1}}
+\newcommand{\conjref}[1]{予想\conjrref{#1}}
+\newcommand{\conjrref}[1]{\ref{conjecture:#1}}
+\newcommand*{\enumlabel}[2]{\label{enumerate:#1:#2}}
+\newcommand*{\enumref}[2]{\enumrref{#1}{#2}}
+\newcommand*{\enumrref}[2]{\ref{enumerate:#1:#2}}
+\newcommand*{\tenumlabel}[1]{\enumlabel{dummy}{#1}}
+\newcommand*{\tenumref}[1]{\enumref{dummy}{#1}}
+
+% utilities
+\newcommand*{\emphp}[1]{\textup{(}{#1}\textup{)}}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+  \node[shape=circle,draw,inner sep=1pt] (char) {\scriptsize $#1$};}}
+\newcommand*\hwordspace{\hspace{10pt}}
+\newcommand*\hcharspace{\hspace{0.5em}}
+\newcommand*\widearraysep{\arraycolsep=1.4pt\def\arraystretch{2.2}}
+\newcommand*\middlemid{\mathrel{}\middle|\mathrel{}}
+\newcommand*\dquote{\texttt{\char`\"}}
+\newcommand*\caret{\texttt{\^{}}}
+
+% colors
+\colorlet{lw-blue}{blue!70!black}
+\colorlet{lw-orange}{orange!35!brown!80!darkgray}
+\colorlet{lw-green}{green!40!black}
+\colorlet{lw-red}{red!50!black}
+\colorlet{darkred}{red!70!black}
+
+% xypic
+\def\objectstyle{\displaystyle}
+
+% caption
+\renewcommand{\lstlistingname}{リスト}
+\makeatletter
+\renewcommand{\ALG@name}{アルゴリズム}
+\newcommand{\figcaption}[1]{\def\@captype{figure}\caption{#1}}
+\newcommand{\tblcaption}[1]{\def\@captype{table}\caption{#1}}
+\makeatother
+
+% cite seen
+\newcommand{\scite}[2][]{~\ifthenelse{\equal{#1}{}}{\cite{#2}}{\cite[#1]{#2}}}
+
+% my columntype
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% math environment
+\allowdisplaybreaks
+
+% theorems
+\newtheoremstyle{mytheorem}% name of the style to be used
+  {\topsep}% measure of space to leave above the theorem. E.g.: 3pt
+  {\topsep}% measure of space to leave below the theorem. E.g.: 3pt
+  {}% name of font to use in the body of the theorem
+  {0pt}% measure of space to indent
+  {\bfseries}% name of head font
+  {.}% punctuation between head and body
+  { }% space after theorem head; " " = normal interword space
+  {\thmname{#1 }\thmnumber{#2}\thmnote{ (#3)}}
+\renewcommand{\qedsymbol}{\ensuremath\blacksquare}
+\renewcommand\proofname{証明}
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\textbf{#1}]%
+}{\oldendproof}
+\theoremstyle{mytheorem}
+\newcommand{\theoremsymbol}{\ensuremath\square}
+\newtheorem{_theorem}{定理}
+\newenvironment{theorem}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_theorem}}{\begin{_theorem}[#1]}}
+  {\hfill\theoremsymbol\end{_theorem}}
+\newtheorem{_definition}[_theorem]{定義}
+\newenvironment{definition}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_definition}}{\begin{_definition}[#1]}}
+  {\hfill\theoremsymbol\end{_definition}}
+\newtheorem{_lemma}[_theorem]{補題}
+\newenvironment{lemma}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_lemma}}{\begin{_lemma}[#1]}}
+  {\hfill\theoremsymbol\end{_lemma}}
+\newtheorem{_corollary}[_theorem]{系}
+\newenvironment{corollary}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_corollary}}{\begin{_corollary}[#1]}}
+  {\hfill\theoremsymbol\end{_corollary}}
+\newtheorem{_proposition}[_theorem]{命題}
+\newenvironment{proposition}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_proposition}}{\begin{_proposition}[#1]}}
+  {\hfill\theoremsymbol\end{_proposition}}
+\newtheorem{_example}[_theorem]{例}
+\newenvironment{example}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_example}}{\begin{_example}[#1]}}
+  {\hfill\theoremsymbol\end{_example}}
+\newtheorem{_principle}[_theorem]{原理}
+\newenvironment{principle}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_principle}}{\begin{_principle}[#1]}}
+  {\hfill\theoremsymbol\end{_principle}}
+\newtheorem{_claim}[_theorem]{主張}
+\newenvironment{claim}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_claim}}{\begin{_claim}[#1]}}
+  {\hfill\theoremsymbol\end{_claim}}
+\newtheorem{_conjecture}[_theorem]{予想}
+\newenvironment{conjecture}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_conjecture}}{\begin{_conjecture}[#1]}}
+  {\hfill\theoremsymbol\end{_conjecture}}
+\newtheorem{_exercise}[_theorem]{演習}
+\newenvironment{exercise}[1][]
+  {\ifthenelse{\equal{#1}{}}{\begin{_exercise}}{\begin{_exercise}[#1]}}
+  {\hfill\theoremsymbol\end{_exercise}}
+
+
+% listing
+\lstset{
+  language=C,
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  lineskip=-3pt,
+  frame=trlb,
+  numbers=left,
+  xleftmargin=2em,
+  captionpos=t,
+  basicstyle={\ttfamily},
+  stringstyle=\color{red},
+  commentstyle=\color[rgb]{0,0.6,0},
+  keywordstyle=\color{blue}
+}
+
+% minted
+\usemintedstyle{vs}
+\renewcommand{\theFancyVerbLine}
+  {\rmfamily {\small \arabic{FancyVerbLine} }}
+\newenvironment{mintedwrap}
+  { \vspace{10pt}\begin{center}\begin{adjustwidth}{4em}{} %
+  } %
+  { \end{adjustwidth}\end{center} %
+  }
