@@ -77,6 +77,55 @@ Syntax:
   \mid \Gamma, x: \tau
 \end{align*}
 
+Abbreviation:
+
+\begin{align*}
+  \Sigma.\overline{l} &\defrel{=} \left\{\begin{array}{ll}
+    (\Sigma.l).\overline{l'} &(\overline{l} = l\; \overline{l'}) \\
+    \Sigma &(\overline{l} = \epsilon)
+  \end{array}\right. \\
+  \overline{\tau_1} \to \tau_2 &\defrel{=} \left\{\begin{array}{ll}
+    \tau_1 \to (\overline{\tau_1'} \to \tau_2) &(\overline{\tau_1} = \tau_1\; \overline{\tau_1'}) \\
+    \tau_2 &(\overline{\tau_1} = \epsilon)
+  \end{array}\right. \\
+  \lambda \overline{x: \tau}\ldotp e &\defrel{=} \left\{\begin{array}{ll}
+    \lambda x: \tau\ldotp \lambda \overline{x': \tau'}\ldotp e &(\overline{x: \tau} = x: \tau\; \overline{x': \tau'}) \\
+    e &(\overline{x: \tau} = \epsilon)
+  \end{array}\right. \\
+  e_0\; \overline{e_1} &\defrel{=} \left\{\begin{array}{ll}
+    e_0\; e_1\; \overline{e_1'} &(\overline{e_1} = e_1\; \overline{e_1'}) \\
+    e_0 &(\overline{e_1} = \epsilon)
+  \end{array}\right. \\
+  \forall \overline{t: \kappa}\ldotp \tau &\defrel{=} \left\{\begin{array}{ll}
+    \forall t: \kappa\ldotp \forall \overline{t': \kappa'}\ldotp \tau &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    \tau &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  \Lambda \overline{t: \kappa}\ldotp e &\defrel{=} \left\{\begin{array}{ll}
+    \Lambda t: \kappa\ldotp \Lambda \overline{t': \kappa'}\ldotp e &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    e &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  e\; \overline{\tau} &\defrel{=} \left\{\begin{array}{ll}
+    e\; \tau\; \overline{\tau'} &(\overline{\tau} = \tau\; \overline{\tau'}) \\
+    e &(\overline{\tau} = \epsilon)
+  \end{array}\right. \\
+  \symlet \overline{x: \tau = e_1}\; \overline{t: \kappa = \tau} \symin e_2 &\defrel{=} (\lambda \overline{x: \tau}\ldotp \Lambda \overline{t: \kappa}\ldotp e_2)\; \overline{e_1}\; \overline{\tau} \\
+  \exists \overline{t: \kappa}\ldotp \tau &\defrel{=} \left\{\begin{array}{ll}
+    \exists t: \kappa\ldotp \exists \overline{t': \kappa'}\ldotp \tau &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    \tau &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  \sympack\langle \overline{\tau}, e\rangle_{\exists \overline{t: \kappa}\ldotp \tau_0} &\defrel{=} \left\{\begin{array}{ll}
+    \sympack\langle \tau, \sympack\langle \overline{\tau'}, e\rangle_{\exists \overline{t': \kappa'}\ldotp \tau_0}\rangle_{\exists \overline{t: \kappa}\ldotp \tau_0} &(\overline{\tau} = \tau\; \overline{\tau'}, \overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    e &(\overline{\tau} = \epsilon, \overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  (\symunpack\langle \overline{t: \kappa}, x: \tau\rangle = e_1 \symin e_2) &\defrel{=} \left\{\begin{array}{ll}
+    \begin{array}{l}
+      \symunpack\langle t: \kappa, x_1: \exists \overline{t': \kappa'} \ldotp \tau\rangle = e_1 \symin \\
+      \hspace{1em}\symunpack\langle \overline{t': \kappa'}, x_2: \tau\rangle = x_1 \symin e_2
+    \end{array} &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    \symlet x: \tau = e_1 \symin e_2 &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+\end{align*}
+
 Kinding:
 
 $\fbox{$\Gamma \vdash \tau: \kappa$}$
@@ -402,15 +451,6 @@ $\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
   &\BNFor \forall \overline{t: \kappa}\ldotp \Sigma \to \Xi &(\text{functor signature})
 \end{align*}
 
-Convention:
-
-\begin{align*}
-  \Sigma.\overline{l} = \left\{\begin{array}{ll}
-    (\Sigma.l).\overline{l'} &(\overline{l} = l\; \overline{l'}) \\
-    \Sigma &(\overline{l} = \epsilon)
-  \end{array}\right.
-\end{align*}
-
 Atomic Signature:
 
 \begin{align*}
@@ -713,7 +753,7 @@ $\fbox{$\Gamma \vdash B: \Xi \elaborate e$}$
     \Gamma \vdash B_1; B_2: \exists \overline{t_1: \kappa_1}\; \overline{t_2: \kappa_2}\ldotp \Sigma \elaborate
     \begin{array}{l}
       \symunpack\langle \overline{t_1: \kappa_1}, x_1\rangle = e_1 \symin \\
-      \hspace{1em}\symunpack\langle \overline{t_2: \kappa_2}, x_2\rangle = (\lambda \overline{x_{X_1}: \Sigma_1}\ldotp e_2)\; \overline{x_1.l_{X_1}} \symin \\
+      \hspace{1em}\symunpack\langle \overline{t_2: \kappa_2}, x_2\rangle = (\symlet \overline{x_{X_1}: \Sigma_1}= \overline{x_1.l_{X_1}} \symin e_2) \symin \\
       \hspace{2em}\sympack\langle \overline{t_1}\; \overline{t_2}, \{\overline{l'_{X_1} = x_1.l'_{X_1}}, \overline{l_{X_2} = x_2.l_{X_2}}\}\rangle_{
         \exists \overline{t_1: \kappa_1}\; \overline{t_2: \kappa_2}\ldotp \Sigma
       }
@@ -760,3 +800,13 @@ $\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
     \Gamma \vdash P: [\tau] \elaborate e
   }
 \end{gather*}
+
+\subsection{Modules as First-Class Values}
+
+\subsection{Elaboration with Applicative Functor}
+
+\begin{align*}
+  S
+  &\BNFassign \cdots \\
+  &\BNFor (X: S) \Rightarrow S
+\end{align*}
