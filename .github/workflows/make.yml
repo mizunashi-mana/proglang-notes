@@ -1,0 +1,84 @@
+name: Make
+
+on:
+  push:
+    branches:
+      - main
+
+  # Run tests for any PRs.
+  pull_request:
+
+jobs:
+  # Run tests.
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      -
+        name: Login to GitHub Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Pull required images
+        run: |
+          docker-compose pull
+
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+
+      - name: Run build
+        run: |
+          docker-compose build
+
+      - name: Run test
+        run: |
+          docker-compose run builder
+
+  deploy:
+    needs: test
+
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      -
+        name: Login to GitHub Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Pull required images
+        run: |
+          docker-compose pull
+
+      - name: Run build
+        run: |
+          docker-compose build
+
+      - name: Run test
+        run: |
+          docker-compose run builder
+
+      -
+        name: Make public
+        run: |
+            mkdir -p public
+            cp main.pdf public/
+
+      -
+        name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
