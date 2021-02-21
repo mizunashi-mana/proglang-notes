@@ -1,7 +1,7 @@
 version: '3'
 services:
   builder:
-    image: docker.pkg.github.com/mizunashi-mana/docker-texlive/full
+    image: ghcr.io/mizunashi-mana/docker-texlive
     volumes:
       - .:/workdir
     entrypoint: make -C /workdir
