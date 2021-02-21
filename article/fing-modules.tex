@@ -422,6 +422,16 @@ Atomic Signature:
   [\Xi] &\defrel{=} \{\symsig = \lambda x: \Xi\ldotp x\}
 \end{align*}
 
+\newcommand*{\symNotAtomic}{\mathop{\mathrm{NotAtomic}}}
+
+$\fbox{$\symNotAtomic(\Sigma)$}$
+
+\begin{gather*}
+  \infer{\symNotAtomic(\{\overline{l_X: \Sigma}\})}{}
+  \hspace{2em}
+  \infer{\symNotAtomic(\forall \overline{t: \kappa}\ldotp \Sigma \to \Xi)}{}
+\end{gather*}
+
 Admissible kinding:
 
 $\fbox{$\Gamma \vdash \tau: \kappa$}$
@@ -607,22 +617,26 @@ $\fbox{$\Gamma \vdash \Xi_1 \leq \Xi_2 \elaborate e$}$
     \bigwedge_l \Gamma \vdash {\Sigma_l}_1 \leq {\Sigma_l}_2 \elaborate e_l
   }
   \\
-  \infer[\text{U-Funct}]{\Gamma \vdash \forall \overline{t_1: \kappa_1}\ldotp \Sigma_1 \to \Xi_1 \leq \forall \overline{t_2: \kappa_2}\ldotp \Sigma_2 \to \Xi_2 \elaborate e_3}{
-    \begin{array}{ll}
-      \Gamma, \overline{t_2: \kappa_2} \vdash \Sigma_2 \leq \exists \overline{t_1: \kappa_1}\ldotp \Sigma_1 \uparrow \overline{\tau} \elaborate e_1
-      &
-      \Gamma, \overline{t_2: \kappa_2} \vdash \Xi_1[\overline{t_1 \assign \tau}] \leq \Xi_2 \elaborate e_2
-      \\
-      \multicolumn{2}{c}{e_3 = \lambda x_1: (\forall \overline{t_1: \kappa_1}\ldotp \Sigma_1 \to \Xi_1)\ldotp \lambda x_2: \Sigma_2\ldotp e_2\; (x_1\; \overline{\tau}\; (e_1\; x_2))}
+  \infer[\text{U-Funct}]{
+    \Gamma \vdash \forall \overline{t_1: \kappa_1}\ldotp \Sigma_1 \to \Xi_1 \leq \forall \overline{t_2: \kappa_2}\ldotp \Sigma_2 \to \Xi_2 \elaborate
+    \begin{array}{l}
+      \lambda x_1: (\forall \overline{t_1: \kappa_1}\ldotp \Sigma_1 \to \Xi_1)\ldotp \\
+      \hspace{1em}\lambda x_2: \Sigma_2\ldotp e_2\; (x_1\; \overline{\tau}\; (e_1\; x_2))
     \end{array}
+  }{
+    \Gamma, \overline{t_2: \kappa_2} \vdash \Sigma_2 \leq \exists \overline{t_1: \kappa_1}\ldotp \Sigma_1 \uparrow \overline{\tau} \elaborate e_1
+    &
+    \Gamma, \overline{t_2: \kappa_2} \vdash \Xi_1[\overline{t_1 \assign \tau}] \leq \Xi_2 \elaborate e_2
   }
   \\
-  \infer[\text{U-Abs}]{\Gamma \vdash \exists \overline{t_1: \kappa_1}\ldotp \Sigma_1 \leq \exists \overline{t_2: \kappa_2}\ldotp \Sigma_2 \elaborate e}{
-    \begin{array}{c}
-      \Gamma, \overline{t_1: \kappa_1} \vdash \Sigma_1 \leq \exists \overline{t_2: \kappa_2}\ldotp \Sigma_2 \uparrow \overline{\tau} \elaborate e_1
-      \\
-      e = \lambda x_1: (\exists \overline{t_1: \kappa_1}\ldotp \Sigma_1)\ldotp \symunpack\langle \overline{t_1: \kappa_1}, x'_1: \Sigma_1\rangle = x_1 \symin \sympack\langle \overline{\tau}, e_1\; x'_1\rangle_{\exists \overline{t_2: \kappa_2}\ldotp \Sigma_2}
+  \infer[\text{U-Abs}]{
+    \Gamma \vdash \exists \overline{t_1: \kappa_1}\ldotp \Sigma_1 \leq \exists \overline{t_2: \kappa_2}\ldotp \Sigma_2 \elaborate
+    \begin{array}{l}
+      \lambda x_1: (\exists \overline{t_1: \kappa_1}\ldotp \Sigma_1)\ldotp \\
+      \hspace{1em}\symunpack\langle \overline{t_1: \kappa_1}, x'_1: \Sigma_1\rangle = x_1 \symin \sympack\langle \overline{\tau}, e\; x'_1\rangle_{\exists \overline{t_2: \kappa_2}\ldotp \Sigma_2}
     \end{array}
+  }{
+    \Gamma, \overline{t_1: \kappa_1} \vdash \Sigma_1 \leq \exists \overline{t_2: \kappa_2}\ldotp \Sigma_2 \uparrow \overline{\tau} \elaborate e
   }
 \end{gather*}
 
@@ -639,7 +653,7 @@ $\fbox{$\Gamma \vdash M: \Xi \elaborate e$}$
     \Gamma \vdash B: \Xi \elaborate e
   }
   \\
-  \infer[\text{M-Dot}]{\Gamma \vdash M.X: \exists \overline{t: \kappa}\ldotp \Sigma \elaborate \symunpack\langle \overline{t: \kappa}, x: \{l_X: \Sigma, \overline{l_{X'}: \Sigma'}\}\rangle = e \symin \sympack\langle \overline{t: \kappa}, x.l_X\rangle_{\exists \overline{t: \kappa}\ldotp \Sigma}}{
+  \infer[\text{M-Dot}]{\Gamma \vdash M.X: \exists \overline{t: \kappa}\ldotp \Sigma \elaborate \symunpack\langle \overline{t: \kappa}, x: \{l_X: \Sigma, \overline{l_{X'}: \Sigma'}\}\rangle = e \symin \sympack\langle \overline{t}, x.l_X\rangle_{\exists \overline{t: \kappa}\ldotp \Sigma}}{
     \Gamma \vdash M: \exists \overline{t: \kappa}\ldotp \{l_X: \Sigma, \overline{l_{X'}: \Sigma'}\} \elaborate e
   }
   \\
@@ -673,5 +687,76 @@ $\fbox{$\Gamma \vdash B: \Xi \elaborate e$}$
 \begin{gather*}
   \infer[\text{B-Val}]{\Gamma \vdash \symval X = E: \{l_X: [\tau]\} \elaborate \{l_X = e\}}{
     \Gamma \vdash E: \tau \elaborate e
+  }
+  \\
+  \infer[\text{B-Typ}]{\Gamma \vdash \symtype X = T: \{l_X: [= \tau: \kappa]\} \elaborate \{l_X = [\tau: \kappa]\}}{
+    \Gamma \vdash T: \kappa \elaborate \tau
+  }
+  \\
+  \infer[\text{B-Mod}]{\Gamma \vdash \symmodule X = M: \exists \overline{t: \kappa}\ldotp \{l_X: \Sigma\} \elaborate \symunpack\langle \overline{t: \kappa}, x: \Sigma\rangle = e \symin \sympack\langle \overline{t}, \{l_X = x\}\rangle_{\exists \overline{t: \kappa}\ldotp \{l_X: \Sigma\}}}{
+    \Gamma \vdash M: \exists \overline{t: \kappa}\ldotp \Sigma \elaborate e
+    &
+    \symNotAtomic(\Sigma)
+  }
+  \\
+  \infer[\text{B-Sig}]{\Gamma \vdash \symsignature X = S: \{l_X: [= \Xi]\} \elaborate \{l_X = [\Xi]\}}{
+    \Gamma \vdash S \elaborate \Xi
+  }
+  \\
+  \infer[\text{B-Incl}]{\Gamma \vdash \syminclude M: \exists \overline{t: \kappa}\ldotp \{\overline{l_X: \Sigma}\} \elaborate e}{
+    \Gamma \vdash M: \exists \overline{t: \kappa}\ldotp \{\overline{l_X: \Sigma}\} \elaborate e
+  }
+  \\
+  \infer[\text{B-Emt}]{\Gamma \vdash \epsilon: \{\} \elaborate \{\}}{}
+  \\
+  \infer[\text{B-Seq}]{
+    \Gamma \vdash B_1; B_2: \exists \overline{t_1: \kappa_1}\; \overline{t_2: \kappa_2}\ldotp \Sigma \elaborate
+    \begin{array}{l}
+      \symunpack\langle \overline{t_1: \kappa_1}, x_1\rangle = e_1 \symin \\
+      \hspace{1em}\symunpack\langle \overline{t_2: \kappa_2}, x_2\rangle = (\lambda \overline{x_{X_1}: \Sigma_1}\ldotp e_2)\; \overline{x_1.l_{X_1}} \symin \\
+      \hspace{2em}\sympack\langle \overline{t_1}\; \overline{t_2}, \{\overline{l'_{X_1} = x_1.l'_{X_1}}, \overline{l_{X_2} = x_2.l_{X_2}}\}\rangle_{
+        \exists \overline{t_1: \kappa_1}\; \overline{t_2: \kappa_2}\ldotp \Sigma
+      }
+    \end{array}
+  }{
+    \begin{array}{lll}
+      \overline{l'_{X_1}} = \overline{l_{X_1}} \rcomplement \overline{l_{X_2}}
+      &
+      \overline{l'_{X_1}: \Sigma'_1} \subseteq \overline{l_{X_1}: \Sigma_1}
+      &
+      \Gamma \vdash B_1: \exists \overline{t_1: \kappa_1}\ldotp \{\overline{l_{X_1}: \Sigma_1}\} \elaborate e_1
+      \\
+      \multicolumn{2}{l}{\Sigma = \{\overline{l'_{X_1}: \Sigma'_1}, \overline{l_{X_2}: \Sigma_2}\}}
+      &
+      \Gamma, \overline{t_1: \kappa_1}, \overline{x_{X_1}: \Sigma_1} \vdash B_2: \exists \overline{t_2: \kappa_2}\ldotp \{\overline{l_{X_2}: \Sigma_2}\} \elaborate e_2
+    \end{array}
+  }
+\end{gather*}
+
+Path:
+
+$\fbox{$\Gamma \vdash P: \Sigma \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{P-Mod}]{\Gamma \vdash P: \Sigma \elaborate \symunpack\langle \overline{t: \kappa}, x\rangle = e \symin x}{
+    \Gamma \vdash P: \exists \overline{t: \kappa}\ldotp \Sigma
+    &
+    \Gamma \vdash \Sigma: \Omega
+  }
+\end{gather*}
+
+$\fbox{$\Gamma \vdash T: \kappa \elaborate \tau$}$
+
+\begin{gather*}
+  \infer[\text{T-Elab-Path}]{\Gamma \vdash P: \kappa \elaborate \tau}{
+    \Gamma \vdash P: [= \tau: \kappa] \elaborate e
+  }
+\end{gather*}
+
+$\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{E-Path}]{\Gamma \vdash P: \tau \elaborate e.\symval}{
+    \Gamma \vdash P: [\tau] \elaborate e
   }
 \end{gather*}
