@@ -28,7 +28,7 @@
   S
   &\BNFassign P &(\text{signature path}) \\
   &\BNFor \{ D \} &(\text{declarations}) \\
-  &\BNFor (X: S) \to S &(\text{functor signature}) \\
+  &\BNFor (X: S) \to S &(\text{(generative) functor signature}) \\
   &\BNFor S \symwhere \symtype \overline{X} = T &(\text{bounded signature}) \\
   D
   &\BNFassign \symval X: T &(\text{value declaration}) \\
@@ -808,5 +808,90 @@ $\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
 \begin{align*}
   S
   &\BNFassign \cdots \\
-  &\BNFor (X: S) \Rightarrow S
+  &\BNFor (X: S) \Rightarrow S &(\text{applicative functor signature})
 \end{align*}
+
+\newcommand*{\symP}{\mathrm{P}}
+\newcommand*{\symI}{\mathrm{I}}
+
+\begin{align*}
+  \varphi
+  &\BNFassign \symI &(\text{impure effect}) \\
+  &\BNFor \symP &(\text{pure effect}) \\
+  \Sigma
+  &\BNFassign \cdots \\
+  &\BNFor \{\overline{l_X: \Sigma}\} \\
+  &\BNFor \forall \overline{t: \kappa}\ldotp \Sigma \to_\symI \Xi &(\text{generative functor signature}) \\
+  &\BNFor \forall \overline{t: \kappa}\ldotp \Sigma \to_\symP \Sigma &(\text{applicative functor signature})
+\end{align*}
+
+Abbreviation:
+
+\begin{align*}
+  \tau_1 \to_\varphi \tau_2 &\defrel{=} \tau_1 \to \{l_\varphi: \tau_2\} \\
+  \lambda_\varphi x: \tau\ldotp e &\defrel{=} \lambda x: \tau\ldotp \{l_\varphi = e\} \\
+  (e_1\; e_2)_\varphi &\defrel{=} (e_1\; e_2).l_\varphi
+\end{align*}
+
+Effect combining:
+
+$\fbox{$\varphi_1 \lor \varphi_2 = \varphi$}$
+
+\begin{gather*}
+  \infer{\varphi \lor \varphi = \varphi}{}
+  \hspace{2em}
+  \infer{\symI \lor \symP = \symI}{}
+  \hspace{2em}
+  \infer{\symP \lor \symI = \symI}{}
+\end{gather*}
+
+Subeffects:
+
+$\fbox{$\varphi_1 \leq \varphi_2$}$
+
+\begin{gather*}
+  \textcolor{red}{
+  \infer[\text{F-Refl}]{\varphi \leq \varphi}{}
+  \hspace{2em}
+  \infer[\text{F-Sub}]{\symP \leq \symI}{}
+  }
+\end{gather*}
+
+Signature:
+
+$\fbox{$\Gamma \vdash S \elaborate \Xi$}$
+
+\begin{gather*}
+  \infer[\text{S-Funct\textcolor{red}{-I}}]{\Gamma \vdash (X: S_1) \to S_2 \elaborate \forall \overline{t_1: \kappa_1}\ldotp \Sigma \to_{\textcolor{red}{\symI}} \Xi}{
+    \Gamma \vdash S_1 \elaborate \exists \overline{t_1: \kappa_1}\ldotp \Sigma
+    &
+    \Gamma, \overline{t_1: \kappa_1}, x_X: \Sigma \vdash S_2 \elaborate \Xi
+  }
+  \\
+  \infer[\text{S-Funct\textcolor{red}{-P}}]{\Gamma \vdash (X: S_1) \mathrel{\textcolor{red}{\Rightarrow}} S_2 \elaborate \textcolor{red}{\exists \overline{t_2': \overline{\kappa_1} \to \kappa_2}\ldotp} \forall \overline{t_1: \kappa_1}\ldotp \Sigma_1 \to_{\textcolor{red}{\symP}} \textcolor{red}{\Sigma_2[t_2 \assign t_2'\; \overline{t_1}]}}{
+    \Gamma \vdash S_1 \elaborate \exists \overline{t_1: \kappa_1}\ldotp \Sigma_1
+    &
+    \Gamma, \overline{t_1: \kappa_1}, x_X: \Sigma_1 \vdash S_2 \elaborate \textcolor{red}{\exists \overline{t_2: \kappa_2}\ldotp \Sigma_2}
+  }
+\end{gather*}
+
+Subtyping:
+
+$\fbox{$\Gamma \vdash \Xi_1 \leq \Xi_2 \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{U-Funct}]{
+    \Gamma \vdash (\forall \overline{t_1: \kappa_1}\ldotp \Sigma_1 \to_{\textcolor{red}{\varphi_1}} \Xi_1) \leq (\forall \overline{t_2: \kappa_2}\ldotp \Sigma_2 \to_{\textcolor{red}{\varphi_2}} \Xi_2) \elaborate
+    \begin{array}{l}
+      \lambda x_1: (\forall \overline{t_1: \kappa_1}\ldotp \Sigma_1 \to_{\textcolor{red}{\varphi_1}} \Xi_1)\ldotp \\
+      \hspace{1em}\Lambda \overline{t_2: \kappa_2}\ldotp \lambda_{\textcolor{red}{\varphi_2}} x_2: \Sigma_2\ldotp
+      e_2\; (x_1\; \overline{\tau}\; (e_1\; x_2))_{\textcolor{red}{\varphi_1}}
+    \end{array}
+  }{
+    \Gamma, \overline{t_2: \kappa_2} \vdash \Sigma_2 \leq \exists \overline{t_1: \kappa_1}\ldotp \Sigma_1 \uparrow \overline{\tau} \elaborate e_1
+    &
+    \Gamma, \overline{t_2: \kappa_2} \vdash \Xi_1[\overline{t_1 \assign \tau}] \leq \Xi_2 \elaborate e_2
+    &
+    \textcolor{red}{\varphi_1 \leq \varphi_2}
+  }
+\end{gather*}
