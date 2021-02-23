@@ -753,7 +753,7 @@ $\fbox{$\Gamma \vdash B: \Xi \elaborate e$}$
     \Gamma \vdash B_1; B_2: \exists \overline{t_1: \kappa_1}\; \overline{t_2: \kappa_2}\ldotp \Sigma \elaborate
     \begin{array}{l}
       \symunpack\langle \overline{t_1: \kappa_1}, x_1\rangle = e_1 \symin \\
-      \hspace{1em}\symunpack\langle \overline{t_2: \kappa_2}, x_2\rangle = (\symlet \overline{x_{X_1}: \Sigma_1}= \overline{x_1.l_{X_1}} \symin e_2) \symin \\
+      \hspace{1em}\symunpack\langle \overline{t_2: \kappa_2}, x_2\rangle = (\symlet \overline{x_{X_1}: \Sigma_1 = x_1.l_{X_1}} \symin e_2) \symin \\
       \hspace{2em}\sympack\langle \overline{t_1}\; \overline{t_2}, \{\overline{l'_{X_1} = x_1.l'_{X_1}}, \overline{l_{X_2} = x_2.l_{X_2}}\}\rangle_{
         \exists \overline{t_1: \kappa_1}\; \overline{t_2: \kappa_2}\ldotp \Sigma
       }
@@ -830,7 +830,31 @@ Abbreviation:
 \begin{align*}
   \tau_1 \to_\varphi \tau_2 &\defrel{=} \tau_1 \to \{l_\varphi: \tau_2\} \\
   \lambda_\varphi x: \tau\ldotp e &\defrel{=} \lambda x: \tau\ldotp \{l_\varphi = e\} \\
-  (e_1\; e_2)_\varphi &\defrel{=} (e_1\; e_2).l_\varphi
+  (e_1\; e_2)_\varphi &\defrel{=} (e_1\; e_2).l_\varphi \\
+  \Gamma^\varphi &\defrel{=} \left\{\begin{array}{ll}
+    \cdot &(\varphi = \symI) \\
+    \Gamma &(\varphi = \symP)
+  \end{array}\right. \\
+  \typeenv(\Gamma) &\defrel{=} \left\{\begin{array}{ll}
+    \typeenv(\Gamma')\; t: \kappa &(\Gamma = \Gamma', t: \kappa) \\
+    \typeenv(\Gamma') &(\Gamma = \Gamma', x: \tau) \\
+    \epsilon &(\Gamma = \cdot)
+  \end{array}\right. \\
+  \forall_\symP \Gamma\ldotp \tau_0 &\defrel{=} \left\{\begin{array}{ll}
+    \forall_\symP \Gamma'\ldotp \forall t: \kappa\ldotp \tau_0 &(\Gamma = \Gamma', t: \kappa) \\
+    \forall_\symP \Gamma'\ldotp \tau \to_\symP \tau_0 &(\Gamma = \Gamma', x: \tau) \\
+    \tau_0 &(\Gamma = \cdot)
+  \end{array}\right. \\
+  \Lambda_\symP \Gamma\ldotp e &\defrel{=} \left\{\begin{array}{ll}
+    \Lambda_\symP \Gamma'\ldotp \Lambda t: \kappa\ldotp e &(\Gamma = \Gamma', t: \kappa) \\
+    \Lambda_\symP \Gamma'\ldotp \lambda_\symP x: \tau\ldotp e &(\Gamma = \Gamma', x: \tau) \\
+    e &(\Gamma = \cdot)
+  \end{array}\right. \\
+  (e\; \Gamma)_\symP &\defrel{=} \left\{\begin{array}{ll}
+    (e\; \Gamma')_\symP\; t &(\Gamma = \Gamma', t: \kappa) \\
+    ((e\; \Gamma')_\symP\; x)_\symP &(\Gamma = \Gamma', x: \tau) \\
+    e &(\Gamma = \cdot)
+  \end{array}\right.
 \end{align*}
 
 Effect combining:
@@ -850,11 +874,9 @@ Subeffects:
 $\fbox{$\varphi_1 \leq \varphi_2$}$
 
 \begin{gather*}
-  \textcolor{red}{
   \infer[\text{F-Refl}]{\varphi \leq \varphi}{}
   \hspace{2em}
   \infer[\text{F-Sub}]{\symP \leq \symI}{}
-  }
 \end{gather*}
 
 Signature:
@@ -893,5 +915,125 @@ $\fbox{$\Gamma \vdash \Xi_1 \leq \Xi_2 \elaborate e$}$
     \Gamma, \overline{t_2: \kappa_2} \vdash \Xi_1[\overline{t_1 \assign \tau}] \leq \Xi_2 \elaborate e_2
     &
     \textcolor{red}{\varphi_1 \leq \varphi_2}
+  }
+\end{gather*}
+
+Module:
+
+$\fbox{$\Gamma \vdash M:_{\textcolor{red}{\varphi}} \Xi \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{M-Var}]{\Gamma \vdash X:_{\textcolor{red}{\symP}} \Sigma \elaborate \textcolor{red}{\Lambda_\symP \Gamma\ldotp} x_X}{
+    \Gamma(x_X) = \Sigma
+  }
+  \\
+  \infer[\text{M-Struct}]{\Gamma \vdash \{B\}:_{\textcolor{red}{\varphi}} \Xi \elaborate e}{
+    \Gamma \vdash B:_{\textcolor{red}{\varphi}} \Xi \elaborate e
+  }
+  \\
+  \infer[\text{M-Dot}]{\Gamma \vdash M.X:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \Sigma \elaborate \symunpack\langle \overline{t: \kappa}, x\rangle = e \symin \sympack\langle \overline{t},\textcolor{red}{\Lambda_\symP \Gamma^\varphi\ldotp (}x\; \textcolor{red}{\Gamma^\varphi)_\symP} .l_X\rangle}{
+    \Gamma \vdash M:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \{l_X: \Sigma, \overline{l_{X'}: \Sigma'}\} \elaborate e
+  }
+  \\
+  \infer[\text{M-Funct\textcolor{red}{-I}}]{\Gamma \vdash \symfun X: S \Rightarrow M:_{\textcolor{red}{\symP}} \forall \overline{t: \kappa}\ldotp \Sigma \to_{\textcolor{red}{\symI}} \Xi \elaborate \textcolor{red}{\Lambda_\symP \Gamma\ldotp} \Lambda \overline{t: \kappa}\ldotp \lambda_{\textcolor{red}{\symI}} x_X: \Sigma\ldotp e}{
+    \Sigma \vdash S \elaborate \exists \overline{t: \kappa}\ldotp \Sigma
+    &
+    \Gamma, \overline{t: \kappa}, x_X: \Sigma \vdash M:_{\textcolor{red}{\symI}} \Xi \elaborate e
+  }
+  \\
+  \infer[\text{M-Funct\textcolor{red}{-P}}]{\Gamma \vdash \symfun X: S \Rightarrow M:_{\textcolor{red}{\symP}} \textcolor{red}{\exists \overline{t_2: \kappa_2}\ldotp} \forall \overline{t: \kappa}\ldotp \Sigma \to_{\textcolor{red}{\symP}} \textcolor{red}{\Sigma_2} \elaborate e}{
+    \Sigma \vdash S \elaborate \exists \overline{t: \kappa}\ldotp \Sigma
+    &
+    \Gamma, \overline{t: \kappa}, x_X: \Sigma \vdash M:_{\textcolor{red}{\symP}} \textcolor{red}{\exists \overline{t_2: \kappa_2}\ldotp \Sigma_2} \elaborate e
+  }
+  \\
+  \infer[\text{M-App}]{\Gamma \vdash X_1\; X_2:_{\textcolor{red}{\varphi}} \Xi[\overline{t \assign \tau}] \elaborate \textcolor{red}{\Lambda_\symP \Gamma^\varphi\ldotp (} x_{X_1}\; \overline{\tau}\; (e\; x_{X_2})\textcolor{red}{)_\varphi}}{
+    \Gamma(x_{X_1}) = \forall \overline{t: \kappa}\ldotp \Sigma' \to_{\textcolor{red}{\varphi}} \Xi
+    &
+    \Gamma(x_{X_2}) = \Sigma
+    &
+    \Gamma \vdash \Sigma \leq \exists\overline{t: \kappa}\ldotp \Sigma' \uparrow \overline{\tau} \elaborate e
+  }
+  \\
+  \infer[\text{M-Seal}]{\Gamma \vdash X :> S:_{\textcolor{red}{\symP}} \exists \overline{t\textcolor{red}{'}: \textcolor{red}{\overline{t_\Gamma: \kappa_\Gamma} \to}\; \kappa}\ldotp \Sigma'\textcolor{red}{[t \assign t'\; \overline{t_\Gamma}]} \elaborate \sympack\langle \overline{\textcolor{red}{\lambda \overline{t_\Gamma: \kappa_\Gamma}\ldotp} \tau}, \textcolor{red}{\Lambda_\symP \Gamma\ldotp} e\; x_X\rangle}{
+    \textcolor{red}{\overline{t_\Gamma: \kappa_\Gamma} = \typeenv(\Gamma)}
+    &
+    \Gamma(x_X) = \Sigma
+    &
+    \Gamma \vdash S \elaborate \exists \overline{t: \kappa}\ldotp \Sigma'
+    &
+    \Gamma \vdash \Sigma \leq \exists \overline{t: \kappa}\ldotp \Sigma' \uparrow \overline{\tau} \elaborate e
+  }
+\end{gather*}
+
+\begin{theorem}[Typing for module elaboration]
+  \hwordspace{}
+  \begin{itemize}
+    \item $\Gamma \vdash M:_\symI \Xi \elaborate e$ ならば，$\Gamma \vdash e: \Xi$．
+    \item $\Gamma \vdash M:_\symP \exists \overline{t: \kappa}\ldotp \Sigma \elaborate e$ ならば，$\cdot \vdash e: \exists \overline{t: \kappa}\ldotp \forall_\symP \Gamma\ldotp \Sigma$．
+  \end{itemize}
+\end{theorem}
+
+Bindings:
+
+$\fbox{$\Gamma \vdash B:_{\textcolor{red}{\varphi}} \Xi \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{B-Val}]{\Gamma \vdash \symval X = E:_{\textcolor{red}{\symP}} \{l_X: [\tau]\} \elaborate \textcolor{red}{\Lambda_\symP \Gamma\ldotp} \{l_X = e\}}{
+    \Gamma \vdash E: \tau \elaborate e
+  }
+  \\
+  \infer[\text{B-Typ}]{\Gamma \vdash \symtype X = T:_{\textcolor{red}{\symP}} \{l_X: [= \tau: \kappa]\} \elaborate \textcolor{red}{\Lambda_\symP \Gamma\ldotp} \{l_X = [\tau: \kappa]\}}{
+    \Gamma \vdash T: \kappa \elaborate \tau
+  }
+  \\
+  \infer[\text{B-Mod}]{\Gamma \vdash \symmodule X = M:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \{l_X: \Sigma\} \elaborate \symunpack\langle \overline{t: \kappa}, x\rangle = e \symin \sympack\langle \overline{t}, \textcolor{red}{\Lambda_\symP \Gamma^\varphi\ldotp} \{l_X = x\; \textcolor{red}{\Gamma^\varphi}\}\rangle}{
+    \Gamma \vdash M:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \Sigma \elaborate e
+    &
+    \symNotAtomic(\Sigma)
+  }
+  \\
+  \infer[\text{B-Sig}]{\Gamma \vdash \symsignature X = S:_{\textcolor{red}{\symP}} \{l_X: [= \Xi]\} \elaborate \textcolor{red}{\Lambda_\symP \Gamma\ldotp} \{l_X = [\Xi]\}}{
+    \Gamma \vdash S \elaborate \Xi
+  }
+  \\
+  \infer[\text{B-Incl}]{\Gamma \vdash \syminclude M:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \{\overline{l_X: \Sigma}\} \elaborate e}{
+    \Gamma \vdash M:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \{\overline{l_X: \Sigma}\} \elaborate e
+  }
+  \\
+  \infer[\text{B-Emt}]{\Gamma \vdash \epsilon:_{\textcolor{red}{\symP}} \{\} \elaborate \textcolor{red}{\Lambda_\symP \Gamma\ldotp} \{\}}{}
+  \\
+  \infer[\text{B-Seq}]{
+    \begin{array}{l}
+      \Gamma \vdash B_1; B_2:_{\textcolor{red}{\varphi_1 \lor \varphi_2}} \exists \overline{t_1: \kappa_1}\; \overline{t_2: \kappa_2}\ldotp \Sigma \\
+      \hspace{1em}\elaborate \symunpack\langle \overline{t_1: \kappa_1}, x_1\rangle = e_1 \symin \\
+      \hspace{3em}\symunpack\langle \overline{t_2: \kappa_2}, x_2\rangle = (\symlet \overline{x_{X_1} = \textcolor{red}{\Lambda_\symP \Gamma^{\varphi_1 \lor \varphi_2}\ldotp (}x_1\; \textcolor{red}{\Gamma^{\varphi_1})_\symP}.l_{X_1}} \symin e_2) \symin \\
+      \hspace{4em}\sympack\langle \overline{t_1}\; \overline{t_2}, \textcolor{red}{\Lambda_\symP \Gamma^{\varphi_1 \lor \varphi_2}\ldotp \symlet \overline{x_{X_1} = (x_1\; \Gamma^{\varphi_1})_\symP.l_{X_1}} \symin} \\
+      \hspace{5em}\{\overline{l'_{X_1} = \textcolor{red}{(} x_1\; \textcolor{red}{\Gamma^{\varphi_1})_\symP}.l'_{X_1}}, \overline{l_{X_2} = \textcolor{red}{(} x_2\; \textcolor{red}{(\Gamma, \overline{t_1: \kappa_1}, \overline{x_{X_1}: \Sigma_1})^{\varphi_2})_\symP}.l_{X_2}}\}\rangle
+    \end{array}
+  }{
+    \begin{array}{lll}
+      \overline{l'_{X_1}} = \overline{l_{X_1}} \rcomplement \overline{l_{X_2}}
+      &
+      \overline{l'_{X_1}: \Sigma'_1} \subseteq \overline{l_{X_1}: \Sigma_1}
+      &
+      \Gamma \vdash B_1:_{\textcolor{red}{\varphi_1}} \exists \overline{t_1: \kappa_1}\ldotp \{\overline{l_{X_1}: \Sigma_1}\} \elaborate e_1
+      \\
+      \multicolumn{2}{l}{\Sigma = \{\overline{l'_{X_1}: \Sigma'_1}, \overline{l_{X_2}: \Sigma_2}\}}
+      &
+      \Gamma, \overline{t_1: \kappa_1}, \overline{x_{X_1}: \Sigma_1} \vdash B_2:_{\textcolor{red}{\varphi_2}} \exists \overline{t_2: \kappa_2}\ldotp \{\overline{l_{X_2}: \Sigma_2}\} \elaborate e_2
+    \end{array}
+  }
+\end{gather*}
+
+Path:
+
+$\fbox{$\Gamma \vdash P: \Sigma \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{P-Mod}]{\Gamma \vdash P: \Sigma \elaborate \symunpack\langle \overline{t: \kappa}, x\rangle = e \symin \textcolor{red}{(}x\; \textcolor{red}{\Gamma^\varphi)_\symP}}{
+    \Gamma \vdash P:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \Sigma
+    &
+    \Gamma \vdash \Sigma: \Omega
   }
 \end{gather*}
