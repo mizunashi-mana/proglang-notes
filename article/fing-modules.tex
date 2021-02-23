@@ -803,6 +803,101 @@ $\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
 
 \subsection{Modules as First-Class Values}
 
+\begin{align*}
+  T &\BNFassign \cdots \mid \sympack S \\
+  E &\BNFassign \cdots \mid \sympack M: S \\
+  M &\BNFassign \cdots \mid \symunpack E: S
+\end{align*}
+
+Rootedness:
+
+$\fbox{$t: \kappa \symrooted\, \symin \Sigma \symat \overline{l_X}$}$
+
+\begin{gather*}
+  \infer{t: \kappa \symrooted\, \symin [= \tau: \kappa] \symat \epsilon}{
+    t = \tau'
+  }
+  \hspace{2em}
+  \infer{t: \kappa \symrooted\, \symin \{\overline{l_X: \Sigma}\} \symat l\; \overline{l'}}{
+    t: \kappa \symrooted\, \symin \{\overline{l_X: \Sigma}\}.l \symat \overline{l'}
+  }
+\end{gather*}
+
+Rooted ordering:
+
+\begin{align*}
+  t_1: \kappa_1 \leq_\Sigma t_2: \kappa_2 \iff
+  \min\{\overline{l} \mid t_1: \kappa_1 \symrooted\, \symin \Sigma \symat \overline{l}\} \leq \min\{\overline{l} \mid t_2: \kappa_2 \symrooted\, \symin \Sigma \symat \overline{l}\}
+\end{align*}
+
+Signature normalization:
+
+\begin{gather*}
+  \infer{\symnorm([\tau]) = [\tau']}{
+    \symnorm_0(\tau) = \tau'
+  }
+  \\
+  \infer{\symnorm([= \tau: \kappa]) = [= \tau: \kappa]}{}
+  \\
+  \infer{\symnorm([= \Xi]) = [= \Xi']}{
+    \symnorm(\Xi) = \Xi'
+  }
+  \\
+  \infer{\symnorm(\{\overline{l_X: \Sigma_X}\}) = \{\overline{l_X: \Sigma_X'}\}}{
+    \bigwedge_X \symnorm(\Sigma_X) = \Sigma_X'
+  }
+  \\
+  \infer{\symnorm(\forall \overline{t: \kappa}\ldotp \Sigma \to \Xi) = \forall \overline{t': \kappa'}\ldotp \Sigma' \to \Xi'}{
+    \symsort_{\leq_{\Sigma'}}(\overline{t: \kappa}) = \overline{t': \kappa'}
+    &
+    \symnorm(\Sigma) = \Sigma'
+    &
+    \symnorm(\Xi) = \Xi'
+  }
+  \\
+  \infer{\symnorm(\exists \overline{t: \kappa}\ldotp \Sigma) = \exists \overline{t': \kappa'}\ldotp \Sigma'}{
+    \symsort_{\leq_{\Sigma'}}(\overline{t: \kappa}) = \overline{t': \kappa'}
+    &
+    \symnorm(\Sigma) = \Sigma'
+  }
+\end{gather*}
+
+Type:
+
+$\fbox{$\Gamma \vdash T: \kappa \elaborate \tau$}$
+
+\begin{gather*}
+  \infer[\text{T-Pack}]{\Gamma \vdash \sympack S: \Omega \elaborate \symnorm(\Xi)}{
+    \Gamma \vdash S \elaborate \Xi
+  }
+\end{gather*}
+
+Expression:
+
+$\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{E-Pack}]{\Gamma \vdash (\sympack M: S): \symnorm(\Xi) \elaborate e_1\; e_2}{
+    \Gamma \vdash S \elaborate \Xi
+    &
+    \Gamma \vdash \Xi' \leq \symnorm(\Xi) \elaborate e_1
+    &
+    \Gamma \vdash M: \Xi' \elaborate e_2
+  }
+\end{gather*}
+
+Module:
+
+$\fbox{$\Gamma \vdash M: \Xi \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{M-Unpack}]{\Gamma \vdash (\symunpack E: S): \symnorm(\Xi) \elaborate e}{
+    \Gamma \vdash S \elaborate \Xi
+    &
+    \Gamma \vdash E: \symnorm(\Xi) \elaborate e
+  }
+\end{gather*}
+
 \subsection{Elaboration with Applicative Functor}
 
 \begin{align*}
