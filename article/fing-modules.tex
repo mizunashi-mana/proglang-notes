@@ -1059,6 +1059,12 @@ $\fbox{$\Gamma \vdash M:_{\textcolor{red}{\varphi}} \Xi \elaborate e$}$
     &
     \Gamma \vdash \Sigma \leq \exists \overline{t: \kappa}\ldotp \Sigma' \uparrow \overline{\tau} \elaborate e
   }
+  \\
+  \infer[\text{M-Unpack}]{\Gamma \vdash (\symunpack E: S):_{\textcolor{red}{\symI}} \symnorm(\Xi) \elaborate e}{
+    \Gamma \vdash S \elaborate \Xi
+    &
+    \Gamma \vdash E: \symnorm(\Xi) \elaborate e
+  }
 \end{gather*}
 
 \begin{theorem}[Typing for module elaboration]
@@ -1130,5 +1136,19 @@ $\fbox{$\Gamma \vdash P: \Sigma \elaborate e$}$
     \Gamma \vdash P:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \Sigma
     &
     \Gamma \vdash \Sigma: \Omega
+  }
+\end{gather*}
+
+Expression:
+
+$\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{E-Unpack}]{\Gamma \vdash (\sympack M: S): \symnorm(\Xi) \elaborate e_1\; \textcolor{red}{(\symunpack\langle \overline{t: \kappa}, x\rangle =}\; e_2 \;\textcolor{red}{\symin \sympack\langle \overline{t: \kappa}, (x\; \Gamma^\varphi)_\symP\rangle)}}{
+    \Gamma \vdash S \elaborate \Xi
+    &
+    \Gamma \vdash \exists \overline{t: \kappa}\ldotp \Sigma \leq \symnorm(\Xi) \elaborate e_1
+    &
+    \Gamma \vdash M:_{\textcolor{red}{\varphi}} \exists \overline{t: \kappa}\ldotp \Sigma \elaborate e_2
   }
 \end{gather*}

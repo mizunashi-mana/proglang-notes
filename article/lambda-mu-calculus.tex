@@ -1,1 +1,131 @@
 \section{WIP: λμ-Calculus}
+
+Alias: λμ
+
+\subsection{Syntax}
+
+\begin{align*}
+  \tau
+  &\BNFassign t &(\text{type variable}) \\
+  &\BNFor \top &(\text{top type}) \\
+  &\BNFor \tau \multi \tau &(\text{product type}) \\
+  &\BNFor \tau \to \tau &(\text{function type}) \\
+  &\BNFor \bot &(\text{bottom type}) \\
+  e
+  &\BNFassign x &(\text{variable}) \\
+  &\BNFor \langle\rangle &(\text{top value}) \\
+  &\BNFor \langle e, e\rangle &(\text{product}) \\
+  &\BNFor \pi_1 e &(\text{left projection}) \\
+  &\BNFor \pi_2 e &(\text{right projection}) \\
+  &\BNFor \lambda x: \tau\ldotp e &(\text{abstraction}) \\
+  &\BNFor e\; e &(\text{application}) \\
+  &\BNFor [\alpha]\; e &(\text{naming}) \\
+  &\BNFor \mu \alpha: A\ldotp e &(\text{un-naming}) \\
+  \Gamma
+  &\BNFassign \cdot \\
+  &\BNFor \Gamma, x: \tau \\
+  \Delta
+  &\BNFassign \cdot \\
+  &\BNFor \alpha: \tau, \Delta
+\end{align*}
+
+Environment Reference:
+
+$\fbox{$\Gamma(x) = \tau$}$
+
+\begin{gather*}
+  \infer{(\Gamma, x': \tau)(x) = \tau}{
+    x = x'
+  }
+  \hspace{2em}
+  \infer{(\Gamma, x': \tau')(x) = \tau}{
+    x \neq x'
+    &
+    \Gamma(x) = \tau
+  }
+\end{gather*}
+
+$\fbox{$\Delta(\alpha) = \tau$}$
+
+\begin{gather*}
+  \infer{(\alpha': \tau, \Delta)(\alpha) = \tau}{
+    \alpha = \alpha'
+  }
+  \hspace{2em}
+  \infer{(\alpha': \tau', \Delta)(\alpha) = \tau}{
+    \alpha \neq \alpha'
+    &
+    \Delta(\alpha) = \tau
+  }
+\end{gather*}
+
+\subsection{Typing Semantics}
+
+$\fbox{$\Gamma \vdash e: \tau \mid \Delta$}$
+
+\begin{gather*}
+  \infer[\text{T-Var}]{\Gamma \vdash x: \tau \mid \Delta}{
+    \Gamma(x) = \tau
+  }
+  \\
+  \infer[\text{T-Top}]{\Gamma \vdash \langle\rangle: \top \mid \Delta}{}
+  \\
+  \infer[\text{T-Product}]{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \times \tau_2 \mid \Delta}{
+    \Gamma \vdash e_1: \tau_1 \mid \Delta
+    &
+    \Gamma \vdash e_2: \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{T-Proj-1}]{\Gamma \vdash \pi_1 e: \tau_1 \mid \Delta}{
+    \Gamma \vdash e: \tau_1 \times \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{T-Proj-2}]{\Gamma \vdash \pi_2 e: \tau_2 \mid \Delta}{
+    \Gamma \vdash e: \tau_1 \times \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{T-Abs}]{\Gamma \vdash \lambda x: \tau_1\ldotp e: \tau_1 \to \tau_2 \mid \Delta}{
+    \Gamma, x: \tau_1 \vdash e: \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{T-App}]{\Gamma \vdash e_1\; e_2: \tau \mid \Delta}{
+    \Gamma \vdash e_1: \tau_2 \to \tau \mid \Delta
+    &
+    \Gamma \vdash e_2: \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{T-Name}]{\Gamma \vdash [\alpha]\; e: \bot \mid \Delta}{
+    \Delta(\alpha) = \tau
+    &
+    \Gamma \vdash e: \tau \mid \Delta
+  }
+  \\
+  \infer[\text{T-Unname}]{\Gamma \vdash \mu \alpha: \tau\ldotp e: \tau \mid \Delta}{
+    \Gamma \vdash e: \bot \mid \alpha: \tau, \Delta
+  }
+\end{gather*}
+
+\subsection{Evaluation Semantics}
+
+Big Step:
+
+$\fbox{$e \bigeval v$}$
+
+\subsection{Elaboration (Call-By-Name)}
+
+$\fbox{$\Gamma \vdash e: \tau \mid \Delta \elaborate e'$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash x_0: \tau \mid \Delta \elaborate \lambda x_k: K_\tau\ldotp x_{x_0}\; x_k}{}
+  \\
+  \infer{\Gamma \vdash \langle\rangle: \top \mid \Delta \elaborate \lambda x_k: \bot\ldotp \symcase x_k\; \{\}}{}
+  \\
+  \infer{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \times \tau_2 \mid \Delta \elaborate \lambda x_k: K_{\tau_1} \plus K_{\tau_2}\ldotp \symcase x_k\; \{x_{k_1}\ldotp e_1'\; x_{k_1} \mid x_{k_2}\ldotp e_2'\; x_{k_2}\}}{
+    \Gamma \vdash e_1: \tau_1 \mid \Delta \elaborate e_1'
+    &
+    \Gamma \vdash e_2: \tau_2 \mid \Delta \elaborate e_2'
+  }
+\end{gather*}
+
+\subsection{Elaboration (Call-By-Value)}
+
