@@ -1,4 +1,4 @@
-\section{WIP: λμ-Calculus}
+\section{λμ-Calculus}
 
 Alias: λμ
 
@@ -105,12 +105,6 @@ $\fbox{$\Gamma \vdash e: \tau \mid \Delta$}$
   }
 \end{gather*}
 
-\subsection{Evaluation Semantics (Call-By-Value)}
-
-Big Step:
-
-$\fbox{$e \bigeval v$}$
-
 \subsection{Equivalence}
 
 $\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau \mid \Delta$}$
@@ -177,29 +171,120 @@ $\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau \mid \Delta$}$
   }
 \end{gather*}
 
+\subsection{Elaboration (Call-By-Value)}
+
+$\fbox{$\Gamma \vdash e: \tau \elaborate e'$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash x_0: \tau \elaborate \lambda x_k: K_\tau\ldotp x_k\; x_{x_0}}{
+    \Gamma(x_{x_0}) = V_\tau
+  }
+  \\
+  \infer{\Gamma \vdash \langle\rangle: \top \elaborate \lambda x_k: K_\top\ldotp x_k\; \langle\rangle}{}
+  \\
+  \infer{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \multi \tau_2 \elaborate \lambda x_k: K_{\tau_1 \multi \tau_2}\ldotp e_1'\; (\lambda x_1: V_{\tau_1}\ldotp e_2'\; (\lambda x_2: V_{\tau_2}\ldotp x_k\; \langle x_1, x_2\rangle))}{
+    \Gamma \vdash e_1: \tau_1 \elaborate e_1'
+    &
+    \Gamma \vdash e_2: \tau_2 \elaborate e_2'
+  }
+  \\
+  \infer{\Gamma \vdash \pi_1 e: \tau_1 \elaborate \lambda x_k: K_{\tau_1}\ldotp e'\; (\lambda x: V_{\tau_1} \multi V_{\tau_2}\ldotp x_k\; (\pi_1 x))}{
+    \Gamma \vdash e: \tau_1 \multi \tau_2 \elaborate e'
+  }
+  \\
+  \infer{\Gamma \vdash \pi_2 e: \tau_2 \elaborate \lambda x_k: K_{\tau_2}\ldotp e'\; (\lambda x: V_{\tau_1} \multi V_{\tau_2}\ldotp x_k\; (\pi_2 x))}{
+    \Gamma \vdash e: \tau_1 \multi \tau_2 \elaborate e'
+  }
+  \\
+  \infer{\Gamma \vdash (\lambda x_0: \tau_1\ldotp e): \tau_1 \to \tau_2 \elaborate \lambda x_k: K_{\tau_1 \to \tau_2}\ldotp x_k\; (\lambda x: V_{\tau_1} \multi K_{\tau_2}\ldotp (\lambda x_{x_0}: V_{\tau_1}\ldotp e')\; (\pi_1 x)\; (\pi_2 x))}{
+    \Gamma, x_{x_0}: V_{\tau_1} \vdash e: \tau_2 \elaborate e'
+  }
+  \\
+  \infer{\Gamma \vdash e_1\; e_2: \tau \elaborate \lambda x_k: K_{\tau}\ldotp e_1'\; (\lambda x_1: V_{\tau_2 \to \tau}\ldotp e_2'\; (\lambda x_2: V_{\tau_2}\ldotp x_1\; \langle x_2, x_k\rangle))}{
+    \Gamma \vdash e_1: \tau_2 \to \tau \elaborate e_1'
+    &
+    \Gamma \vdash e_2: \tau_2 \elaborate e_2'
+  }
+  \\
+  \infer{\Gamma \vdash (\mu \alpha: \tau\ldotp e): \tau \elaborate \lambda x_\alpha: K_\tau\ldotp e'\; (\lambda x: \bot\ldotp \symcase x\; \{\})}{
+    \Gamma, x_\alpha: K_\tau \vdash e: \bot \elaborate e'
+  }
+  \\
+  \infer{\Gamma \vdash [\alpha] e: \tau \elaborate \lambda x_k: K_\bot\ldotp e'\; x_\alpha}{
+    \Gamma(x_\alpha) = K_\tau
+    &
+    \Gamma \vdash e: \tau \elaborate e'
+  }
+\end{gather*}
+
+$\fbox{$V_\tau = \tau'$}$
+
+\begin{gather*}
+  \infer{V_\top = \top}{}
+  \\
+  \infer{V_{\tau_1 \multi \tau_2} = V_{\tau_1'} \multi V_{\tau_2'}}{
+    V_{\tau_1} = \tau_1'
+    &
+    V_{\tau_2} = \tau_2'
+  }
+  \\
+  \infer{V_{\tau_1 \to \tau_2} = \tau_1' \multi \tau_2' \to R}{
+    V_{\tau_1} = \tau_1'
+    &
+    K_{\tau_2} = \tau_2'
+  }
+  \\
+  \infer{V_\bot = \bot}{}
+\end{gather*}
+
+Abbreviation:
+
+\begin{align*}
+  K_\tau &\defrel{=} V_\tau \to R \\
+  C_\tau &\defrel{=} K_\tau \to R
+\end{align*}
+
+\begin{theorem}
+  $\Gamma \vdash e: \tau \elaborate e'$ ならば，$\Gamma \vdash e': C_\tau$．
+\end{theorem}
+
+\begin{theorem}
+  $\Gamma \vdash e: \tau \mid \Delta \iff V(\Gamma), K(\Delta) \vdash e: \tau \elaborate e'$．ただし，
+  \begin{align*}
+    V(\Gamma) &\defrel{=} \left\{\begin{array}{ll}
+      V(\Gamma'), x_{x'}: V_{\tau'} &(\Gamma = \Gamma', x': \tau') \\
+      \cdot &(\Gamma = \cdot)
+    \end{array}\right. \\
+    K(\Delta) &\defrel{=} \left\{\begin{array}{ll}
+      x_\alpha: K_\tau, K(\Delta') &(\Delta = \alpha: \tau, \Delta') \\
+      \cdot &(\Delta = \cdot)
+    \end{array}\right. \text{．}
+  \end{align*}
+\end{theorem}
+
 \subsection{Elaboration (Call-By-Name)}
 
 $\fbox{$\Gamma \vdash e: \tau \elaborate e'$}$
 
 \begin{gather*}
   \infer{\Gamma \vdash x_0: \tau \elaborate \lambda x_k: K_\tau\ldotp x_{x_0}\; x_k}{
-    \Gamma(x_{x_0}) = K_\tau \to R
+    \Gamma(x_{x_0}) = C_\tau
   }
   \\
   \infer{\Gamma \vdash \langle\rangle: \top \elaborate \lambda x_k: \bot\ldotp \symcase x_k\; \{\}}{}
   \\
-  \infer{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \times \tau_2 \elaborate \lambda x_k: K_{\tau_1} \plus K_{\tau_2}\ldotp \symcase x_k\; \{x_{k_1}\ldotp e_1'\; x_{k_1} \mid x_{k_2}\ldotp e_2'\; x_{k_2}\}}{
+  \infer{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \multi \tau_2 \elaborate \lambda x_k: K_{\tau_1} \plus K_{\tau_2}\ldotp \symcase x_k\; \{x_{k_1}\ldotp e_1'\; x_{k_1} \mid x_{k_2}\ldotp e_2'\; x_{k_2}\}}{
     \Gamma \vdash e_1: \tau_1 \elaborate e_1'
     &
     \Gamma \vdash e_2: \tau_2 \elaborate e_2'
   }
   \\
   \infer{\Gamma \vdash \pi_1 e: \tau_1 \elaborate \lambda x_k: K_{\tau_1}\ldotp e'\; (i_1 x_k)}{
-    \Gamma \vdash e: \tau_1 \times \tau_2 \elaborate e'
+    \Gamma \vdash e: \tau_1 \multi \tau_2 \elaborate e'
   }
   \\
-  \infer{\Gamma \vdash (\lambda x_1: \tau_1\ldotp e): \tau_1 \to \tau_2 \elaborate \lambda x_k: (K_{\tau_1} \to R) \times K_{\tau_2}\ldotp e'[x_{x_1} \assign \pi_1 x_k]\; (\pi_2 x_k)}{
-    \Gamma, x_{x_1}: K_{\tau_1} \to R \vdash e: \tau_2 \elaborate e'
+  \infer{\Gamma \vdash (\lambda x_1: \tau_1\ldotp e): \tau_1 \to \tau_2 \elaborate \lambda x_k: C_{\tau_1} \multi K_{\tau_2}\ldotp e'[x_{x_1} \assign \pi_1 x_k]\; (\pi_2 x_k)}{
+    \Gamma, x_{x_1}: C_{\tau_1} \vdash e: \tau_2 \elaborate e'
   }
   \\
   \infer{\Gamma \vdash e_1\; e_2: \tau \elaborate \lambda x_k: K_\tau\ldotp e_1'\; \langle e_2', x_k\rangle}{
@@ -230,8 +315,8 @@ $\fbox{$K_\tau = \tau'$}$
     K_{\tau_2} = \tau_2'
   }
   \\
-  \infer{K_{\tau_1 \to \tau_2} = (\tau_1' \to R) \multi \tau_2'}{
-    K_{\tau_1} = \tau_1'
+  \infer{K_{\tau_1 \to \tau_2} = \tau_1' \multi \tau_2'}{
+    C_{\tau_1} = \tau_1'
     &
     K_{\tau_2} = \tau_2'
   }
@@ -239,23 +324,26 @@ $\fbox{$K_\tau = \tau'$}$
   \infer{K_\bot = \top}{}
 \end{gather*}
 
+Abbreviation:
+
+\begin{align*}
+  C_\tau &\defrel{=} K_\tau \to R
+\end{align*}
+
 \begin{theorem}
-  $\Gamma \vdash e: \tau \elaborate e'$ ならば，$\Gamma \vdash e': K_\tau \to R$．
+  $\Gamma \vdash e: \tau \elaborate e'$ ならば，$\Gamma \vdash e': C_\tau$．
 \end{theorem}
 
 \begin{theorem}
   $\Gamma \vdash e: \tau \mid \Delta \iff C(\Gamma), K(\Delta) \vdash e: \tau \elaborate e'$．ただし，
   \begin{align*}
     C(\Gamma) &\defrel{=} \left\{\begin{array}{ll}
-      C(\Gamma'), x_{x'}: K_{\tau'} \to R &(\Gamma = \Gamma', x': \tau') \\
+      C(\Gamma'), x_{x'}: C_{\tau'} &(\Gamma = \Gamma', x': \tau') \\
       \cdot &(\Gamma = \cdot)
     \end{array}\right. \\
     K(\Delta) &\defrel{=} \left\{\begin{array}{ll}
-      x_\alpha: K_\tau: K(\Delta') &(\Delta = \alpha: \tau, \Delta') \\
+      x_\alpha: K_\tau, K(\Delta') &(\Delta = \alpha: \tau, \Delta') \\
       \cdot &(\Delta = \cdot)
     \end{array}\right. \text{．}
   \end{align*}
 \end{theorem}
-
-\subsection{Elaboration (Call-By-Value)}
-
