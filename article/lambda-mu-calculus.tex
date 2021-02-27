@@ -19,8 +19,8 @@ Alias: λμ
   &\BNFor \pi_2 e &(\text{right projection}) \\
   &\BNFor \lambda x: \tau\ldotp e &(\text{abstraction}) \\
   &\BNFor e\; e &(\text{application}) \\
-  &\BNFor [\alpha]\; e &(\text{naming}) \\
-  &\BNFor \mu \alpha: A\ldotp e &(\text{un-naming}) \\
+  &\BNFor [\alpha] e &(\text{naming}) \\
+  &\BNFor \mu \alpha: \tau\ldotp e &(\text{un-naming}) \\
   \Gamma
   &\BNFassign \cdot \\
   &\BNFor \Gamma, x: \tau \\
@@ -94,38 +94,168 @@ $\fbox{$\Gamma \vdash e: \tau \mid \Delta$}$
     \Gamma \vdash e_2: \tau_2 \mid \Delta
   }
   \\
-  \infer[\text{T-Name}]{\Gamma \vdash [\alpha]\; e: \bot \mid \Delta}{
+  \infer[\text{T-Name}]{\Gamma \vdash [\alpha] e: \bot \mid \Delta}{
     \Delta(\alpha) = \tau
     &
     \Gamma \vdash e: \tau \mid \Delta
   }
   \\
-  \infer[\text{T-Unname}]{\Gamma \vdash \mu \alpha: \tau\ldotp e: \tau \mid \Delta}{
+  \infer[\text{T-Unname}]{\Gamma \vdash (\mu \alpha: \tau\ldotp e): \tau \mid \Delta}{
     \Gamma \vdash e: \bot \mid \alpha: \tau, \Delta
   }
 \end{gather*}
 
-\subsection{Evaluation Semantics}
+\subsection{Evaluation Semantics (Call-By-Value)}
 
 Big Step:
 
 $\fbox{$e \bigeval v$}$
 
-\subsection{Elaboration (Call-By-Name)}
+\subsection{Equivalence}
 
-$\fbox{$\Gamma \vdash e: \tau \mid \Delta \elaborate e'$}$
+$\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau \mid \Delta$}$
 
 \begin{gather*}
-  \infer{\Gamma \vdash x_0: \tau \mid \Delta \elaborate \lambda x_k: K_\tau\ldotp x_{x_0}\; x_k}{}
-  \\
-  \infer{\Gamma \vdash \langle\rangle: \top \mid \Delta \elaborate \lambda x_k: \bot\ldotp \symcase x_k\; \{\}}{}
-  \\
-  \infer{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \times \tau_2 \mid \Delta \elaborate \lambda x_k: K_{\tau_1} \plus K_{\tau_2}\ldotp \symcase x_k\; \{x_{k_1}\ldotp e_1'\; x_{k_1} \mid x_{k_2}\ldotp e_2'\; x_{k_2}\}}{
-    \Gamma \vdash e_1: \tau_1 \mid \Delta \elaborate e_1'
+  \infer[\text{Eq-$\beta$-Lam}]{\Gamma \vdash (\lambda x: \tau_2\ldotp e_1)\; e_2 \equiv e_1[x \assign e_2]: \tau \mid \Delta}{
+    \Gamma, x: \tau_2 \vdash e_1: \tau \mid \Delta
     &
-    \Gamma \vdash e_2: \tau_2 \mid \Delta \elaborate e_2'
+    \Gamma \vdash e_2: \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{Eq-$\eta$-Lam}]{\Gamma \vdash (\lambda x: \tau_1\ldotp e\; x) \equiv e: \tau_1 \to \tau_2 \mid \Delta}{
+    x \not\in \freevar(e)
+    &
+    \Gamma \vdash e: \tau_1 \to \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{Eq-$\eta$-Top}]{\Gamma \vdash \langle\rangle \equiv e: \top \mid \Delta}{
+    \Gamma \vdash e: \top \mid \Delta
+  }
+  \\
+  \infer[\text{Eq-$\beta$-Product-1}]{\Gamma \vdash \pi_1\langle e_1, e_2\rangle \equiv e_1: \tau_1 \mid \Delta}{
+    \Gamma \vdash e_1: \tau_1 \mid \Delta
+    &
+    \Gamma \vdash e_2: \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{Eq-$\beta$-Product-2}]{\Gamma \vdash \pi_2\langle e_1, e_2\rangle \equiv e_2: \tau_2 \mid \Delta}{
+    \Gamma \vdash e_1: \tau_1 \mid \Delta
+    &
+    \Gamma \vdash e_2: \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{Eq-$\eta$-Product}]{\Gamma \vdash \langle \pi_1 e, \pi_2 e\rangle \equiv e: \tau_1 \multi \tau_2 \mid \Delta}{
+    \Gamma \vdash e: \tau_1 \multi \tau_2 \mid \Delta
+  }
+  \\
+  \infer[\text{Eq-$\zeta$-Product-1}]{\Gamma \vdash \pi_1 (\mu \alpha: \tau_1 \multi \tau_2\ldotp e) \equiv \mu \alpha_1: \tau_1\ldotp e[[\alpha](-) \assign [\alpha_1](\pi_1 (-))]: \tau_1 \mid \Delta}{
+    \alpha_1 \not\in \freevar(e)
+    &
+    \Gamma \vdash e: \bot \mid \alpha: \tau_1 \multi \tau_2, \Delta
+  }
+  \\
+  \infer[\text{Eq-$\zeta$-Product-2}]{\Gamma \vdash \pi_2 (\mu \alpha: \tau_1 \multi \tau_2\ldotp e) \equiv \mu \alpha_2: \tau_2\ldotp e[[\alpha](-) \assign [\alpha_2](\pi_2 (-))]: \tau_2 \mid \Delta}{
+    \alpha_2 \not\in \freevar(e)
+    &
+    \Gamma \vdash e: \bot \mid \alpha: \tau_1 \multi \tau_2, \Delta
+  }
+  \\
+  \infer[\text{Eq-$\beta$-Mu}]{\Gamma \vdash [\alpha_1](\mu \alpha_2: \tau_\alpha\ldotp e) \equiv e[\alpha_2 \assign \alpha_1]: \bot \mid \Delta}{
+    \Gamma \vdash e: \bot \mid \alpha_2: \tau_\alpha, \Delta
+  }
+  \\
+  \infer[\text{Eq-$\eta$-Mu}]{\Gamma \vdash (\mu \alpha: \tau\ldotp [\alpha]e) \equiv e: \tau \mid \Delta}{
+    \Gamma \vdash e: \tau \mid \Delta
+  }
+  \\
+  \infer[\text{Eq-$\zeta$-Mu}]{\Gamma \vdash (\mu \alpha: \tau_1 \to \tau_2\ldotp e_1)\; e_2 \equiv \mu \alpha_2: \tau_2\ldotp e_1[[\alpha](-) \assign [\alpha_2]((-)\; e_2)]: \tau_2 \mid \Delta}{
+    \alpha_2 \not\in \freevar(e_1) \cup \freevar(e_2)
+    &
+    \Gamma \vdash e_1: \bot \mid \alpha: \tau_1 \to \tau_2, \Delta
+    &
+    \Gamma \vdash e_2: \tau_2 \mid \Delta
   }
 \end{gather*}
+
+\subsection{Elaboration (Call-By-Name)}
+
+$\fbox{$\Gamma \vdash e: \tau \elaborate e'$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash x_0: \tau \elaborate \lambda x_k: K_\tau\ldotp x_{x_0}\; x_k}{
+    \Gamma(x_{x_0}) = K_\tau \to R
+  }
+  \\
+  \infer{\Gamma \vdash \langle\rangle: \top \elaborate \lambda x_k: \bot\ldotp \symcase x_k\; \{\}}{}
+  \\
+  \infer{\Gamma \vdash \langle e_1, e_2\rangle: \tau_1 \times \tau_2 \elaborate \lambda x_k: K_{\tau_1} \plus K_{\tau_2}\ldotp \symcase x_k\; \{x_{k_1}\ldotp e_1'\; x_{k_1} \mid x_{k_2}\ldotp e_2'\; x_{k_2}\}}{
+    \Gamma \vdash e_1: \tau_1 \elaborate e_1'
+    &
+    \Gamma \vdash e_2: \tau_2 \elaborate e_2'
+  }
+  \\
+  \infer{\Gamma \vdash \pi_1 e: \tau_1 \elaborate \lambda x_k: K_{\tau_1}\ldotp e'\; (i_1 x_k)}{
+    \Gamma \vdash e: \tau_1 \times \tau_2 \elaborate e'
+  }
+  \\
+  \infer{\Gamma \vdash (\lambda x_1: \tau_1\ldotp e): \tau_1 \to \tau_2 \elaborate \lambda x_k: (K_{\tau_1} \to R) \times K_{\tau_2}\ldotp e'[x_{x_1} \assign \pi_1 x_k]\; (\pi_2 x_k)}{
+    \Gamma, x_{x_1}: K_{\tau_1} \to R \vdash e: \tau_2 \elaborate e'
+  }
+  \\
+  \infer{\Gamma \vdash e_1\; e_2: \tau \elaborate \lambda x_k: K_\tau\ldotp e_1'\; \langle e_2', x_k\rangle}{
+    \Gamma \vdash e_1: \tau_2 \to \tau \elaborate e_1'
+    &
+    \Gamma \vdash e_2: \tau_2 \elaborate e_2'
+  }
+  \\
+  \infer{\Gamma \vdash [\alpha] e: \bot \elaborate \lambda x_k: K_\bot\ldotp e'\; x_\alpha}{
+    \Gamma(x_\alpha) = K_\tau
+    &
+    \Gamma \vdash e: \tau \elaborate e'
+  }
+  \\
+  \infer{\Gamma \vdash (\mu \alpha: \tau\ldotp e): \tau \elaborate \lambda x_\alpha: K_\tau\ldotp e'\; \langle\rangle}{
+    \Gamma, x_\alpha: K_\tau \vdash e: \bot \elaborate e'
+  }
+\end{gather*}
+
+$\fbox{$K_\tau = \tau'$}$
+
+\begin{gather*}
+  \infer{K_\top = \bot}{}
+  \\
+  \infer{K_{\tau_1 \multi \tau_2} = \tau_1' \plus \tau_2'}{
+    K_{\tau_1} = \tau_1'
+    &
+    K_{\tau_2} = \tau_2'
+  }
+  \\
+  \infer{K_{\tau_1 \to \tau_2} = (\tau_1' \to R) \multi \tau_2'}{
+    K_{\tau_1} = \tau_1'
+    &
+    K_{\tau_2} = \tau_2'
+  }
+  \\
+  \infer{K_\bot = \top}{}
+\end{gather*}
+
+\begin{theorem}
+  $\Gamma \vdash e: \tau \elaborate e'$ ならば，$\Gamma \vdash e': K_\tau \to R$．
+\end{theorem}
+
+\begin{theorem}
+  $\Gamma \vdash e: \tau \mid \Delta \iff C(\Gamma), K(\Delta) \vdash e: \tau \elaborate e'$．ただし，
+  \begin{align*}
+    C(\Gamma) &\defrel{=} \left\{\begin{array}{ll}
+      C(\Gamma'), x_{x'}: K_{\tau'} \to R &(\Gamma = \Gamma', x': \tau') \\
+      \cdot &(\Gamma = \cdot)
+    \end{array}\right. \\
+    K(\Delta) &\defrel{=} \left\{\begin{array}{ll}
+      x_\alpha: K_\tau: K(\Delta') &(\Delta = \alpha: \tau, \Delta') \\
+      \cdot &(\Delta = \cdot)
+    \end{array}\right. \text{．}
+  \end{align*}
+\end{theorem}
 
 \subsection{Elaboration (Call-By-Value)}
 
