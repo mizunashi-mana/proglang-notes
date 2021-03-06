@@ -1,0 +1,37 @@
+\section{Quell Modules}
+
+\subsection{Syntax}
+
+\begin{align*}
+  e
+  &\BNFassign \cdots \\
+  &\BNFor \symletrec \{B\} \symin e \\
+  &\BNFor P \\
+  \tau
+  &\BNFassign \cdots \\
+  &\BNFor P \\
+  P
+  &\BNFassign M \\
+  M
+  &\BNFassign x \\
+  &\BNFor \{B\} \\
+  &\BNFor M.x \\
+  &\BNFor \symfun x: S\ldotp M \\
+  &\BNFor x\; x \\
+  &\BNFor x: S \\
+  B
+  &\BNFassign x = e \\
+  &\BNFor \symtype t = T \\
+  &\BNFor \symmodule x = M \\
+  &\BNFor \symuse B \\
+  &\BNFor \epsilon \\
+  &\BNFor B; B \\
+  T
+  &\BNFassign \lambda x\ldotp T \\
+  &\BNFor \tau \\
+  S
+  &\BNFassign P \\
+  &\BNFor \{D\} \\
+  &\BNFor (x: S) \to S \\
+  &\BNFor
+\end{align*}
