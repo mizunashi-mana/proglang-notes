@@ -26,23 +26,28 @@ or using `docker-compose`
 
 ### Modules and Phase Distinction
 
-* Shan, C. (1998). Higher-order modules in System Fω and Haskell. Unpublished Manuscript, Available from the Author’s Website. Retrieved from http://homes.sice.indiana.edu/ccshan/xlate/xlate.pdf
 * Leroy, X. (2000). A modular module system. Journal of Functional Programming, 10(3), 269–303. https://doi.org/10.1017/S0956796800003683
 * Shields, M., & Jones, S. P. (2001). First-Class Modules for Haskell. Ninth International Conference on Foundations of Object-Oriented Languages, 1–20. https://doi.org/10.1.1.72.7479
 * Dreyer, D., Crary, K., & Harper, R. (2003). A type system for higher-order modules. ACM SIGPLAN Notices, 38(1), 236–249. https://doi.org/10.1145/640128.604151
 * Dreyer, D. (2005). Understanding and Evolving the ML Module System (Carnegie Mellon University). Retrieved from https://people.mpi-sws.org/~dreyer/thesis/main.pdf
+* Shan, C. (2006). Higher-order modules in System Fω and Haskell. Retrieved from http://homes.sice.indiana.edu/ccshan/xlate/xlate.pdf
 * Dreyer, D. (2007). A type system for recursive modules. Proceedings of the 2007 ACM SIGPLAN International Conference on Functional Programming - ICFP ’07, 289. https://doi.org/10.1145/1291151.1291196
+* Rossberg, A., & Dreyer, D. (2013). Mixin’ Up the ML Module System. ACM Transactions on Programming Languages and Systems, 35(1), 1–84. https://doi.org/10.1145/2450136.2450137
+  - A type system for MixML which extends ML modules with mixin composition.
 * Rossberg, A., Russo, C., & Dreyer, D. (2014). F-ing modules. Journal of Functional Programming, 24(5), 529–607. https://doi.org/10.1017/S0956796814000264
+  - An elaboration semantics between ML modules and System Fω with generativity and applicativity.
 * Crary, K. (2017). Modules, abstraction, and parametric polymorphism. Proceedings of the 44th ACM SIGPLAN Symposium on Principles of Programming Languages, 100–113. https://doi.org/10.1145/3009837.3009892
 
 ### Control Operators
 
 * Felleisen, M., & Friedman, D. P. (1986). Control Operators, the SECD-Machine, and the λ-Calculus. Retrieved from https://help.sice.indiana.edu/techreports/TRNNN.cgi?trnum=TR197
 * Curien, P.-L., & Herbelin, H. (2000). The duality of computation. ACM SIGPLAN Notices, 35(9), 233–243. https://doi.org/10.1145/357766.351262
+  - Introduction of λ̅µµ̃-calculus which extends λ-calculus with control operators.
 * Selinger, P. (2001). Control categories and duality: on the categorical semantics of the lambda-mu calculus. Mathematical Structures in Computer Science, 11(2), 207--260. https://doi.org/10.1017/S096012950000311X
 * Levy, P. B. (2001). Call-By-Push-Value (Queen Mary and Westfield College, University of London). Retrieved from https://www.cs.bham.ac.uk/~pbl/papers/thesisqmwphd.pdf
 * Benton, N., Hughes, J., & Moggi, E. (2002). Monads and Effects. Applied Semantics, 2395, 923–952. https://doi.org/10.1007/3-540-45699-6_2
 * Wadler, P. (2003). Call-by-value is dual to call-by-name. ACM SIGPLAN Notices, 38(9), 189–201. https://doi.org/10.1145/944746.944723
+  - Introduction of a dual calculus corresponding the classical sequent calculus.
 * Rocheteau, J. (2005). λμ-Calculus and Duality: Call-by-Name and Call-by-Value. In Lecture Notes in Computer Science (Vol. 3467, pp. 204–218). https://doi.org/10.1007/978-3-540-32033-3_16
 * Downen, P. (2017). Sequent Calculus: A Logic and a Language for Computation and Duality (University of Oregon). Retrieved from https://ix.cs.uoregon.edu/~pdownen/publications/downen_phd.pdf
 * Maurer, L., Downen, P., Ariola, Z. M., & Peyton Jones, S. (2017). Compiling without continuations. ACM SIGPLAN Notices, 52(6), 482–494. https://doi.org/10.1145/3140587.3062380
@@ -59,9 +64,12 @@ or using `docker-compose`
 
 ### Type Checking and Inference
 
+* Milner, R. (1978). A theory of type polymorphism in programming. Journal of Computer and System Sciences, 17(3), 348–375. https://doi.org/10.1016/0022-0000(78)90014-4
 * Heeren, B., Hage, J., & Swierstra, D. (2002). Generalizing Hindley-Milner Type Inference Algorithms. Retrieved from http://www.cs.uu.nl/research/techreps/repo/CS-2002/2002-031.pdf
 * Eekelen, V., & Leer, V. (2004). The Essence of ML Type Inference. In Advanced Topics in Types and Programming Languages. https://doi.org/10.7551/mitpress/1104.003.0016
+  - How to inference types for ML based on HM(X).
 * Vytiniotis, D., Peyton Jones, S., Schrijvers, T., & Sulzmann, M. (2011). OutsideIn(X): Modular type inference with local assumptions. Journal of Functional Programming, 21(4–5), 333–412. https://doi.org/10.1017/S0956796811000098
+  - Introduction of OutsideIn(X) which extend HM(X) for local assumptions (GADTs, type families, etc.).
 * Weirich, S., Hsu, J., & Eisenberg, R. A. (2013). System FC with explicit kind equality. Proceedings of the 18th ACM SIGPLAN International Conference on Functional Programming, 275–286. https://doi.org/10.1145/2500365.2500599
 * Eisenberg, R. A., & Peyton Jones, S. (2017). Levity polymorphism. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation - PLDI 2017, 525–539. https://doi.org/10.1145/3062341.3062357
 
@@ -78,7 +86,7 @@ or using `docker-compose`
 ### Code Generation and Virtual Machines
 
 * Burn, G. L., Peyton Jones, S. L., & Robson, J. D. (1988). The spineless G-machine. Proceedings of the 1988 ACM Conference on LISP and Functional Programming - LFP ’88, 244–258. https://doi.org/10.1145/62678.62717
-* Leroy, X. (1990). The ZINC experiment : an economical implementationof the ML language. Retrieved from https://hal.inria.fr/inria-00070049
+* Leroy, X. (1990). The ZINC experiment : an economical implementation of the ML language. Retrieved from https://hal.inria.fr/inria-00070049
 * Marlow, S., & Jones, S. P. (2004). Making a fast curry: push/enter vs. eval/apply for higher-order languages. ACM SIGPLAN Notices, 39(9), 4. https://doi.org/10.1145/1016848.1016856
 * Marlow, S., Yakushev, A. R., & Jones, S. P. (2007). Faster laziness using dynamic pointer tagging. ACM SIGPLAN Notices, 42(9), 277. https://doi.org/10.1145/1291220.1291194
 
