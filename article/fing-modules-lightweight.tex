@@ -1,0 +1,685 @@
+\section{Light-Weight F-ing modules}
+
+\cite{Rossberg:2014}
+
+\subsection{Internal Language}
+\sectlabel{fing-modules-internal-language}
+
+Having same power as System Fω
+
+Syntax:
+
+\begin{align*}
+  \kappa
+  &\BNFassign \Omega \mid \kappa \to \kappa
+  \\
+  \tau
+  &\BNFassign t
+  \mid \tau \to \tau
+  \mid \{\overline{l: \tau}\}
+  \mid \forall t: \kappa\ldotp \tau
+  \mid \exists t: \kappa\ldotp \tau
+  \mid \lambda t: \kappa\ldotp \tau
+  \mid \tau\; \tau
+  \\
+  e
+  &\BNFassign x
+  \mid \lambda x: \tau\ldotp e
+  \mid e\; e
+  \mid \{\overline{l = e}\}
+  \mid e . l
+  \mid \Lambda t: \kappa\ldotp e
+  \mid e\; \tau
+  \mid \sympack \langle \tau, e\rangle_\tau
+  \mid \symunpack \langle t: \kappa, x: \tau\rangle = e \symin e
+  \\
+  \Gamma
+  &\BNFassign \cdot
+  \mid \Gamma, t: \kappa
+  \mid \Gamma, x: \tau
+\end{align*}
+
+Abbreviation:
+
+\begin{align*}
+  \Sigma.\overline{l} &\defrel{=} \left\{\begin{array}{ll}
+    (\Sigma.l).\overline{l'} &(\overline{l} = l\; \overline{l'}) \\
+    \Sigma &(\overline{l} = \epsilon)
+  \end{array}\right. \\
+  \overline{\tau_1} \to \tau_2 &\defrel{=} \left\{\begin{array}{ll}
+    \tau_1 \to (\overline{\tau_1'} \to \tau_2) &(\overline{\tau_1} = \tau_1\; \overline{\tau_1'}) \\
+    \tau_2 &(\overline{\tau_1} = \epsilon)
+  \end{array}\right. \\
+  \lambda \overline{x: \tau}\ldotp e &\defrel{=} \left\{\begin{array}{ll}
+    \lambda x: \tau\ldotp \lambda \overline{x': \tau'}\ldotp e &(\overline{x: \tau} = x: \tau\; \overline{x': \tau'}) \\
+    e &(\overline{x: \tau} = \epsilon)
+  \end{array}\right. \\
+  e_0\; \overline{e_1} &\defrel{=} \left\{\begin{array}{ll}
+    e_0\; e_1\; \overline{e_1'} &(\overline{e_1} = e_1\; \overline{e_1'}) \\
+    e_0 &(\overline{e_1} = \epsilon)
+  \end{array}\right. \\
+  \forall \overline{t: \kappa}\ldotp \tau &\defrel{=} \left\{\begin{array}{ll}
+    \forall t: \kappa\ldotp \forall \overline{t': \kappa'}\ldotp \tau &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    \tau &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  \Lambda \overline{t: \kappa}\ldotp e &\defrel{=} \left\{\begin{array}{ll}
+    \Lambda t: \kappa\ldotp \Lambda \overline{t': \kappa'}\ldotp e &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    e &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  e\; \overline{\tau} &\defrel{=} \left\{\begin{array}{ll}
+    e\; \tau\; \overline{\tau'} &(\overline{\tau} = \tau\; \overline{\tau'}) \\
+    e &(\overline{\tau} = \epsilon)
+  \end{array}\right. \\
+  \symlet \overline{x: \tau = e_1}\; \overline{t: \kappa = \tau} \symin e_2 &\defrel{=} (\lambda \overline{x: \tau}\ldotp \Lambda \overline{t: \kappa}\ldotp e_2)\; \overline{e_1}\; \overline{\tau} \\
+  \exists \overline{t: \kappa}\ldotp \tau &\defrel{=} \left\{\begin{array}{ll}
+    \exists t: \kappa\ldotp \exists \overline{t': \kappa'}\ldotp \tau &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    \tau &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  \sympack\langle \overline{\tau}, e\rangle_{\exists \overline{t: \kappa}\ldotp \tau_0} &\defrel{=} \left\{\begin{array}{ll}
+    \sympack\langle \tau, \sympack\langle \overline{\tau'}, e\rangle_{\exists \overline{t': \kappa'}\ldotp \tau_0}\rangle_{\exists \overline{t: \kappa}\ldotp \tau_0} &(\overline{\tau} = \tau\; \overline{\tau'}, \overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    e &(\overline{\tau} = \epsilon, \overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+  (\symunpack\langle \overline{t: \kappa}, x: \tau\rangle = e_1 \symin e_2) &\defrel{=} \left\{\begin{array}{ll}
+    \begin{array}{l}
+      \symunpack\langle t: \kappa, x_1: \exists \overline{t': \kappa'} \ldotp \tau\rangle = e_1 \symin \\
+      \hspace{1em}\symunpack\langle \overline{t': \kappa'}, x_2: \tau\rangle = x_1 \symin e_2
+    \end{array} &(\overline{t: \kappa} = t: \kappa\; \overline{t': \kappa'}) \\
+    \symlet x: \tau = e_1 \symin e_2 &(\overline{t: \kappa} = \epsilon)
+  \end{array}\right. \\
+\end{align*}
+
+Kinding:
+
+$\fbox{$\Gamma \vdash \tau: \kappa$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash t: \kappa}{
+    \Gamma(t) = \kappa
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \tau_1 \to \tau_2: \Omega}{
+    \Gamma \vdash \tau_1: \Omega
+    &
+    \Gamma \vdash \tau_2: \Omega
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \{\overline{l: \tau_l}\}: \Omega}{
+    \bigwedge_l \Gamma \vdash \tau_l: \Omega
+  }
+  \\
+  \infer{\Gamma \vdash \forall t: \kappa\ldotp \tau: \Omega}{
+    \Gamma, t: \kappa \vdash \tau: \Omega
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \exists t: \kappa\ldotp \tau: \Omega}{
+    \Gamma, t: \kappa \vdash \tau: \Omega
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \lambda t: \kappa_1\ldotp \tau: \kappa_1 \to \kappa_2}{
+    \Gamma, t: \kappa_1 \vdash \tau: \kappa_2
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \tau_1\; \tau_2: \kappa}{
+    \Gamma \vdash \tau_1: \kappa_2 \to \kappa
+    &
+    \Gamma \vdash \tau_2: \kappa_2
+  }
+\end{gather*}
+
+Type equivalence:
+
+$\fbox{$\Gamma \vdash \tau_1 \equiv \tau_2: \kappa$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash (\lambda t: \kappa_2\ldotp \tau_1)\; \tau_2 \equiv \tau_1[t \assign \tau_2]: \kappa}{
+    \Gamma, t: \kappa_2 \vdash \tau_1: \kappa
+    &
+    \Gamma \vdash \tau_2: \kappa_2
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash (\lambda t: \kappa_1\ldotp \tau\; t) \equiv \tau: \kappa_1 \to \kappa_2}{
+    t \not\in \typefreevar(\tau)
+    &
+    \Gamma \vdash \tau: \kappa_1 \to \kappa_2
+  }
+  \\
+  \infer{\Gamma \vdash \tau_1 \equiv \tau_2: \kappa}{
+    \tau_1 \equiv_\alpha \tau_2
+    &
+    \Gamma \vdash \tau_1: \kappa
+    &
+    \Gamma \vdash \tau_2: \kappa
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \tau_1 \equiv \tau_2: \kappa}{
+    \Gamma \vdash \tau_2 \equiv \tau_1: \kappa
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \tau_1 \equiv \tau_3: \kappa}{
+    \Gamma \vdash \tau_1 \equiv \tau_2: \kappa
+    &
+    \Gamma \vdash \tau_2 \equiv \tau_3: \kappa
+  }
+  \\
+  \infer{\Gamma \vdash \tau_1 \to \tau'_1 \equiv \tau_2 \to \tau'_2: \Omega}{
+    \Gamma \vdash \tau_1 \equiv \tau_2: \Omega
+    &
+    \Gamma \vdash \tau'_1 \equiv \tau'_2: \Omega
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \forall t: \kappa\ldotp \tau_1 \equiv \forall t: \kappa\ldotp \tau_2: \Omega}{
+    \Gamma, t: \kappa \vdash \tau_1 \equiv \tau_2: \Omega
+  }
+  \\
+  \infer{\Gamma \vdash \lambda t: \kappa\ldotp \tau_1 \equiv \lambda t: \kappa\ldotp \tau_2: \kappa \to \kappa'}{
+    \Gamma, t: \kappa \vdash \tau_1 \equiv \tau_2: \kappa'
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \tau_1\; \tau'_1 \equiv \tau_2\; \tau'_2: \kappa}{
+    \Gamma \vdash \tau_1 \equiv \tau_2: \kappa' \to \kappa
+    &
+    \Gamma \vdash \tau'_1 \equiv \tau'_2: \kappa'
+  }
+\end{gather*}
+
+Typing:
+
+$\fbox{$\Gamma \vdash e: \tau$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash x: \tau}{
+    \Gamma \vdash \tau: \Omega
+    &
+    \Gamma(x) = \tau
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e: \tau}{
+    \Gamma \vdash \tau \equiv \tau': \Omega
+    &
+    \Gamma \vdash e: \tau'
+  }
+  \\
+  \infer{\Gamma \vdash \lambda x: \tau_1\ldotp e: \tau_1 \to \tau_2}{
+    \Gamma \vdash \tau_1: \Omega
+    &
+    \Gamma, x: \tau_1 \vdash e: \tau_2
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e_1\; e_2: \tau}{
+    \Gamma \vdash e_1: \tau_2 \to \tau
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \\
+  \infer{\Gamma \vdash \{\overline{l = e_l}\}: \{\overline{l = \tau_l}\}}{
+    \bigwedge_l \Gamma \vdash e_l: \tau_l
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e.l: \tau_l}{
+    \Gamma \vdash e: \{\overline{l' = \tau_{l'}}\}
+  }
+  \\
+  \infer{\Gamma \vdash \Lambda t: \kappa\ldotp e: (\forall t: \kappa\ldotp \tau)}{
+    \Gamma, t: \kappa \vdash e: \tau
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e\; \tau_2: \tau_1[t \assign \tau_2]}{
+    \Gamma \vdash e: (\forall t: \kappa\ldotp \tau_1)
+    &
+    \Gamma \vdash \tau_2: \kappa
+  }
+  \\
+  \infer{\Gamma \vdash \sympack \langle \tau_t, e\rangle_{\exists t: \kappa\ldotp \tau}: (\exists t: \kappa\ldotp \tau)}{
+    \Gamma, t: \kappa \vdash \tau: \Omega
+    &
+    \Gamma \vdash \tau_t: \kappa
+    &
+    \Gamma \vdash e: \tau[t \assign \tau_t]
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \symunpack \langle t: \kappa, x: \tau_1\rangle = e_1 \symin e_2: \tau}{
+    \Gamma \vdash e_1: (\exists t: \kappa\ldotp \tau_1)
+    &
+    \Gamma, t: \kappa, x: \tau_1 \vdash e_2: \tau
+  }
+\end{gather*}
+
+Reduction:
+
+\begin{align*}
+  v
+  &\BNFassign \lambda x: \tau\ldotp e
+  \mid \{\overline{l = e}\}
+  \mid \Lambda t: \kappa\ldotp e
+  \mid \sympack \langle \tau_t, e\rangle_{\exists t: \kappa\ldotp \tau}
+  \\
+  C
+  &\BNFassign []
+  \mid C\; e
+  \mid v\; C
+  \mid \{\overline{l = v}, l = C, \overline{l = e}\}
+  \mid C.l
+  \mid C\; \tau
+  \mid \sympack \langle \tau, C\rangle_\tau
+  \mid \symunpack \langle t: \kappa, x: \tau\rangle = C \symin e
+\end{align*}
+
+$\fbox{$e \smalleval e'$}$
+
+\begin{gather*}
+  \infer{(\lambda x: \tau\ldotp e) v \smalleval e[x \assign v]}{}
+  \hspace{2em}
+  \infer{\{\overline{l' = v_{l'}}\}.l \smalleval v_l}{}
+  \hspace{2em}
+  \infer{(\Lambda t: \kappa\ldotp e) \tau \smalleval e[t \assign \tau]}{}
+  \\
+  \infer{\symunpack\langle t: \kappa, x: \tau\rangle = \sympack\langle \tau_t, v\rangle_{\tau_\exists} \symin e \smalleval e[t \assign \tau_t][x \assign v]}{}
+  \hspace{2em}
+  \infer{C[e] \smalleval C[e']}{
+    e \smalleval e'
+  }
+\end{gather*}
+
+Equivalence:
+
+$\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash (\lambda x: \tau_2\ldotp e_1)\; e_2 \equiv e_1[x \assign e_2]: \tau}{
+    \Gamma, x: \tau_2 \vdash e_1: \tau
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash (\lambda x: \tau_1\ldotp e\; x) \equiv e: \tau_1 \to \tau_2}{
+    x \not\in \freevar(e)
+    &
+    \Gamma \vdash e: \tau_1 \to \tau_2
+  }
+  \\
+  \infer{\Gamma \vdash \{\overline{l' = e_{l'}}\}.l \equiv e_l: \tau_l}{
+    \bigwedge_{l'} \Gamma \vdash e_{l'}: \tau_{l'}
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash \{\overline{l = e.l}\} \equiv e: \{\overline{l: \tau_l}\}}{
+    \Gamma \vdash e: \{\overline{l: \tau_l}\}
+  }
+  \\
+  \infer{\Gamma \vdash (\Lambda t: \kappa\ldotp e)\; \tau_2 \equiv e[t \assign \tau_2]: \tau[t \assign \tau_2]}{
+    \Gamma, t: \kappa \vdash e: \tau
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash (\Lambda t: \kappa\ldotp e\; t) \equiv e: \forall t: \kappa\ldotp \tau}{
+    t \not\in \typefreevar(e)
+    &
+    \Gamma \vdash e: \forall t: \kappa\ldotp \tau
+  }
+  \\
+  \infer{\Gamma \vdash \symunpack\langle t: \kappa, x: \tau'_1\rangle = \sympack\langle \tau_t, e_1\rangle_{\exists t: \kappa\ldotp \tau_1} \symin e_2 \equiv e_2[t \assign \tau_t][x \assign e_1]: \tau}{
+    \Gamma, t: \kappa \vdash \tau_1 \equiv \tau'_1: \Omega
+    &
+    \Gamma \vdash \tau_t: \kappa
+    &
+    \Gamma \vdash e_1: \tau_1[t \assign \tau_t]
+    &
+    \Gamma, t: \kappa, x: \tau_1 \vdash e_2: \tau
+  }
+  \\
+  \infer{\Gamma \vdash \symunpack\langle t: \kappa, x: \tau'\rangle = e \symin \sympack\langle t, x\rangle_{\exists t: \kappa\ldotp \tau} \equiv e: (\exists t: \kappa\ldotp \tau)}{
+    \Gamma \vdash e: \exists t: \kappa\ldotp \tau
+    &
+    \Gamma, t: \kappa \vdash \tau \equiv \tau': \Omega
+  }
+  \\
+  \infer{\Gamma \vdash e_1 \equiv e_2: \tau}{
+    e_1 \equiv_\alpha e_2
+    &
+    \Gamma \vdash e_1: \tau
+    &
+    \Gamma \vdash e_2: \tau
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e_1 \equiv e_2: \tau}{
+    \Gamma \vdash \tau \equiv \tau': \Omega
+    &
+    \Gamma \vdash e_1 \equiv e_2: \tau'
+  }
+  \\
+  \infer{\Gamma \vdash e_1 \equiv e_2: \tau}{
+    \Gamma \vdash e_2 \equiv e_1: \tau
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e_1 \equiv e_3: \tau}{
+    \Gamma \vdash e_1 \equiv e_2: \tau
+    &
+    \Gamma \vdash e_2 \equiv e_3: \tau
+  }
+  \\
+  \infer{\Gamma \vdash \lambda x: \tau\ldotp e_1 \equiv \lambda x: \tau\ldotp e_2: \tau \to \tau'}{
+    \Gamma, x: \tau \vdash e_1 \equiv e_2: \tau'
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e_1\; e'_1 \equiv e_2\; e'_2: \tau}{
+    \Gamma \vdash e_1 \equiv e_2: \tau' \to \tau
+    &
+    \Gamma \vdash e'_1 \equiv e'_2: \tau'
+  }
+  \\
+  \infer{\Gamma \vdash \{\overline{l = e_{l,1}}\} \equiv \{\overline{l = e_{l,2}}\}: \{\overline{l: \tau_l}\}}{
+    \bigwedge_l \Gamma \vdash e_{l,1} \equiv e_{l,2}: \tau_l
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e_1.l \equiv e_2.l: \tau_l}{
+    \Gamma \vdash e_1 \equiv e_2: \{l: \tau_l, \overline{l': \tau'}\}
+  }
+  \\
+  \infer{\Gamma \vdash \Lambda t: \kappa\ldotp e_1 \equiv \Lambda t: \kappa\ldotp e_2: (\forall t: \kappa\ldotp \tau)}{
+    \Gamma, t: \kappa \vdash e_1 \equiv e_2: \tau
+  }
+  \hspace{2em}
+  \infer{\Gamma \vdash e_1\; \tau_1 \equiv e_2\; \tau_2: \tau[t \assign \tau_1]}{
+    \Gamma \vdash e_1 \equiv e_2: \forall t: \kappa\ldotp \tau
+    &
+    \Gamma \vdash \tau_1 \equiv \tau_2: \kappa
+  }
+  \\
+  \infer{\Gamma \vdash \sympack\langle \tau'_1, e_1\rangle_{\exists t: \kappa\ldotp \tau_1} \equiv \sympack\langle \tau'_2, e_2\rangle_{\exists t: \kappa\ldotp \tau_2}: (\exists t: \kappa\ldotp \tau_1)}{
+    \Gamma \vdash \tau'_1 \equiv \tau'_2: \kappa
+    &
+    \Gamma \vdash e_1 \equiv e_2: \tau_1[t \assign \tau'_1]
+    &
+    \Gamma, t: \kappa\ldotp \tau_1 \equiv \tau_2: \Omega
+  }
+  \\
+  \infer{\Gamma \vdash \symunpack\langle t: \kappa, x: \tau'_1\rangle = e'_1 \symin e_1 \equiv \symunpack\langle t: \kappa, x: \tau'_2\rangle = e'_2 \symin e_2: \tau}{
+    \Gamma, t: \kappa \vdash \tau'_1 \equiv \tau'_2: \Omega
+    &
+    \Gamma \vdash e'_1 \equiv e'_2: (\exists t: \kappa\ldotp \tau'_1)
+    &
+    \Gamma, t: \kappa, x: \tau'_1 \vdash e_1 \equiv e_2: \tau
+  }
+\end{gather*}
+
+\subsection{Syntax}
+
+\begin{align*}
+  X &\BNFassign \cdots &(\text{identifier}) \\
+  K &\BNFassign \cdots &(\text{kind}) \\
+  T &\BNFassign \cdots \mid P &(\text{type}) \\
+  E &\BNFassign \cdots \mid P &(\text{expression}) \\
+  P &\BNFassign M &(\text{path}) \\
+  M
+  &\BNFassign X &(\text{identifier}) \\
+  &\BNFor \{ B \} &(\text{bindings}) \\
+  &\BNFor M.X &(\text{projection}) \\
+  B
+  &\BNFassign \symval X = E &(\text{value binding}) \\
+  &\BNFor \symtype X = T &(\text{type binding}) \\
+  &\BNFor \symmodule X = M &(\text{module binding}) \\
+  &\BNFor \symsignature X = S &(\text{signature binding}) \\
+  &\BNFor \syminclude M &(\text{module including}) \\
+  &\BNFor \epsilon &(\text{empty binding}) \\
+  &\BNFor B; B &(\text{binding concatenation}) \\
+  S
+  &\BNFassign P &(\text{signature path}) \\
+  &\BNFor \{ D \} &(\text{declarations}) \\
+  D
+  &\BNFassign \symval X: T &(\text{value declaration}) \\
+  &\BNFor \symtype X = T &(\text{type binding}) \\
+  &\BNFor \symmodule X: S &(\text{module declaration}) \\
+  &\BNFor \symsignature X = S &(\text{signature binding}) \\
+  &\BNFor \syminclude S &(\text{signature including}) \\
+  &\BNFor \epsilon &(\text{empty declaration}) \\
+  &\BNFor D; D &(\text{declaration concatenation})
+\end{align*}
+
+\subsection{Signature}
+
+\begin{align*}
+  \Sigma
+  &\BNFassign [\tau] &(\text{anonymous value declaration}) \\
+  &\BNFor [= \tau: \kappa] &(\text{anonymous type declaration}) \\
+  &\BNFor [= \Sigma] &(\text{anonymous signature declaration}) \\
+  &\BNFor \{\overline{l_X: \Sigma}\} &(\text{structural signature}) \\
+\end{align*}
+
+Atomic Signature:
+
+\begin{align*}
+  [\tau] &\defrel{=} \{\symval: \tau\} \\
+  [e] &\defrel{=} \{\symval = e\} \\
+  [= \tau: \kappa] &\defrel{=} \{\symtype: \forall t: (\kappa \to \Omega)\ldotp t\; \tau \to t\; \tau\} \\
+  [\tau: \kappa] &\defrel{=} \{\symtype = \Lambda t: (\kappa \to \Omega)\ldotp \lambda x: (t\; \tau)\ldotp x\} \\
+  [= \Sigma] &\defrel{=} \{\symsig: \Sigma \to \Sigma\} \\
+  [\Sigma] &\defrel{=} \{\symsig = \lambda x: \Sigma\ldotp x\}
+\end{align*}
+
+$\fbox{$\symNotAtomic(\Sigma)$}$
+
+\begin{gather*}
+  \infer{\symNotAtomic(\{\overline{l_X: \Sigma}\})}{}
+\end{gather*}
+
+Admissible kinding:
+
+$\fbox{$\Gamma \vdash \tau: \kappa$}$
+
+\begin{gather*}
+  \infer[\text{K-A-Val}]{\Gamma \vdash [\tau]: \Omega}{
+    \Gamma \vdash \tau: \Omega
+  }
+  \\
+  \infer[\text{K-A-Typ}]{\Gamma \vdash [= \tau: \kappa]: \Omega}{
+    \Gamma \vdash \tau: \kappa
+  }
+  \\
+  \infer[\text{K-A-Sig}]{\Gamma \vdash [= \Sigma]: \Omega}{
+    \Gamma \vdash \Sigma: \Omega
+  }
+\end{gather*}
+
+Admissible type equivalence:
+
+$\fbox{$\Gamma \vdash \tau_1 \equiv \tau_2: \kappa$}$
+
+\begin{gather*}
+  \infer[\text{T-Eq-Cong-A-Val}]{\Gamma \vdash [\tau_1] \equiv [\tau_2]: \Omega}{
+    \Gamma \vdash \tau_1 \equiv \tau_2: \Omega
+  }
+  \\
+  \infer[\text{T-Eq-Cong-A-Typ}]{\Gamma \vdash [= \tau_1: \kappa] \equiv [= \tau_2: \kappa]: \Omega}{
+    \Gamma \vdash \tau_1 \equiv \tau_2: \kappa
+  }
+  \\
+  \infer[\text{T-Eq-Cong-A-Sig}]{\Gamma \vdash [= \Sigma_1] \equiv [= \Sigma_2]: \Omega}{
+    \Gamma \vdash \Sigma_1 \equiv \Sigma_2: \Omega
+  }
+\end{gather*}
+
+Admissible typing:
+
+$\fbox{$\Gamma \vdash e: \tau$}$
+
+\begin{gather*}
+  \infer[\text{T-A-Val}]{\Gamma \vdash [e]: [\tau]}{
+    \Gamma \vdash e: \tau
+  }
+  \\
+  \infer[\text{T-A-Typ}]{\Gamma \vdash [\tau: \kappa]: [= \tau: \kappa]}{
+    \Gamma \vdash \tau: \kappa
+  }
+  \\
+  \infer[\text{T-A-Sig}]{\Gamma \vdash [\Sigma]: [= \Sigma]}{
+    \Gamma \vdash \Sigma: \Omega
+  }
+\end{gather*}
+
+Admissible equivalence:
+
+$\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
+
+\begin{gather*}
+  \infer[\text{Eq-$\beta$-A-Val}]{\Gamma \vdash [e].\symval \equiv e: \tau}{
+    \Gamma \vdash e: \tau
+  }
+  \hspace{2em}
+  \infer[\text{Eq-$\eta$-A-Val}]{\Gamma \vdash [e.\symval] \equiv e: [\tau]}{
+    \Gamma \vdash e: [\tau]
+  }
+  \hspace{2em}
+  \infer[\text{Eq-Cong-A-Val}]{\Gamma \vdash [e_1] \equiv [e_2]: [\tau]}{
+    \Gamma \vdash e_1 \equiv e_2: \tau
+  }
+  \\
+  \infer[\text{Eq-Cong-A-Typ}]{\Gamma \vdash [\tau_1: \kappa] \equiv [\tau_2: \kappa]: [= \tau_1: \kappa]}{
+    \Gamma \vdash \tau_1 \equiv \tau_2: \kappa
+  }
+  \\
+  \infer[\text{Eq-Cong-A-Sig}]{\Gamma \vdash [\Sigma_1] \equiv [\Sigma_2]: [= \Sigma_1]}{
+    \Gamma \vdash \Sigma_1 \equiv \Sigma_2: \Omega
+  }
+\end{gather*}
+
+\subsection{Elaboration}
+
+Signature:
+
+$\fbox{$\Gamma \vdash S \elaborate \Sigma$}$
+
+\begin{gather*}
+  \infer[\text{S-Path}]{\Gamma \vdash P \elaborate \Sigma}{
+    \Gamma \vdash P: [= \Sigma] \elaborate e
+  }
+  \\
+  \infer[\text{S-Struct}]{\Gamma \vdash \{D\} \elaborate \Sigma}{
+    \Gamma \vdash D \elaborate \Sigma
+  }
+\end{gather*}
+
+Declarations:
+
+$\fbox{$\Gamma \vdash D \elaborate \Xi$}$
+
+\begin{gather*}
+  \infer[\text{D-Val}]{\Gamma \vdash \symval X: T \elaborate \{l_X: [\tau]\}}{
+    \Gamma \vdash T: \Omega \elaborate \tau
+  }
+  \\
+  \infer[\text{D-Typ-Eq}]{\Gamma \vdash \symtype X = T \elaborate \{l_X: [= \tau: \kappa]\}}{
+    \Gamma \vdash T: \kappa \elaborate \tau
+  }
+  \\
+  \infer[\text{D-Mod}]{\Gamma \vdash \symmodule X: S \elaborate \{l_X: \Sigma\}}{
+    \Gamma \vdash S \elaborate \Sigma
+  }
+  \\
+  \infer[\text{D-Sig-Eq}]{\Gamma \vdash \symsignature X = S \elaborate \{l_X: [= \Sigma]\}}{
+    \Gamma \vdash S \elaborate \Sigma
+  }
+  \\
+  \infer[\text{D-Incl}]{\Gamma \vdash \syminclude S \elaborate \{\overline{l_X: \Sigma}\}}{
+    \Gamma \vdash S \elaborate \{\overline{l_X: \Sigma}\}
+  }
+  \\
+  \infer[\text{D-Emt}]{\Gamma \vdash \epsilon \elaborate \{\}}{}
+  \\
+  \infer[\text{D-Seq}]{\Gamma \vdash D_1; D_2 \elaborate \{\overline{l_{X_1}: \Sigma_1}, \overline{l_{X_2}: \Sigma_2}\}}{
+    \{\overline{l_{X_1}}\} \cap \{\overline{l_{X_2}}\} = \emptyset
+    &
+    \Gamma \vdash D_1 \elaborate \{\overline{l_{X_1}: \Sigma_1}\}
+    &
+    \Gamma, \overline{x_{X_1}: \Sigma_1} \vdash D_2 \elaborate \{\overline{l_{X_2}: \Sigma_2}\}
+  }
+\end{gather*}
+
+Module:
+
+$\fbox{$\Gamma \vdash M: \Sigma \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{M-Var}]{\Gamma \vdash X: \Sigma \elaborate x_X}{
+    \Gamma(x_X) = \Sigma
+  }
+  \\
+  \infer[\text{M-Struct}]{\Gamma \vdash \{B\}: \Sigma \elaborate e}{
+    \Gamma \vdash B: \Sigma \elaborate e
+  }
+  \\
+  \infer[\text{M-Dot}]{\Gamma \vdash M.X: \Sigma \elaborate e.l_X}{
+    \Gamma \vdash M: \{l_X: \Sigma, \overline{l_{X'}: \Sigma'}\} \elaborate e
+  }
+\end{gather*}
+
+Bindings:
+
+$\fbox{$\Gamma \vdash B: \Sigma \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{B-Val}]{\Gamma \vdash \symval X = E: \{l_X: [\tau]\} \elaborate \{l_X = e\}}{
+    \Gamma \vdash E: \tau \elaborate e
+  }
+  \\
+  \infer[\text{B-Typ}]{\Gamma \vdash \symtype X = T: \{l_X: [= \tau: \kappa]\} \elaborate \{l_X = [\tau: \kappa]\}}{
+    \Gamma \vdash T: \kappa \elaborate \tau
+  }
+  \\
+  \infer[\text{B-Mod}]{\Gamma \vdash \symmodule X = M: \{l_X: \Sigma\} \elaborate \{l_X = e\}}{
+    \Gamma \vdash M: \Sigma \elaborate e
+    &
+    \symNotAtomic(\Sigma)
+  }
+  \\
+  \infer[\text{B-Sig}]{\Gamma \vdash \symsignature X = S: \{l_X: [= \Sigma]\} \elaborate \{l_X = [\Sigma]\}}{
+    \Gamma \vdash S \elaborate \Sigma
+  }
+  \\
+  \infer[\text{B-Incl}]{\Gamma \vdash \syminclude M: \{\overline{l_X: \Sigma}\} \elaborate e}{
+    \Gamma \vdash M: \{\overline{l_X: \Sigma}\} \elaborate e
+  }
+  \\
+  \infer[\text{B-Emt}]{\Gamma \vdash \epsilon: \{\} \elaborate \{\}}{}
+  \\
+  \infer[\text{B-Seq}]{
+    \Gamma \vdash B_1; B_2: \Sigma \elaborate
+    \begin{array}{l}
+      \symlet x_1 = e_1 \symin \\
+      \hspace{1em}\symlet x_2 = (\symlet \overline{x_{X_1}: \Sigma_1 = x_1.l_{X_1}} \symin e_2) \symin \\
+      \hspace{2em}\{\overline{l'_{X_1} = x_1.l'_{X_1}}, \overline{l_{X_2} = x_2.l_{X_2}}\}
+    \end{array}
+  }{
+    \begin{array}{lll}
+      \overline{l'_{X_1}} = \overline{l_{X_1}} \rcomplement \overline{l_{X_2}}
+      &
+      \overline{l'_{X_1}: \Sigma'_1} \subseteq \overline{l_{X_1}: \Sigma_1}
+      &
+      \Gamma \vdash B_1: \{\overline{l_{X_1}: \Sigma_1}\} \elaborate e_1
+      \\
+      \multicolumn{2}{l}{\Sigma = \{\overline{l'_{X_1}: \Sigma'_1}, \overline{l_{X_2}: \Sigma_2}\}}
+      &
+      \Gamma, \overline{x_{X_1}: \Sigma_1} \vdash B_2: \{\overline{l_{X_2}: \Sigma_2}\} \elaborate e_2
+    \end{array}
+  }
+\end{gather*}
+
+Path:
+
+$\fbox{$\Gamma \vdash P: \Sigma \elaborate e$}$
+
+Use M-Dot. \\
+
+$\fbox{$\Gamma \vdash T: \kappa \elaborate \tau$}$
+
+\begin{gather*}
+  \infer[\text{T-Elab-Path}]{\Gamma \vdash P: \kappa \elaborate \tau}{
+    \Gamma \vdash P: [= \tau: \kappa] \elaborate e
+  }
+\end{gather*}
+
+$\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
+
+\begin{gather*}
+  \infer[\text{E-Path}]{\Gamma \vdash P: \tau \elaborate e.\symval}{
+    \Gamma \vdash P: [\tau] \elaborate e
+  }
+\end{gather*}
+
