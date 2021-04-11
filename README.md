@@ -102,7 +102,7 @@ or using `docker-compose`
 
 * Peyton Jones, S., Partain, W., & Santos, A. (1996). Let-floating: moving bindings to give faster programs. ACM SIGPLAN Notices. Retrieved from http://dl.acm.org/citation.cfm?id=232630
 * Peyton Jones, S., & Marlow, S. (2002). Secrets of the Glasgow Haskell Compiler inliner. Journal of Functional Programming, 12(4–5), 393–434. https://doi.org/10.1017/S0956796802004331
-* Xu, D. N., & Jones, S. P. (2006). Arity Analysis.
+* Xu, D. N., & Jones, S. P. (2006). Arity Analysis. Retrieved from http://pauillac.inria.fr/~naxu/research/arity.pdf
 * Gill, A., & Hutton, G. (2009). The worker/wrapper transformation. Journal of Functional Programming, 19(02), 227. https://doi.org/10.1017/S0956796809007175
 * Hinze, R. (2012). Kan Extensions for Program Optimisation Or: Art and Dan Explain an Old Trick. In Mathematics of Program Construction (pp. 324–362). https://doi.org/10.1007/978-3-642-31113-0_16
 * Peyton Jones, S. (2015). Theory and Practice of Demand Analysis in Haskell. Retrieved from https://www.microsoft.com/en-us/research/publication/theory-practice-demand-analysis-haskell/
