@@ -121,3 +121,5 @@ or using `docker-compose`
 
 * Girard, J.-Y., Taylor, P., & Lafont, Y. (1989). Proofs and Types. In Cambridge University Press. https://doi.org/10.5555/64805
 * Pierce, B. C. (2002). Types and programming languages. Retrieved from https://www.cis.upenn.edu/~bcpierce/tapl/
+* Sørensen, M. H., & Urzyczyn, P. (2006). Lectures on the Curry-Howard Isomorphism, Volume 149 (Studies in Logic and the Foundations of Mathematics). https://doi.org/10.5555/1197021
+* Gunter, C. A. (1992). Semantics of Programming Languages: Structures and Techniques. https://doi.org/10.5555/134316
