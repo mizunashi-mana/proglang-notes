@@ -12,19 +12,18 @@
   &\BNFor ee &(\text{sequence}) \\
   &\BNFor e \mathrel{/} e &(\text{alternative}) \\
   &\BNFor e^* &(\text{repetition}) \\
-  &\BNFor \mathop{\&} e &(\text{and predicate}) \\
   &\BNFor \mathop{!} e &(\text{not predicate}) \\
   \sigma &\in \Sigma \\
   A &\in N
 \end{align*}
 
 \begin{definition}
-  PEG 文法とは，以下による組 $G = (\Sigma, N, R, e_S)$ のことである．
+  PEG 文法とは，以下による組 $G = (\Sigma, N, R, e_0)$ のことである．
   \begin{description}
     \item[$\Sigma$] 終端記号の集合．
     \item[$N$] 非終端記号の集合．
     \item[$R$] $A \to e$ を満たす規則の集合．規則は，非終端記号に対して必ず一つ．
-    \item[$e_S$] 初期式．
+    \item[$e_0$] 初期式．
   \end{description}
 \end{definition}
 
@@ -81,14 +80,6 @@
     \langle e, x\rangle \symfail
   }
   \\
-  \infer{\langle \& e, xy\rangle \to \epsilon}{
-    \langle e, xy\rangle \to x
-  }
-  \hspace{2em}
-  \infer{\langle \& e, x\rangle \symfail}{
-    \langle e, x\rangle \symfail
-  }
-  \\
   \infer{\langle !e, xy\rangle \to \epsilon}{
     \langle e, xy\rangle \symfail
   }
@@ -99,11 +90,37 @@
 \end{gather*}
 
 \begin{align*}
-  \semanticf{(\Sigma, N, R, e_S)} &= \semanticf{e_S} \\
+  \semanticf{(\Sigma, N, R, e_0)} &= \semanticf{e_0} \\
   \semanticf{e} &= \{s \in \Sigma^* \mid \langle e, s\rangle \to s\}
 \end{align*}
 
-\subsection{Normal Form}
+\subsection{Equivalence}
+
+\subsubsection{Abbreviations}
+
+\begin{align*}
+  \mathop{\&} e &= \mathop{!} (\mathop{!} e) &(\text{and predicate}) \\
+  e+ &= e e^* &(\text{positive repetition}) \\
+  e? &= e / \epsilon &(\text{optional})
+\end{align*}
+
+\subsubsection{Associativity}
+
+\begin{gather*}
+  \infer{\semanticf{e_1 / (e_2 / e_3)} = \semanticf{(e_1 / e_2) / e_3}}{}
+  \\
+  \infer{\semanticf{e_1 (e_2 e_3)} = \semanticf{(e_1 e_2) e_3}}{}
+\end{gather*}
+
+\subsubsection{Epsilon}
+
+\begin{gather*}
+  \infer{\semanticf{e_1 / \epsilon / e_2} = \semanticf{e_1 / \epsilon}}{}
+  \\
+  \infer{\semanticf{e \epsilon} = \semanticf{e}}{}
+  \hspace{2em}
+  \infer{\semanticf{\epsilon e} = \semanticf{e}}{}
+\end{gather*}
 
 \subsubsection{Repetition}
 
@@ -115,13 +132,44 @@
   \infer{\semanticf{e^*} = \semanticf{M}}{}
 \end{gather*}
 
-\subsubsection{And Predicate}
+\subsection{Producing Analysis}
 
-\begin{gather*}
-  \infer{\semanticf{(\mathop{\&} e_1)\, e_2} = \semanticf{(\mathop{!} (\mathop{!} e_1))\, e_2}}{}
-\end{gather*}
+$s \Coloneqq 0 \mid 1$，$o \Coloneqq s \mid \symfail$
 
-\subsubsection{Normalizing}
+\begin{itemize}
+  \item $\epsilon \pto 0$
+  \item $\sigma \pto 1$
+  \item $\sigma \pto \symfail$
+  \item $A \assign e \in R$，$e \pto o$ ならば $A \pto o$
+  \item $e_1 \pto 0$，$e_2 \pto 0$ ならば $e_1e_2 \pto 0$
+  \item $e_1 \pto 1$，$e_2 \pto s$ ならば $e_1e_2 \pto 1$
+  \item $e_1 \pto s$，$e_2 \pto 1$ ならば $e_1e_2 \pto 1$
+  \item $e_1 \pto \symfail$ ならば $e_1e_2 \pto \symfail$
+  \item $e_1 \pto s$，$e_2 \pto \symfail$ ならば $e_1e_2 \pto \symfail$
+  \item $e_1 \pto s$ ならば $e_1 \mathrel{/} e_2 \pto s$
+  \item $e_1 \pto \symfail$，$e_2 \pto o$ ならば $e_1 \mathrel{/} e_2 \pto o$
+  \item $e \pto 1$ ならば $e^* \pto 1$
+  \item $e \pto \symfail$ ならば $e^* \pto \symfail$
+  \item $e \pto s$ ならば $\mathop{!} e \pto \symfail$
+  \item $e \pto \symfail$ ならば $\mathop{!} e \pto 0$
+\end{itemize}
+
+\begin{theorem}
+  \hwordspace{}
+  \begin{itemize}
+    \item $\langle e, x\rangle \to \epsilon$ ならば，$e \pto 0$
+    \item $\langle e, xy\rangle \to x$，$x \neq \epsilon$ ならば，$e \pto 1$
+    \item $\langle e, x\rangle \symfail$ ならば，$e \pto \symfail$
+  \end{itemize}
+\end{theorem}
+
+\begin{corollary}
+  $e \not\pto o$ ならば，$\langle e, xy\rangle \not\to x$ かつ $\langle e, xy\rangle \not{\symfail}$
+\end{corollary}
+
+\subsection{Some Notes}
+
+\subsubsection{PEG 実装のための正規化候補}
 
 \begin{align*}
   e_{\mathrm{RHS}}
@@ -134,4 +182,29 @@
   u
   &\Coloneqq \sigma \\
   &\BNFor A
+\end{align*}
+
+\begin{align*}
+  \symnorm(N, \epsilon) &= ([\epsilon], N, \emptyset) \\
+  \symnorm(N, \sigma) &= ([\sigma], N, \emptyset) \\
+  \symnorm(N, A) &= ([A], N, \emptyset) \\
+  \symnorm(N, e_1 e_2) &= (\symseq(a_1, a_2), N_2, X_1 \cup X_2) &(\symnorm(N, e_1) = (a_1, N_1, X_1), \symnorm(N_1, e_2) = (a_2, N_2, X_2)) \\
+  \symnorm(N, e_1 / e_2) &= (a_1 + a_2, N_2, X_1 \cup X_2) &(\symnorm(N, e_1) = (a_1, N_1, X_1), \symnorm(N_1, e_2) = (a_2, N_2, X_2)) \\
+  \symnorm(N, e^*) &= ([M], N \uplus \{M\}, \{M \assign e M \mathrel{/} \epsilon\}) \\
+  \symnorm(N, \mathop{\&} e) &= ([A], N \uplus \{A\}, \{A \assign \mathop{\&} e\}) \\
+  \symnorm(N, \mathop{!} e) &= ([A], N \uplus \{A\}, \{A \assign \mathop{!} e\}) \\
+  \symseq(a_1, a_2) &= [e_1 e_2 \mid e_1 \assign a_1, e_2 \assign a_2]
+\end{align*}
+
+\begin{gather*}
+  \symnorm((\Sigma, N, R, e_0)) = (\Sigma, N', R', S) \\
+  (R = \{A_1 \assign e_1, \ldots, A_n \assign e_n\}, \symnorm(N \uplus \{S\}, [S \assign e_0, A_1 \assign e_1, \ldots, A_n \assign e_n]) = (N', R'))
+\end{gather*}
+
+\begin{align*}
+  \symnorm(N, []) &= (N, \emptyset) \\
+  \symnorm(N, [A \assign e] + R) &= (N_2, \{A \assign \symalt(a)\} \cup R_1 \cup R_2) \\
+  &\hspace{3em}(\symnorm(N, e) = (a, N_1, R_1), \symnorm(N_1, R) = (N_2, R_2)) \\
+  \symalt([e_1, \ldots, e_n]) &= e_1 / \cdots / e_m &(\forall i < m\ldotp e_i \neq \epsilon, e_m = \epsilon) \\
+  \symalt([e_1, \ldots, e_n]) &= e_1 / \cdots / e_n &(\forall i\ldotp e_i \neq \epsilon)
 \end{align*}
