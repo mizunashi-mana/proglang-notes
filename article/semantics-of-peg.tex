@@ -33,12 +33,10 @@
 \begin{gather*}
   \infer{\langle \epsilon, x\rangle \to \epsilon}{}
   \\
-  \infer{\langle a, bx\rangle \to b}{
-    a = b
-  }
+  \infer{\langle \sigma, \sigma x\rangle \to \sigma}{}
   \hspace{2em}
-  \infer{\langle a, bx\rangle \symfail}{
-    a \neq b
+  \infer{\langle \sigma, \sigma' x\rangle \symfail}{
+    \sigma \neq \sigma'
   }
   \\
   \infer{\langle A, xy\rangle \to x}{
@@ -103,4 +101,37 @@
 \begin{align*}
   \semanticf{(\Sigma, N, R, e_S)} &= \semanticf{e_S} \\
   \semanticf{e} &= \{s \in \Sigma^* \mid \langle e, s\rangle \to s\}
+\end{align*}
+
+\subsection{Normal Form}
+
+\subsubsection{Repetition}
+
+\begin{align*}
+  M &\Coloneqq e M \mid \epsilon
+\end{align*}
+
+\begin{gather*}
+  \infer{\semanticf{e^*} = \semanticf{M}}{}
+\end{gather*}
+
+\subsubsection{And Predicate}
+
+\begin{gather*}
+  \infer{\semanticf{(\mathop{\&} e_1)\, e_2} = \semanticf{(\mathop{!} (\mathop{!} e_1))\, e_2}}{}
+\end{gather*}
+
+\subsubsection{Normalizing}
+
+\begin{align*}
+  e_{\mathrm{RHS}}
+  &\Coloneqq e_1 / \cdots / e_n / \epsilon &(n \in \Natural) \\
+  &\BNFor e_1 / \cdots / e_n &(n \in \Natural_{\geq 1}) \\
+  e
+  &\Coloneqq (! e)\, e \\
+  &\BNFor (\& e)\, e \\
+  &\BNFor u_1 \cdots u_n &(n \in \Natural_{\geq 1}) \\
+  u
+  &\Coloneqq \sigma \\
+  &\BNFor A
 \end{align*}
