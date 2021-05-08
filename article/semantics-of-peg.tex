@@ -1,0 +1,106 @@
+\section{Syntax and Semantics of PEG}
+
+\cite{Ford:2002}, \cite{Ford:2004}
+
+\subsection{Syntax}
+
+\begin{align*}
+  e
+  &\Coloneqq \epsilon &(\text{epsilon}) \\
+  &\BNFor \sigma &(\text{terminal}) \\
+  &\BNFor A &(\text{non-terminal}) \\
+  &\BNFor ee &(\text{sequence}) \\
+  &\BNFor e \mathrel{/} e &(\text{alternative}) \\
+  &\BNFor e^* &(\text{repetition}) \\
+  &\BNFor \mathop{\&} e &(\text{and predicate}) \\
+  &\BNFor \mathop{!} e &(\text{not predicate}) \\
+  \sigma &\in \Sigma \\
+  A &\in N
+\end{align*}
+
+\begin{definition}
+  PEG 文法とは，以下による組 $G = (\Sigma, N, R, e_S)$ のことである．
+  \begin{description}
+    \item[$\Sigma$] 終端記号の集合．
+    \item[$N$] 非終端記号の集合．
+    \item[$R$] $A \to e$ を満たす規則の集合．規則は，非終端記号に対して必ず一つ．
+    \item[$e_S$] 初期式．
+  \end{description}
+\end{definition}
+
+\subsection{Structured Semantics}
+
+\begin{gather*}
+  \infer{\langle \epsilon, x\rangle \to \epsilon}{}
+  \\
+  \infer{\langle a, bx\rangle \to b}{
+    a = b
+  }
+  \hspace{2em}
+  \infer{\langle a, bx\rangle \symfail}{
+    a \neq b
+  }
+  \\
+  \infer{\langle A, xy\rangle \to x}{
+    A \assign e \in R
+    &
+    \langle e, xy\rangle \to x
+  }
+  \\
+  \infer{\langle e_1e_2, x_1x_2y\rangle \to x_1x_2}{
+    \langle e_1, x_1x_2y\rangle \to x_1
+    &
+    \langle e_2, x_2y\rangle \to x_2
+  }
+  \hspace{2em}
+  \infer{\langle e_1e_2, x\rangle \symfail}{
+    \langle e_1, x\rangle \symfail
+  }
+  \hspace{2em}
+  \infer{\langle e_1e_2, x_1y\rangle \symfail}{
+    \langle e_1, x_1y\rangle \to x_1
+    &
+    \langle e_2, y\rangle \symfail
+  }
+  \\
+  \infer{\langle e_1 \mathrel{/} e_2, xy\rangle \to x}{
+    \langle e_1, xy\rangle \to x
+  }
+  \hspace{2em}
+  \infer{\langle e_1 \mathrel{/} e_2, xy\rangle \to x}{
+    \langle e_1, xy\rangle \symfail
+    &
+    \langle e_2, xy\rangle \to x
+  }
+  \\
+  \infer{\langle e^*, x_1x_2y\rangle \to x_1x_2}{
+    \langle e, x_1x_2y\rangle \to x_1
+    &
+    \langle e^*, x_2y\rangle \to x_2
+  }
+  \hspace{2em}
+  \infer{\langle e^*, x\rangle \to \epsilon}{
+    \langle e, x\rangle \symfail
+  }
+  \\
+  \infer{\langle \& e, xy\rangle \to \epsilon}{
+    \langle e, xy\rangle \to x
+  }
+  \hspace{2em}
+  \infer{\langle \& e, x\rangle \symfail}{
+    \langle e, x\rangle \symfail
+  }
+  \\
+  \infer{\langle !e, xy\rangle \to \epsilon}{
+    \langle e, xy\rangle \symfail
+  }
+  \hspace{2em}
+  \infer{\langle !e, xy\rangle \symfail}{
+    \langle e, xy\rangle \to x
+  }
+\end{gather*}
+
+\begin{align*}
+  \semanticf{(\Sigma, N, R, e_S)} &= \semanticf{e_S} \\
+  \semanticf{e} &= \{s \in \Sigma^* \mid \langle e, s\rangle \to s\}
+\end{align*}

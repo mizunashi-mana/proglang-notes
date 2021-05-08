@@ -96,7 +96,9 @@ or using `docker-compose`
 
 ### Syntax and Parsing
 
-* Ford, B. (2002). Packrat parsing: Simple, Powerful, Lazy, Linear Time. ACM SIGPLAN Notices, 37(9), 36–47. https://doi.org/10.1145/583852.581483
+* Ford, B. (2002). Packrat parsing: Simple, Powerful, Lazy, Linear Time. Proceedings of the Seventh ACM SIGPLAN International Conference on Functional Programming - ICFP ’02, 37(9), 36–47. https://doi.org/10.1145/581478.581483
+* Ford, B. (2002). Packrat Parsing : a Practical Linear-Time Algorithm with Backtracking by (Massachusetts Institute of Technology). Retrieved from https://pdos.csail.mit.edu/~baford/packrat/thesis/thesis.pdf
+* Ford, B. (2004). Parsing Expression Grammars: A Recognition-Based Syntactic Foundation. ACM SIGPLAN Notices, 39(1), 111–122. https://doi.org/10.1145/982962.964011
 
 ### Analysis and Optimizations
 
