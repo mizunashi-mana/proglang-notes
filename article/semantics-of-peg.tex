@@ -115,7 +115,7 @@
 \subsubsection{Epsilon}
 
 \begin{gather*}
-  \infer{\semanticf{e_1 / \epsilon / e_2} = \semanticf{e_1 / \epsilon}}{}
+  \infer{\semanticf{\epsilon / e} = \semanticf{\epsilon}}{}
   \\
   \infer{\semanticf{e \epsilon} = \semanticf{e}}{}
   \hspace{2em}
@@ -166,45 +166,3 @@ $s \Coloneqq 0 \mid 1$，$o \Coloneqq s \mid \symfail$
 \begin{corollary}
   $e \not\pto o$ ならば，$\langle e, xy\rangle \not\to x$ かつ $\langle e, xy\rangle \not{\symfail}$
 \end{corollary}
-
-\subsection{Some Notes}
-
-\subsubsection{PEG 実装のための正規化候補}
-
-\begin{align*}
-  e_{\mathrm{RHS}}
-  &\Coloneqq e_1 / \cdots / e_n / \epsilon &(n \in \Natural) \\
-  &\BNFor e_1 / \cdots / e_n &(n \in \Natural_{\geq 1}) \\
-  e
-  &\Coloneqq (! e)\, e \\
-  &\BNFor (\& e)\, e \\
-  &\BNFor u_1 \cdots u_n &(n \in \Natural_{\geq 1}) \\
-  u
-  &\Coloneqq \sigma \\
-  &\BNFor A
-\end{align*}
-
-\begin{align*}
-  \symnorm(N, \epsilon) &= ([\epsilon], N, \emptyset) \\
-  \symnorm(N, \sigma) &= ([\sigma], N, \emptyset) \\
-  \symnorm(N, A) &= ([A], N, \emptyset) \\
-  \symnorm(N, e_1 e_2) &= (\symseq(a_1, a_2), N_2, X_1 \cup X_2) &(\symnorm(N, e_1) = (a_1, N_1, X_1), \symnorm(N_1, e_2) = (a_2, N_2, X_2)) \\
-  \symnorm(N, e_1 / e_2) &= (a_1 + a_2, N_2, X_1 \cup X_2) &(\symnorm(N, e_1) = (a_1, N_1, X_1), \symnorm(N_1, e_2) = (a_2, N_2, X_2)) \\
-  \symnorm(N, e^*) &= ([M], N \uplus \{M\}, \{M \assign e M \mathrel{/} \epsilon\}) \\
-  \symnorm(N, \mathop{\&} e) &= ([A], N \uplus \{A\}, \{A \assign \mathop{\&} e\}) \\
-  \symnorm(N, \mathop{!} e) &= ([A], N \uplus \{A\}, \{A \assign \mathop{!} e\}) \\
-  \symseq(a_1, a_2) &= [e_1 e_2 \mid e_1 \assign a_1, e_2 \assign a_2]
-\end{align*}
-
-\begin{gather*}
-  \symnorm((\Sigma, N, R, e_0)) = (\Sigma, N', R', S) \\
-  (R = \{A_1 \assign e_1, \ldots, A_n \assign e_n\}, \symnorm(N \uplus \{S\}, [S \assign e_0, A_1 \assign e_1, \ldots, A_n \assign e_n]) = (N', R'))
-\end{gather*}
-
-\begin{align*}
-  \symnorm(N, []) &= (N, \emptyset) \\
-  \symnorm(N, [A \assign e] + R) &= (N_2, \{A \assign \symalt(a)\} \cup R_1 \cup R_2) \\
-  &\hspace{3em}(\symnorm(N, e) = (a, N_1, R_1), \symnorm(N_1, R) = (N_2, R_2)) \\
-  \symalt([e_1, \ldots, e_n]) &= e_1 / \cdots / e_m &(\forall i < m\ldotp e_i \neq \epsilon, e_m = \epsilon) \\
-  \symalt([e_1, \ldots, e_n]) &= e_1 / \cdots / e_n &(\forall i\ldotp e_i \neq \epsilon)
-\end{align*}

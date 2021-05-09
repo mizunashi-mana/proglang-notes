@@ -1,0 +1,67 @@
+\section{WIP: Implementation Note of PEG Parser}
+
+\subsubsection{Normalizing}
+
+\begin{align*}
+  e_{\mathrm{RHS}}
+  &\Coloneqq e_1 \mathrel{/} \cdots \mathrel{/} e_n \mathrel{/} \epsilon &(n \in \Natural) \\
+  &\BNFor e_1 \mathrel{/} \cdots \mathrel{/} e_n &(n \in \Natural_{\geq 1}) \\
+  e
+  &\Coloneqq \mathop{!} e \\
+  &\BNFor \mathop{\&} e \\
+  &\BNFor u_1 \cdots u_n &(n \in \Natural_{\geq 1}) \\
+  u
+  &\Coloneqq \sigma \\
+  &\BNFor A
+\end{align*}
+
+\begin{align*}
+  \symnorm(N, []) &= (N, \emptyset) \\
+  \symnorm(N, [A \assign e] + X) &= (N_2, \{A \assign \symalt(a)\} \cup X_1 \cup X_2) \\
+  &\hspace{3em}(\symnorm(N, e) = (a, N_1, X_1), \symnorm(N_1, X) = (N_2, X_2))
+\end{align*}
+
+\begin{align*}
+  \symnorm(N, \epsilon) &= ([\epsilon], N, \emptyset) \\
+  \symnorm(N, \sigma) &= ([\sigma], N, \emptyset) \\
+  \symnorm(N, A) &= ([A], N, \emptyset) \\
+  \symnorm(N, e_1 e_2) &= (\symseq(a_1, a_2), N_2, X_1 \cup X_2) &(\symnorm(N, e_1) = (a_1, N_1, X_1), \symnorm(N_1, e_2) = (a_2, N_2, X_2)) \\
+  \symnorm(N, e_1 / e_2) &= (a_1 + a_2, N_2, X_1 \cup X_2) &(\symnorm(N, e_1) = (a_1, N_1, X_1), \symnorm(N_1, e_2) = (a_2, N_2, X_2)) \\
+  \symnorm(N, e^*) &= ([M], N' \uplus \{M\}, X \cup \{M \assign A M / \epsilon\}) &(\symnorm(N \uplus \{A\}, [A \assign e]) = (N', X)) \\
+  \symnorm(N, \mathop{\&} e) &= ([M], N' \uplus \{M\}, X \cup \{M \assign \mathop{\&} A\}) &(\symnorm(N \plus \{A\}, [A \assign e]) = (N', X)) \\
+  \symnorm(N, \mathop{!} e) &= ([M], N' \uplus \{M\}, X \cup \{M \assign \mathop{!} A\}) &(\symnorm(N \plus \{A\}, [A \assign e]) = (N', X))
+\end{align*}
+
+\begin{align*}
+  \symseq(a_1, a_2) &= [e_1 e_2 \mid e_1 \assign a_1, e_2 \assign a_2] \\
+  \symalt([e_1, \ldots, e_n]) &= e_1 / \cdots / e_m &(\forall i < m\ldotp e_i \neq \epsilon, e_m = \epsilon) \\
+  \symalt([e_1, \ldots, e_n]) &= e_1 / \cdots / e_n &(\forall i\ldotp e_i \neq \epsilon)
+\end{align*}
+
+\begin{gather*}
+  \symnorm((\Sigma, N, R, e_0)) = (\Sigma, N', R', S) \\
+  (R = \{A_1 \assign e_1, \ldots, A_n \assign e_n\}, \symnorm(N \uplus \{S\}, [S \assign e_0, A_1 \assign e_1, \ldots, A_n \assign e_n]) = (N', R'))
+\end{gather*}
+
+\subsubsection{Machine}
+
+State:
+\begin{itemize}
+  \item a rule
+  \item current position in rule
+\end{itemize}
+
+Transition:
+\begin{itemize}
+  \item $\sigma$
+  \item EOS
+  \item otherwise
+\end{itemize}
+
+Output:
+\begin{itemize}
+  \item shift, and enter next state
+  \item reduce by rule alternative
+  \item reduce back by rule alternative
+  \item fail back, and enter next state
+\end{itemize}
