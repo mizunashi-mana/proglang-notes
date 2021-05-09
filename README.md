@@ -79,6 +79,10 @@ or using `docker-compose`
 
 ### Dynamic Memory Management and Gabage Collection
 
+* Ueno, K., Ohori, A., & Otomo, T. (2011). An efficient non-moving garbage collector for functional languages. Proceeding of the 16th ACM SIGPLAN International Conference on Functional Programming - ICFP ’11, 196. https://doi.org/10.1145/2034773.2034802
+* Ueno, K., & Ohori, A. (2016). A fully concurrent garbage collector for functional programs on multicore processors. Proceedings of the 21st ACM SIGPLAN International Conference on Functional Programming, 51(9), 421–433. https://doi.org/10.1145/2951913.2951944
+* Gamari, B., & Dietz, L. (2020). Alligator collector: a latency-optimized garbage collector for functional programming languages. Proceedings of the 2020 ACM SIGPLAN International Symposium on Memory Management, 87–99. https://doi.org/10.1145/3381898.3397214
+
 ### I/O Management and Concurrency
 
 * Voellmy, A. R., Wang, J., Hudak, P., & Yamamoto, K. (2013). Mio: a high-performance multicore io manager for GHC. Proceedings of the 2013 ACM SIGPLAN Symposium on Haskell - Haskell ’13, 48(12), 129. https://doi.org/10.1145/2503778.2503790
@@ -127,3 +131,4 @@ or using `docker-compose`
 * Gunter, C. A. (1992). Semantics of Programming Languages: Structures and Techniques. https://doi.org/10.5555/134316
 * Appel, A. W. (2007). Compiling with Continuations. https://doi.org/10.5555/1512932
 * Mimram, S. (2020). PROGRAM = PROOF. Retrieved from https://www.lix.polytechnique.fr/Labo/Samuel.Mimram/teaching/INF551/course.pdf
+* Jones, R., Hosking, A., & Moss, E. (2011). The Garbage Collection Handbook: The Art of Automatic Memory Management (1st ed.). Chapman & Hall/CRC.
