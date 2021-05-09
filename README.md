@@ -131,4 +131,4 @@ or using `docker-compose`
 * Gunter, C. A. (1992). Semantics of Programming Languages: Structures and Techniques. https://doi.org/10.5555/134316
 * Appel, A. W. (2007). Compiling with Continuations. https://doi.org/10.5555/1512932
 * Mimram, S. (2020). PROGRAM = PROOF. Retrieved from https://www.lix.polytechnique.fr/Labo/Samuel.Mimram/teaching/INF551/course.pdf
-* Jones, R., Hosking, A., & Moss, E. (2011). The Garbage Collection Handbook: The Art of Automatic Memory Management (1st ed.). Chapman & Hall/CRC.
+* Jones, R., Hosking, A., & Moss, E. (2011). The Garbage Collection Handbook: The Art of Automatic Memory Management (1st ed.). Retrieved from https://gchandbook.org/
