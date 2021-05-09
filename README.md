@@ -126,4 +126,4 @@ or using `docker-compose`
 * Sørensen, M. H., & Urzyczyn, P. (2006). Lectures on the Curry-Howard Isomorphism, Volume 149 (Studies in Logic and the Foundations of Mathematics). https://doi.org/10.5555/1197021
 * Gunter, C. A. (1992). Semantics of Programming Languages: Structures and Techniques. https://doi.org/10.5555/134316
 * Appel, A. W. (2007). Compiling with Continuations. https://doi.org/10.5555/1512932
-
+* Mimram, S. (2020). PROGRAM = PROOF. Retrieved from https://www.lix.polytechnique.fr/Labo/Samuel.Mimram/teaching/INF551/course.pdf
