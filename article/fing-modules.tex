@@ -330,7 +330,7 @@ Bindings:
 $\fbox{$\Gamma \vdash B: \Xi \elaborate e$}$
 
 \begin{gather*}
-  \infer[\text{B-Val}]{\Gamma \vdash \symval X = E: \{l_X: [\tau]\} \elaborate \{l_X = e\}}{
+  \infer[\text{B-Val}]{\Gamma \vdash \symval X = E: \{l_X: [\tau]\} \elaborate \{l_X = [e]\}}{
     \Gamma \vdash E: \tau \elaborate e
   }
   \\

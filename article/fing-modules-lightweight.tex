@@ -558,7 +558,7 @@ $\fbox{$\Gamma \vdash S \elaborate \Sigma$}$
 
 Declarations:
 
-$\fbox{$\Gamma \vdash D \elaborate \Xi$}$
+$\fbox{$\Gamma \vdash D \elaborate \Sigma$}$
 
 \begin{gather*}
   \infer[\text{D-Val}]{\Gamma \vdash \symval X: T \elaborate \{l_X: [\tau]\}}{
@@ -615,7 +615,7 @@ Bindings:
 $\fbox{$\Gamma \vdash B: \Sigma \elaborate e$}$
 
 \begin{gather*}
-  \infer[\text{B-Val}]{\Gamma \vdash \symval X = E: \{l_X: [\tau]\} \elaborate \{l_X = e\}}{
+  \infer[\text{B-Val}]{\Gamma \vdash \symval X = E: \{l_X: [\tau]\} \elaborate \{l_X = [e]\}}{
     \Gamma \vdash E: \tau \elaborate e
   }
   \\
