@@ -45,7 +45,6 @@
 
 \subsubsection{Machine}
 
-State:
 \begin{itemize}
   \item a rule
   \item current position in rule
@@ -59,9 +58,33 @@ Transition:
 \end{itemize}
 
 Output:
-\begin{itemize}
-  \item shift, and enter next state
-  \item reduce by rule alternative
-  \item reduce back by rule alternative
-  \item fail back, and enter next state
-\end{itemize}
+\begin{description}
+  \item[with backpoint] バックポイントを設置し，バックポイントに戻った時の次の遷移を指定する．fail した場合一番直近の backpoint まで入力状態とスタックを戻す．reduce 時取り除かれる．
+  \item[enter] reduce 時戻ってくる状態を記録し，次の状態に遷移する．
+  \item[goto] 次の状態に遷移する．
+  \item[shift] 入力を1つ消費し，次の状態に遷移する．
+  \item[reduce] 規則に沿ってスタックから要素を取り出してまとめ，スタックに新たに入れた後，enter 時に記録された状態に遷移する．
+\end{description}
+
+\subsubsection{Example}
+
+\begin{align*}
+  E
+  &\BNFassign C A \\
+  &\BNFor \epsilon \\
+  A
+  &\BNFassign a B \\
+  &\BNFor a \\
+  B
+  &\BNFassign b A \\
+  &\BNFor b \\
+  C
+  &\BNFassign \mathop{!} abab \\
+  &\BNFor \mathop{\&} ab
+\end{align*}
+
+\begin{figure}
+  \centering
+  \includegraphics[height=0.9\textheight]{asset/implementation-note-of-peg-parser/sample-grammar.png}
+  \caption{状態遷移図}
+\end{figure}

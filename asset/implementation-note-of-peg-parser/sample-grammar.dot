@@ -1,0 +1,340 @@
+digraph {
+  graph [
+    charset = "UTF-8";
+  ];
+
+  node [
+    shape = box;
+  ];
+
+  start;
+  accepted;
+  reduced;
+
+  start -> node1_enter_joint [
+    label = "(-): enter",
+    arrowhead = "none"
+  ];
+
+  node1_enter_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node1_enter_joint -> node1;
+  node1_enter_joint -> accepted [
+    style = "dotted"
+  ];
+
+  node1 [
+    label = "E <- . C A"
+  ];
+
+  node1 -> node2_joint [
+    label = "(-): with backpoint",
+    arrowhead = "none"
+  ];
+
+  node2_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node2_joint -> node2_enter_joint [
+    label = "enter",
+    arrowhead = "none"
+  ];
+
+  node2_enter_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node2_enter_joint -> node2;
+
+  node2_enter_joint -> node12 [
+    style = "dotted"
+  ];
+
+  node2_joint -> node8 [
+    label = "(-): goto",
+    style = "dashed"
+  ];
+
+  node2 [
+    label = "C <- ; . ! a b a b"
+  ];
+
+  node2 -> node3_joint [
+    label = "(-): with backpoint",
+    arrowhead = "none"
+  ];
+
+  node3_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node3_joint -> node3 [
+    label = "goto"
+  ];
+
+  node3_joint -> reduced [
+    style = "dashed"
+  ];
+
+  node3 [
+    label = "C <- ; ! ; . a b a b"
+  ];
+
+  node3 -> node4 [
+    label = "(a): shift"
+  ];
+
+  node4 [
+    label = "C <- ; ! ; a . b a b"
+  ];
+
+  node4 -> node5 [
+    label = "(b): shift"
+  ];
+
+  node5 [
+    label = "C <- ; ! ; a b . a b"
+  ];
+
+  node5 -> node6 [
+    label = "(a): shift"
+  ];
+
+  node6 [
+    label = "C <- ; ! ; a b a . b"
+  ];
+
+  node6 -> node7 [
+    label = "(b): shift"
+  ];
+
+  node7 [
+    label = "C <- ; ! ; a b a b ."
+  ];
+
+  node7 -> reduced;
+
+  node8 [
+    label = "C <- . \& a b"
+  ];
+
+  node8 -> node9 [
+    label = "(-): goto"
+  ];
+
+  node9 [
+    label = "C <- \& . a b"
+  ];
+
+  node9 -> node10 [
+    label = "(a): shift"
+  ];
+
+  node10 [
+    label = "C <- \& a . b"
+  ];
+
+  node10 -> node11 [
+    label = "(b): shift"
+  ];
+
+  node11 [
+    label = "C <- \& a b ."
+  ];
+
+  node11 -> reduced;
+
+  node12 [
+    label = "E <- C . A";
+  ];
+
+  node12 -> node13_joint [
+    label = "(-): with backpoint",
+    arrowhead = "none"
+  ];
+
+  node13_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node13_joint -> node13_enter_joint [
+    label = "enter",
+    arrowhead = "none"
+  ];
+
+  node13_joint -> node17 [
+    label = "(-): goto",
+    style = "dashed"
+  ];
+
+  node13_enter_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node13_enter_joint -> node13;
+
+  node13_enter_joint -> node23 [
+    style = "dotted"
+  ];
+
+  node13 [
+    label = "A <- ; . a B"
+  ];
+
+  node13 -> node14 [
+    label = "(a): shift"
+  ];
+
+  node14 [
+    label = "A <- ; a . B"
+  ];
+
+  node14 -> node15_joint [
+    label = "(-): with backpoint",
+    arrowhead = "none"
+  ];
+
+  node15_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node15_joint -> node15_enter_joint [
+    label = "enter",
+    arrowhead = "none"
+  ];
+
+  node15_joint -> node19 [
+    label = "(-): goto",
+    style = "dashed"
+  ];
+
+  node15_enter_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node15_enter_joint -> node15;
+
+  node15_enter_joint -> node21 [
+    style = "dotted"
+  ];
+
+  node15 [
+    label = "B <- ; . b A"
+  ];
+
+  node15 -> node16 [
+    label = "(b): shift"
+  ];
+
+  node16 [
+    label = "B <- ; b . A"
+  ];
+
+  node16 -> node16_13_joint [
+    label = "(-): with backpoint",
+    arrowhead = "none"
+  ];
+
+  node16_13_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node16_13_joint -> node16_13_enter_joint [
+    label = "enter",
+    arrowhead = "none"
+  ];
+
+  node16_13_joint -> node17 [
+    label = "(-): goto",
+    style = "dashed"
+  ];
+
+  node16_13_enter_joint [
+    shape = "none",
+    label = "",
+    width = 0,
+    height = 0
+  ];
+
+  node16_13_enter_joint -> node13;
+
+  node16_13_enter_joint -> node22 [
+    style = "dotted"
+  ];
+
+  node17 [
+    label = "A <- . a"
+  ];
+
+  node17 -> node18 [
+    label = "(a): shift"
+  ];
+
+  node18 [
+    label = "A <- a ."
+  ];
+
+  node18 -> reduced;
+
+  node19 [
+    label = "B <- . b"
+  ];
+
+  node19 -> node20 [
+    label = "(b): shift"
+  ];
+
+  node20 [
+    label = "B <- b ."
+  ];
+
+  node20 -> reduced;
+
+  node21 [
+    label = "A <- a B ."
+  ];
+
+  node21 -> reduced;
+
+  node22 [
+    label = "B <- b A ."
+  ];
+
+  node22 -> reduced;
+
+  node23 [
+    label = "E <- C A ."
+  ];
+
+  node23 -> reduced;
+}
