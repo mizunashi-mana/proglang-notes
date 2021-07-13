@@ -67,8 +67,8 @@ digraph {
     style = "dotted"
   ];
 
-  node2_joint -> node8 [
-    label = "(-): goto",
+  node2_joint -> node10 [
+    label = "(a): shift",
     style = "dashed"
   ];
 
@@ -141,22 +141,6 @@ digraph {
     label = "(-): reduce"
   ];
 
-  node8 [
-    label = "C <- . \& a b"
-  ];
-
-  node8 -> node9 [
-    label = "(-): goto"
-  ];
-
-  node9 [
-    label = "C <- \& . a b"
-  ];
-
-  node9 -> node10 [
-    label = "(a): shift"
-  ];
-
   node10 [
     label = "C <- \& a . b"
   ];
@@ -194,8 +178,8 @@ digraph {
     arrowhead = "none"
   ];
 
-  node13_joint -> node17 [
-    label = "(a): goto",
+  node13_joint -> node18 [
+    label = "(a): shift",
     style = "dashed"
   ];
 
@@ -241,8 +225,8 @@ digraph {
     arrowhead = "none"
   ];
 
-  node15_joint -> node19 [
-    label = "(b): goto",
+  node15_joint -> node20 [
+    label = "(b): shift",
     style = "dashed"
   ];
 
@@ -288,8 +272,8 @@ digraph {
     arrowhead = "none"
   ];
 
-  node16_13_joint -> node17 [
-    label = "(a): goto",
+  node16_13_joint -> node18 [
+    label = "(a): shift",
     style = "dashed"
   ];
 
@@ -306,28 +290,12 @@ digraph {
     style = "dotted"
   ];
 
-  node17 [
-    label = "A <- . a"
-  ];
-
-  node17 -> node18 [
-    label = "(a): shift"
-  ];
-
   node18 [
     label = "A <- a ."
   ];
 
   node18 -> reduced [
     label = "(-): reduce"
-  ];
-
-  node19 [
-    label = "B <- . b"
-  ];
-
-  node19 -> node20 [
-    label = "(b): shift"
   ];
 
   node20 [
