@@ -77,8 +77,12 @@ digraph {
   ];
 
   node2 -> node3_joint [
-    label = "(-): with backpoint",
+    label = "(a): with backpoint",
     arrowhead = "none"
+  ];
+
+  node2 -> reduced [
+    label = "(-): reduce"
   ];
 
   node3_joint [
@@ -174,7 +178,7 @@ digraph {
   ];
 
   node12 -> node13_joint [
-    label = "(-): with backpoint",
+    label = "(a): with backpoint",
     arrowhead = "none"
   ];
 
@@ -191,7 +195,7 @@ digraph {
   ];
 
   node13_joint -> node17 [
-    label = "(-): goto",
+    label = "(a): goto",
     style = "dashed"
   ];
 
@@ -221,7 +225,7 @@ digraph {
   ];
 
   node14 -> node15_joint [
-    label = "(-): with backpoint",
+    label = "(b): with backpoint",
     arrowhead = "none"
   ];
 
@@ -238,7 +242,7 @@ digraph {
   ];
 
   node15_joint -> node19 [
-    label = "(-): goto",
+    label = "(b): goto",
     style = "dashed"
   ];
 
@@ -268,7 +272,7 @@ digraph {
   ];
 
   node16 -> node16_13_joint [
-    label = "(-): with backpoint",
+    label = "(a): with backpoint",
     arrowhead = "none"
   ];
 
@@ -285,7 +289,7 @@ digraph {
   ];
 
   node16_13_joint -> node17 [
-    label = "(-): goto",
+    label = "(a): goto",
     style = "dashed"
   ];
 
