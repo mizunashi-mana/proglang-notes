@@ -92,21 +92,13 @@ digraph {
     height = 0
   ];
 
-  node3_joint -> node3 [
-    label = "goto"
+  node3_joint -> node4 [
+    label = "shift"
   ];
 
   node3_joint -> reduced [
     label = "(-): reduce",
     style = "dashed"
-  ];
-
-  node3 [
-    label = "C <- ; ! ; . a b a b"
-  ];
-
-  node3 -> node4 [
-    label = "(a): shift"
   ];
 
   node4 [
