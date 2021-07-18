@@ -13,7 +13,7 @@ digraph {
   reduced;
 
   start -> node1_enter_joint [
-    label = "(-): enter",
+    label = "(-): enter into E",
     arrowhead = "none"
   ];
 
@@ -50,7 +50,7 @@ digraph {
   ];
 
   node2_joint -> node2_enter_joint [
-    label = "enter",
+    label = "enter into C",
     arrowhead = "none"
   ];
 
@@ -166,7 +166,7 @@ digraph {
   ];
 
   node13_joint -> node13_enter_joint [
-    label = "enter",
+    label = "enter into A",
     arrowhead = "none"
   ];
 
@@ -213,7 +213,7 @@ digraph {
   ];
 
   node15_joint -> node15_enter_joint [
-    label = "enter",
+    label = "enter into B",
     arrowhead = "none"
   ];
 
@@ -260,7 +260,7 @@ digraph {
   ];
 
   node16_13_joint -> node16_13_enter_joint [
-    label = "enter",
+    label = "enter into A",
     arrowhead = "none"
   ];
 
