@@ -10,11 +10,12 @@ Having same power as System Fω
 Syntax:
 
 \begin{align*}
+  \begin{array}{rcl}
   \kappa
-  &\BNFassign \Omega \mid \kappa \to \kappa
+  & \Coloneq & \Omega \mid \kappa \to \kappa
   \\
   \tau
-  &\BNFassign t
+  & \Coloneq & t
   \mid \tau \to \tau
   \mid \{\overline{l: \tau}\}
   \mid \forall t: \kappa\ldotp \tau
@@ -23,7 +24,7 @@ Syntax:
   \mid \tau\; \tau
   \\
   e
-  &\BNFassign x
+  & \Coloneq & x
   \mid \lambda x: \tau\ldotp e
   \mid e\; e
   \mid \{\overline{l = e}\}
@@ -34,9 +35,10 @@ Syntax:
   \mid \symunpack \langle t: \kappa, x: \tau\rangle = e \symin e
   \\
   \Gamma
-  &\BNFassign \cdot
+  & \Coloneq & \cdot
   \mid \Gamma, t: \kappa
   \mid \Gamma, x: \tau
+  \end{array}
 \end{align*}
 
 Abbreviation:
@@ -247,14 +249,15 @@ $\fbox{$\Gamma \vdash e: \tau$}$
 Reduction:
 
 \begin{align*}
+  \begin{array}{rcl}
   v
-  &\BNFassign \lambda x: \tau\ldotp e
+  & \Coloneq & \lambda x: \tau\ldotp e
   \mid \{\overline{l = e}\}
   \mid \Lambda t: \kappa\ldotp e
   \mid \sympack \langle \tau_t, e\rangle_{\exists t: \kappa\ldotp \tau}
   \\
   C
-  &\BNFassign []
+  & \Coloneq & []
   \mid C\; e
   \mid v\; C
   \mid \{\overline{l = v}, l = C, \overline{l = e}\}
@@ -262,6 +265,7 @@ Reduction:
   \mid C\; \tau
   \mid \sympack \langle \tau, C\rangle_\tau
   \mid \symunpack \langle t: \kappa, x: \tau\rangle = C \symin e
+  \end{array}
 \end{align*}
 
 $\fbox{$e \smalleval e'$}$
@@ -403,44 +407,53 @@ $\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
 \subsection{Syntax}
 
 \begin{align*}
-  X &\BNFassign \cdots &(\text{identifier}) \\
-  K &\BNFassign \cdots &(\text{kind}) \\
-  T &\BNFassign \cdots \mid P &(\text{type}) \\
-  E &\BNFassign \cdots \mid P &(\text{expression}) \\
-  P &\BNFassign M &(\text{path}) \\
+  \begin{array}{rclr}
+  X
+  & \Coloneq & \cdots &(\text{identifier}) \\
+  K
+  & \Coloneq & \cdots &(\text{kind}) \\
+  T
+  & \Coloneq & \cdots \mid P &(\text{type}) \\
+  E
+  & \Coloneq & \cdots \mid P &(\text{expression}) \\
+  P
+  & \Coloneq & M &(\text{path}) \\
   M
-  &\BNFassign X &(\text{identifier}) \\
-  &\BNFor \{ B \} &(\text{bindings}) \\
-  &\BNFor M.X &(\text{projection}) \\
+  & \Coloneq & X &(\text{identifier}) \\
+  & \mid & \{ B \} &(\text{bindings}) \\
+  & \mid & M.X &(\text{projection}) \\
   B
-  &\BNFassign \symval X = E &(\text{value binding}) \\
-  &\BNFor \symtype X = T &(\text{type binding}) \\
-  &\BNFor \symmodule X = M &(\text{module binding}) \\
-  &\BNFor \symsignature X = S &(\text{signature binding}) \\
-  &\BNFor \syminclude M &(\text{module including}) \\
-  &\BNFor \epsilon &(\text{empty binding}) \\
-  &\BNFor B; B &(\text{binding concatenation}) \\
+  & \Coloneq & \symval X = E &(\text{value binding}) \\
+  & \mid & \symtype X = T &(\text{type binding}) \\
+  & \mid & \symmodule X = M &(\text{module binding}) \\
+  & \mid & \symsignature X = S &(\text{signature binding}) \\
+  & \mid & \syminclude M &(\text{module including}) \\
+  & \mid & \epsilon &(\text{empty binding}) \\
+  & \mid & B; B &(\text{binding concatenation}) \\
   S
-  &\BNFassign P &(\text{signature path}) \\
-  &\BNFor \{ D \} &(\text{declarations}) \\
+  & \Coloneq & P &(\text{signature path}) \\
+  & \mid & \{ D \} &(\text{declarations}) \\
   D
-  &\BNFassign \symval X: T &(\text{value declaration}) \\
-  &\BNFor \symtype X = T &(\text{type binding}) \\
-  &\BNFor \symmodule X: S &(\text{module declaration}) \\
-  &\BNFor \symsignature X = S &(\text{signature binding}) \\
-  &\BNFor \syminclude S &(\text{signature including}) \\
-  &\BNFor \epsilon &(\text{empty declaration}) \\
-  &\BNFor D; D &(\text{declaration concatenation})
+  & \Coloneq & \symval X: T &(\text{value declaration}) \\
+  & \mid & \symtype X = T &(\text{type binding}) \\
+  & \mid & \symmodule X: S &(\text{module declaration}) \\
+  & \mid & \symsignature X = S &(\text{signature binding}) \\
+  & \mid & \syminclude S &(\text{signature including}) \\
+  & \mid & \epsilon &(\text{empty declaration}) \\
+  & \mid & D; D &(\text{declaration concatenation})
+  \end{array}
 \end{align*}
 
 \subsection{Signature}
 
 \begin{align*}
+  \begin{array}{rclr}
   \Sigma
-  &\BNFassign [\tau] &(\text{anonymous value declaration}) \\
-  &\BNFor [= \tau: \kappa] &(\text{anonymous type declaration}) \\
-  &\BNFor [= \Sigma] &(\text{anonymous signature declaration}) \\
-  &\BNFor \{\overline{l_X: \Sigma}\} &(\text{structural signature}) \\
+  & \Coloneq & [\tau] &(\text{anonymous value declaration}) \\
+  & \mid & [= \tau: \kappa] &(\text{anonymous type declaration}) \\
+  & \mid & [= \Sigma] &(\text{anonymous signature declaration}) \\
+  & \mid & \{\overline{l_X: \Sigma}\} &(\text{structural signature})
+  \end{array}
 \end{align*}
 
 Atomic Signature:
@@ -682,4 +695,3 @@ $\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
     \Gamma \vdash P: [\tau] \elaborate e
   }
 \end{gather*}
-

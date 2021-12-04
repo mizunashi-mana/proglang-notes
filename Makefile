@@ -1,15 +1,16 @@
 # build settings
 
 RM ?= rm -rf
+FIND ?= find
 
 LATEXMK ?= latexmk
 LATEXPAND ?= latexpand
 LATEXDIFF ?= latexdiff
 EXTRACTBB ?= extractbb
 
-PIPENV ?= pipenv
+POETRY ?= poetry
 
-LATEXMAKE := $(PIPENV) run $(LATEXMK)
+LATEXMAKE := $(POETRY) run $(LATEXMK)
 
 # source files
 
@@ -32,8 +33,8 @@ all: .installed-stamp build
 build: extractbb
 	$(LATEXMAKE) -pdfdvi $(MAIN_SOURCE)
 
-.installed-stamp: Pipfile Pipfile.lock tlmgr_requirement.bash
-	$(PIPENV) install
+.installed-stamp: pyproject.toml poetry.lock tlmgr_requirement.bash
+	$(POETRY) install
 	./tlmgr_requirement.bash || echo "run ./tlmgr_requirement.bash manually"
 	@touch $@
 
@@ -63,19 +64,19 @@ watch-without-prev:
 .PHONY: clean lessclean remove
 
 clean: lessclean
-	find . -name '*.snm' -delete
-	find . -name '*.fls' -delete
-	find . -name '*.*pk' -delete
-	find . -name '*.tfm' -delete
-	find . -name '*.tmp' -delete
+	$(FIND) . -name '*.snm' -delete
+	$(FIND) . -name '*.fls' -delete
+	$(FIND) . -name '*.*pk' -delete
+	$(FIND) . -name '*.tfm' -delete
+	$(FIND) . -name '*.tmp' -delete
 
 lessclean:
-	latexmk -c -bibtex
-	find . -name '*.aux' -delete
-	find . -name '*.synctex.gz*' -delete
-	find . -name '*.dvi' -delete
-	find . -name '*.nav' -delete
-	find . -name '*.vrb' -delete
+	$(LATEXMAKE) -c -bibtex
+	$(FIND) . -name '*.aux' -delete
+	$(FIND) . -name '*.synctex.gz*' -delete
+	$(FIND) . -name '*.dvi' -delete
+	$(FIND) . -name '*.nav' -delete
+	$(FIND) . -name '*.vrb' -delete
 
 remove: clean
 	$(RM) $(TARGET)

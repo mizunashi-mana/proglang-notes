@@ -5,20 +5,22 @@ Alias: F，Second Order Typed Lambda Calculus，$\lambda 2$ \cite{Girard:1989}
 \subsection{Syntax}
 
 \begin{align*}
+  \begin{array}{rclr}
   e
-  &\BNFassign x &(\text{variable}) \\
-  &\BNFor \lambda x: \tau\ldotp e &(\text{abstraction}) \\
-  &\BNFor e\; e &(\text{application}) \\
-  &\BNFor \Lambda t\ldotp e &(\text{universal abstraction}) \\
-  &\BNFor e\; \tau &(\text{universal application}) \\
+  & \Coloneq & x &(\text{variable}) \\
+  & \mid & \lambda x: \tau\ldotp e &(\text{abstraction}) \\
+  & \mid & e\; e &(\text{application}) \\
+  & \mid & \Lambda t\ldotp e &(\text{universal abstraction}) \\
+  & \mid & e\; \tau &(\text{universal application}) \\
   \tau
-  &\BNFassign t &(\text{type variable}) \\
-  &\BNFor \tau \to \tau &(\text{function type}) \\
-  &\BNFor \forall t\ldotp \tau &(\text{polymorphic type}) \\
+  & \Coloneq & t &(\text{type variable}) \\
+  & \mid & \tau \to \tau &(\text{function type}) \\
+  & \mid & \forall t\ldotp \tau &(\text{polymorphic type}) \\
   \Gamma
-  &\BNFassign \cdot &(\text{empty}) \\
-  &\BNFor \Gamma, x: \tau &(\text{variable cons}) \\
-  &\BNFor \Gamma, t: \Omega &(\text{type variable cons})
+  & \Coloneq & \cdot &(\text{empty}) \\
+  & \mid & \Gamma, x: \tau &(\text{variable cons}) \\
+  & \mid & \Gamma, t: \Omega &(\text{type variable cons})
+  \end{array}
 \end{align*}
 
 Convention:
@@ -336,14 +338,16 @@ $\fbox{$\Gamma \vdash e: \tau$}$
 \subsection{Evaluation Semantics (Call-By-Value)}
 
 \begin{align*}
+  \begin{array}{rcl}
   v
-  &\BNFassign \lambda x: \tau\ldotp e \\
-  &\BNFor \Lambda t\ldotp e \\
+  & \Coloneq & \lambda x: \tau\ldotp e \\
+  & \mid & \Lambda t\ldotp e \\
   C
-  &\BNFassign [] \\
-  &\BNFor C\; e \\
-  &\BNFor v\; C \\
-  &\BNFor C\; \tau
+  & \Coloneq & [] \\
+  & \mid & C\; e \\
+  & \mid & v\; C \\
+  & \mid & C\; \tau
+  \end{array}
 \end{align*}
 
 Small Step:

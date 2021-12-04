@@ -9,53 +9,62 @@ See \sectref{fing-modules-internal-language}.
 \subsection{Syntax}
 
 \begin{align*}
-  X &\BNFassign \cdots &(\text{identifier}) \\
-  K &\BNFassign \cdots &(\text{kind}) \\
-  T &\BNFassign \cdots \mid P &(\text{type}) \\
-  E &\BNFassign \cdots \mid P &(\text{expression}) \\
-  P &\BNFassign M &(\text{path}) \\
+  \begin{array}{rclr}
+  X
+  & \Coloneq & \cdots &(\text{identifier}) \\
+  K
+  & \Coloneq & \cdots &(\text{kind}) \\
+  T
+  & \Coloneq & \cdots \mid P &(\text{type}) \\
+  E
+  & \Coloneq & \cdots \mid P &(\text{expression}) \\
+  P
+  & \Coloneq & M &(\text{path}) \\
   M
-  &\BNFassign X &(\text{identifier}) \\
-  &\BNFor \{ B \} &(\text{bindings}) \\
-  &\BNFor M.X &(\text{projection}) \\
-  &\BNFor \symfun X: S \Rightarrow M &(\text{functor}) \\
-  &\BNFor X\; X &(\text{functor application}) \\
-  &\BNFor X :> S &(\text{sealing}) \\
+  & \Coloneq & X &(\text{identifier}) \\
+  & \mid & \{ B \} &(\text{bindings}) \\
+  & \mid & M.X &(\text{projection}) \\
+  & \mid & \symfun X: S \Rightarrow M &(\text{functor}) \\
+  & \mid & X\; X &(\text{functor application}) \\
+  & \mid & X :> S &(\text{sealing}) \\
   B
-  &\BNFassign \symval X = E &(\text{value binding}) \\
-  &\BNFor \symtype X = T &(\text{type binding}) \\
-  &\BNFor \symmodule X = M &(\text{module binding}) \\
-  &\BNFor \symsignature X = S &(\text{signature binding}) \\
-  &\BNFor \syminclude M &(\text{module including}) \\
-  &\BNFor \epsilon &(\text{empty binding}) \\
-  &\BNFor B; B &(\text{binding concatenation}) \\
+  & \Coloneq & \symval X = E &(\text{value binding}) \\
+  & \mid & \symtype X = T &(\text{type binding}) \\
+  & \mid & \symmodule X = M &(\text{module binding}) \\
+  & \mid & \symsignature X = S &(\text{signature binding}) \\
+  & \mid & \syminclude M &(\text{module including}) \\
+  & \mid & \epsilon &(\text{empty binding}) \\
+  & \mid & B; B &(\text{binding concatenation}) \\
   S
-  &\BNFassign P &(\text{signature path}) \\
-  &\BNFor \{ D \} &(\text{declarations}) \\
-  &\BNFor (X: S) \to S &(\text{(generative) functor signature}) \\
-  &\BNFor S \symwhere \symtype \overline{X} = T &(\text{bounded signature}) \\
+  & \Coloneq & P &(\text{signature path}) \\
+  & \mid & \{ D \} &(\text{declarations}) \\
+  & \mid & (X: S) \to S &(\text{(generative) functor signature}) \\
+  & \mid & S \symwhere \symtype \overline{X} = T &(\text{bounded signature}) \\
   D
-  &\BNFassign \symval X: T &(\text{value declaration}) \\
-  &\BNFor \symtype X = T &(\text{type binding}) \\
-  &\BNFor \symtype X: K &(\text{type declaration}) \\
-  &\BNFor \symmodule X: S &(\text{module declaration}) \\
-  &\BNFor \symsignature X = S &(\text{signature binding}) \\
-  &\BNFor \syminclude S &(\text{signature including}) \\
-  &\BNFor \epsilon &(\text{empty declaration}) \\
-  &\BNFor D; D &(\text{declaration concatenation})
+  & \Coloneq & \symval X: T &(\text{value declaration}) \\
+  & \mid & \symtype X = T &(\text{type binding}) \\
+  & \mid & \symtype X: K &(\text{type declaration}) \\
+  & \mid & \symmodule X: S &(\text{module declaration}) \\
+  & \mid & \symsignature X = S &(\text{signature binding}) \\
+  & \mid & \syminclude S &(\text{signature including}) \\
+  & \mid & \epsilon &(\text{empty declaration}) \\
+  & \mid & D; D &(\text{declaration concatenation})
+  \end{array}
 \end{align*}
 
 \subsection{Signature}
 
 \begin{align*}
+  \begin{array}{rclr}
   \Xi
-  &\BNFassign \exists \overline{t: \kappa}\ldotp \Sigma &(\text{abstract signature}) \\
+  & \Coloneq & \exists \overline{t: \kappa}\ldotp \Sigma &(\text{abstract signature}) \\
   \Sigma
-  &\BNFassign [\tau] &(\text{atomic value declaration}) \\
-  &\BNFor [= \tau: \kappa] &(\text{atomic type declaration}) \\
-  &\BNFor [= \Xi] &(\text{atomic signature declaration}) \\
-  &\BNFor \{\overline{l_X: \Sigma}\} &(\text{structure signature}) \\
-  &\BNFor \forall \overline{t: \kappa}\ldotp \Sigma \to \Xi &(\text{functor signature})
+  & \Coloneq & [\tau] &(\text{atomic value declaration}) \\
+  & \mid & [= \tau: \kappa] &(\text{atomic type declaration}) \\
+  & \mid & [= \Xi] &(\text{atomic signature declaration}) \\
+  & \mid & \{\overline{l_X: \Sigma}\} &(\text{structure signature}) \\
+  & \mid & \forall \overline{t: \kappa}\ldotp \Sigma \to \Xi &(\text{functor signature})
+  \end{array}
 \end{align*}
 
 Atomic Signature:
@@ -409,9 +418,11 @@ $\fbox{$\Gamma \vdash E: \tau \elaborate e$}$
 \subsection{Modules as First-Class Values}
 
 \begin{align*}
-  T &\BNFassign \cdots \mid \sympack S \\
-  E &\BNFassign \cdots \mid \sympack M: S \\
-  M &\BNFassign \cdots \mid \symunpack E: S
+  \begin{array}{rcl}
+  T & \Coloneq & \cdots \mid \sympack S \\
+  E & \Coloneq & \cdots \mid \sympack M: S \\
+  M & \Coloneq & \cdots \mid \symunpack E: S
+  \end{array}
 \end{align*}
 
 Rootedness:
@@ -506,23 +517,27 @@ $\fbox{$\Gamma \vdash M: \Xi \elaborate e$}$
 \subsection{Elaboration with Applicative Functor}
 
 \begin{align*}
+  \begin{array}{rclr}
   S
-  &\BNFassign \cdots \\
-  &\BNFor (X: S) \Rightarrow S &(\text{applicative functor signature})
+  & \Coloneq & \cdots \\
+  & \mid & (X: S) \Rightarrow S &(\text{applicative functor signature})
+  \end{array}
 \end{align*}
 
 \newcommand*{\symP}{\mathrm{P}}
 \newcommand*{\symI}{\mathrm{I}}
 
 \begin{align*}
+  \begin{array}{rclr}
   \varphi
-  &\BNFassign \symI &(\text{impure effect}) \\
-  &\BNFor \symP &(\text{pure effect}) \\
+  & \Coloneq & \symI &(\text{impure effect}) \\
+  & \mid & \symP &(\text{pure effect}) \\
   \Sigma
-  &\BNFassign \cdots \\
-  &\BNFor \{\overline{l_X: \Sigma}\} \\
-  &\BNFor \forall \overline{t: \kappa}\ldotp \Sigma \to_\symI \Xi &(\text{generative functor signature}) \\
-  &\BNFor \forall \overline{t: \kappa}\ldotp \Sigma \to_\symP \Sigma &(\text{applicative functor signature})
+  & \Coloneq & \cdots \\
+  & \mid & \{\overline{l_X: \Sigma}\} \\
+  & \mid & \forall \overline{t: \kappa}\ldotp \Sigma \to_\symI \Xi &(\text{generative functor signature}) \\
+  & \mid & \forall \overline{t: \kappa}\ldotp \Sigma \to_\symP \Sigma &(\text{applicative functor signature})
+  \end{array}
 \end{align*}
 
 Abbreviation:

@@ -6,59 +6,56 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 export TEXMFCNF="${TEXMFCNF:-".:"}"
 
-DEV_TOOLS="$(cat <<EOS
-platex
-latexmk
-latexpand
-latexdiff
-EOS
-)"
+DEV_TOOLS=(
+  platex
+  latexmk
+  latexpand
+  latexdiff
+)
 
-USING_PACKAGES="$(cat <<EOS
-ipaex
+USING_PACKAGES=(
+  ipaex
 
-type1cm
-lipsum
+  type1cm
+  lipsum
 
-pdftexcmds
+  pdftexcmds
 
-nag
-onlyamsmath
-stmaryrd
-algorithms
-algorithmicx
-minted
-listings
-adjustbox
-xifthen
-pgf
-pxpgfmark
-tikz-cd
-xcolor
-mathtools
-changepage
-mhchem
-xypic
-EOS
-)"
+  nag
+  onlyamsmath
+  stmaryrd
+  algorithms
+  algorithmicx
+  minted
+  listings
+  adjustbox
+  xifthen
+  pgf
+  pxpgfmark
+  tikz-cd
+  xcolor
+  mathtools
+  changepage
+  mhchem
+  xypic
+)
 
-DEPENDENCY_PACKAGES="$(cat <<EOS
-l3packages
-float
-fvextra
-etoolbox
-xstring
-lineno
-framed
-fancyvrb
-upquote
-xkeyval
-collectbox
-ifmtarg
-EOS
-)"
+DEPENDENCY_PACKAGES=(
+  l3packages
+  float
+  fvextra
+  etoolbox
+  xstring
+  lineno
+  framed
+  fancyvrb
+  upquote
+  xkeyval
+  collectbox
+  ifmtarg
+)
 
 tlmgr install \
-  $DEV_TOOLS \
-  $USING_PACKAGES \
-  $DEPENDENCY_PACKAGES
+  "${DEV_TOOLS[@]}" \
+  "${USING_PACKAGES[@]}" \
+  "${DEPENDENCY_PACKAGES[@]}"

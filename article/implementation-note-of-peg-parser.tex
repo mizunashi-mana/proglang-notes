@@ -3,16 +3,18 @@
 \subsubsection{Normalizing}
 
 \begin{align*}
+  \begin{array}{rclr}
   e_{\mathrm{RHS}}
-  &\Coloneqq e_1 \mathrel{/} \cdots \mathrel{/} e_n \mathrel{/} \epsilon &(n \in \Natural) \\
-  &\BNFor e_1 \mathrel{/} \cdots \mathrel{/} e_n &(n \in \Natural_{\geq 1}) \\
+  & \Coloneq & e_1 \mathrel{/} \cdots \mathrel{/} e_n \mathrel{/} \epsilon &(n \in \Natural) \\
+  & \mid & e_1 \mathrel{/} \cdots \mathrel{/} e_n &(n \in \Natural_{\geq 1}) \\
   e
-  &\Coloneqq \mathop{!} (u_1 \cdots u_n) &(n \in \Natural_{\geq 1}) \\
-  &\BNFor \mathop{\&} (u_1 \cdots u_n) &(n \in \Natural_{\geq 1}) \\
-  &\BNFor u_1 \cdots u_n &(n \in \Natural_{\geq 1}) \\
+  & \Coloneq & \mathop{!} (u_1 \cdots u_n) &(n \in \Natural_{\geq 1}) \\
+  & \mid & \mathop{\&} (u_1 \cdots u_n) &(n \in \Natural_{\geq 1}) \\
+  & \mid & u_1 \cdots u_n &(n \in \Natural_{\geq 1}) \\
   u
-  &\Coloneqq \sigma \\
-  &\BNFor A
+  & \Coloneq & \sigma \\
+  & \mid & A
+  \end{array}
 \end{align*}
 
 \begin{align*}
@@ -77,18 +79,20 @@ Output:
 \subsubsection{Example}
 
 \begin{align*}
+  \begin{array}{rcl}
   E
-  &\BNFassign C A \\
-  &\BNFor \epsilon \\
+  & \Coloneq & C A \\
+  & \mid & \epsilon \\
   A
-  &\BNFassign a B \\
-  &\BNFor a \\
+  & \Coloneq & a B \\
+  & \mid & a \\
   B
-  &\BNFassign b A \\
-  &\BNFor b \\
+  & \Coloneq & b A \\
+  & \mid & b \\
   C
-  &\BNFassign \mathop{!} abab \\
-  &\BNFor \mathop{\&} ab
+  & \Coloneq & \mathop{!} abab \\
+  & \mid & \mathop{\&} ab
+  \end{array}
 \end{align*}
 
 \begin{figure}

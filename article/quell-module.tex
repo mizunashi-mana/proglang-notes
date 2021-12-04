@@ -3,35 +3,37 @@
 \subsection{Syntax}
 
 \begin{align*}
+  \begin{array}{rcl}
   e
-  &\BNFassign \cdots \\
-  &\BNFor \symletrec \{B\} \symin e \\
-  &\BNFor P \\
+  & \Coloneq & \cdots \\
+  & \mid & \symletrec \{B\} \symin e \\
+  & \mid & P \\
   \tau
-  &\BNFassign \cdots \\
-  &\BNFor P \\
+  & \Coloneq & \cdots \\
+  & \mid & P \\
   P
-  &\BNFassign M \\
+  & \Coloneq & M \\
   M
-  &\BNFassign x \\
-  &\BNFor \{B\} \\
-  &\BNFor M.x \\
-  &\BNFor \symfun x: S\ldotp M \\
-  &\BNFor x\; x \\
-  &\BNFor x: S \\
+  & \Coloneq & x \\
+  & \mid & \{B\} \\
+  & \mid & M.x \\
+  & \mid & \symfun x: S\ldotp M \\
+  & \mid & x\; x \\
+  & \mid & x: S \\
   B
-  &\BNFassign x = e \\
-  &\BNFor \symtype t = T \\
-  &\BNFor \symmodule x = M \\
-  &\BNFor \symuse B \\
-  &\BNFor \epsilon \\
-  &\BNFor B; B \\
+  & \Coloneq & x = e \\
+  & \mid & \symtype t = T \\
+  & \mid & \symmodule x = M \\
+  & \mid & \symuse B \\
+  & \mid & \epsilon \\
+  & \mid & B; B \\
   T
-  &\BNFassign \lambda x\ldotp T \\
-  &\BNFor \tau \\
+  & \Coloneq & \lambda x\ldotp T \\
+  & \mid & \tau \\
   S
-  &\BNFassign P \\
-  &\BNFor \{D\} \\
-  &\BNFor (x: S) \to S \\
-  &\BNFor
+  & \Coloneq & P \\
+  & \mid & \{D\} \\
+  & \mid & (x: S) \to S \\
+  & \mid &
+  \end{array}
 \end{align*}

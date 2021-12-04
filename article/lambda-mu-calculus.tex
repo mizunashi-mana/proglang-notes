@@ -5,28 +5,30 @@ Alias: λμ \cite{Selinger:2001}\cite{Rocheteau:2005}
 \subsection{Syntax}
 
 \begin{align*}
+  \begin{array}{rclr}
   \tau
-  &\BNFassign t &(\text{type variable}) \\
-  &\BNFor \top &(\text{top type}) \\
-  &\BNFor \tau \multi \tau &(\text{product type}) \\
-  &\BNFor \tau \to \tau &(\text{function type}) \\
-  &\BNFor \bot &(\text{bottom type}) \\
+  & \Coloneq & t &(\text{type variable}) \\
+  & \mid & \top &(\text{top type}) \\
+  & \mid & \tau \multi \tau &(\text{product type}) \\
+  & \mid & \tau \to \tau &(\text{function type}) \\
+  & \mid & \bot &(\text{bottom type}) \\
   e
-  &\BNFassign x &(\text{variable}) \\
-  &\BNFor \langle\rangle &(\text{top value}) \\
-  &\BNFor \langle e, e\rangle &(\text{product}) \\
-  &\BNFor \pi_1 e &(\text{left projection}) \\
-  &\BNFor \pi_2 e &(\text{right projection}) \\
-  &\BNFor \lambda x: \tau\ldotp e &(\text{abstraction}) \\
-  &\BNFor e\; e &(\text{application}) \\
-  &\BNFor [\alpha] e &(\text{naming}) \\
-  &\BNFor \mu \alpha: \tau\ldotp e &(\text{un-naming}) \\
+  & \Coloneq & x &(\text{variable}) \\
+  & \mid & \langle\rangle &(\text{top value}) \\
+  & \mid & \langle e, e\rangle &(\text{product}) \\
+  & \mid & \pi_1 e &(\text{left projection}) \\
+  & \mid & \pi_2 e &(\text{right projection}) \\
+  & \mid & \lambda x: \tau\ldotp e &(\text{abstraction}) \\
+  & \mid & e\; e &(\text{application}) \\
+  & \mid & [\alpha] e &(\text{naming}) \\
+  & \mid & \mu \alpha: \tau\ldotp e &(\text{un-naming}) \\
   \Gamma
-  &\BNFassign \cdot \\
-  &\BNFor \Gamma, x: \tau \\
+  & \Coloneq & \cdot \\
+  & \mid & \Gamma, x: \tau \\
   \Delta
-  &\BNFassign \cdot \\
-  &\BNFor \alpha: \tau, \Delta
+  & \Coloneq & \cdot \\
+  & \mid & \alpha: \tau, \Delta
+  \end{array}
 \end{align*}
 
 Environment Reference:

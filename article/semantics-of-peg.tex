@@ -5,16 +5,20 @@
 \subsection{Syntax}
 
 \begin{align*}
+  \begin{array}{rclr}
   e
-  &\Coloneqq \epsilon &(\text{epsilon}) \\
-  &\BNFor \sigma &(\text{terminal}) \\
-  &\BNFor A &(\text{non-terminal}) \\
-  &\BNFor ee &(\text{sequence}) \\
-  &\BNFor e \mathrel{/} e &(\text{alternative}) \\
-  &\BNFor e^* &(\text{repetition}) \\
-  &\BNFor \mathop{!} e &(\text{not predicate}) \\
-  \sigma &\in \Sigma \\
-  A &\in N
+  & \Coloneq & \epsilon &(\text{epsilon}) \\
+  & \mid & \sigma &(\text{terminal}) \\
+  & \mid & A &(\text{non-terminal}) \\
+  & \mid & e e &(\text{sequence}) \\
+  & \mid & e \mathrel{/} e &(\text{alternative}) \\
+  & \mid & e^* &(\text{repetition}) \\
+  & \mid & \mathop{!} e &(\text{not predicate}) \\
+  \sigma
+  & \in & \Sigma \\
+  A
+  & \in & N
+  \end{array}
 \end{align*}
 
 \begin{definition}
@@ -30,68 +34,70 @@
 \subsection{Structured Semantics}
 
 \begin{gather*}
-  \infer{\langle \epsilon, x\rangle \to \epsilon}{}
+  \infer{\langle \epsilon, x\rangle \to \mathrm{s}(\epsilon)}{}
   \\
-  \infer{\langle \sigma, \sigma x\rangle \to \sigma}{}
+  \infer{\langle \sigma, \sigma x\rangle \to \mathrm{s}(\sigma)}{}
   \hspace{2em}
-  \infer{\langle \sigma, \sigma' x\rangle \symfail}{
+  \infer{\langle \sigma, \sigma' x\rangle \to \mathrm{f}}{
     \sigma \neq \sigma'
   }
+  \hspace{2em}
+  \infer{\langle \sigma, \epsilon\rangle \to \mathrm{f}}{}
   \\
-  \infer{\langle A, xy\rangle \to x}{
+  \infer{\langle A, x\rangle \to o}{
     A \assign e \in R
     &
-    \langle e, xy\rangle \to x
+    \langle e, x\rangle \to o
   }
   \\
-  \infer{\langle e_1e_2, x_1x_2y\rangle \to x_1x_2}{
-    \langle e_1, x_1x_2y\rangle \to x_1
+  \infer{\langle e_1e_2, x_1x_2y\rangle \to \mathrm{s}(x_1x_2)}{
+    \langle e_1, x_1x_2y\rangle \to \mathrm{s}(x_1)
     &
-    \langle e_2, x_2y\rangle \to x_2
+    \langle e_2, x_2y\rangle \to \mathrm{s}(x_2)
   }
   \hspace{2em}
-  \infer{\langle e_1e_2, x\rangle \symfail}{
-    \langle e_1, x\rangle \symfail
+  \infer{\langle e_1e_2, x\rangle \to \mathrm{f}}{
+    \langle e_1, x\rangle \to \mathrm{f}
   }
   \hspace{2em}
-  \infer{\langle e_1e_2, x_1y\rangle \symfail}{
-    \langle e_1, x_1y\rangle \to x_1
+  \infer{\langle e_1e_2, x_1y\rangle \to \mathrm{f}}{
+    \langle e_1, x_1y\rangle \to \mathrm{s}(x_1)
     &
-    \langle e_2, y\rangle \symfail
+    \langle e_2, y\rangle \to \mathrm{f}
   }
   \\
-  \infer{\langle e_1 \mathrel{/} e_2, xy\rangle \to x}{
-    \langle e_1, xy\rangle \to x
+  \infer{\langle e_1 \mathrel{/} e_2, xy\rangle \to \mathrm{s}(x)}{
+    \langle e_1, xy\rangle \to \mathrm{s}(x)
   }
   \hspace{2em}
-  \infer{\langle e_1 \mathrel{/} e_2, xy\rangle \to x}{
-    \langle e_1, xy\rangle \symfail
+  \infer{\langle e_1 \mathrel{/} e_2, x\rangle \to o}{
+    \langle e_1, x\rangle \to \mathrm{f}
     &
-    \langle e_2, xy\rangle \to x
+    \langle e_2, x\rangle \to o
   }
   \\
-  \infer{\langle e^*, x_1x_2y\rangle \to x_1x_2}{
-    \langle e, x_1x_2y\rangle \to x_1
+  \infer{\langle e^*, x_1x_2y\rangle \to \mathrm{s}(x_1x_2)}{
+    \langle e, x_1x_2y\rangle \to \mathrm{s}(x_1)
     &
-    \langle e^*, x_2y\rangle \to x_2
+    \langle e^*, x_2y\rangle \to \mathrm{s}(x_2)
   }
   \hspace{2em}
-  \infer{\langle e^*, x\rangle \to \epsilon}{
-    \langle e, x\rangle \symfail
+  \infer{\langle e^*, x\rangle \to \mathrm{s}(\epsilon)}{
+    \langle e, x\rangle \to \mathrm{f}
   }
   \\
-  \infer{\langle !e, xy\rangle \to \epsilon}{
-    \langle e, xy\rangle \symfail
+  \infer{\langle !e, x\rangle \to \mathrm{s}(\epsilon)}{
+    \langle e, x\rangle \to \mathrm{f}
   }
   \hspace{2em}
-  \infer{\langle !e, xy\rangle \symfail}{
-    \langle e, xy\rangle \to x
+  \infer{\langle !e, xy\rangle \to \mathrm{f}}{
+    \langle e, xy\rangle \to \mathrm{s}(x)
   }
 \end{gather*}
 
 \begin{align*}
   \semanticf{(\Sigma, N, R, e_0)} &= \semanticf{e_0} \\
-  \semanticf{e} &= \{s \in \Sigma^* \mid \langle e, s\rangle \to s\}
+  \semanticf{e} &= \{x \in \Sigma^* \mid \langle e, x\rangle \to \mathrm{s}(x)\}
 \end{align*}
 
 \subsection{Equivalence}
@@ -100,8 +106,8 @@
 
 \begin{align*}
   \mathop{\&} e &= \mathop{!} (\mathop{!} e) &(\text{and predicate}) \\
-  e+ &= e e^* &(\text{positive repetition}) \\
-  e? &= e / \epsilon &(\text{optional})
+  e^+ &= e e^* &(\text{positive repetition}) \\
+  e^? &= e / \epsilon &(\text{optional})
 \end{align*}
 
 \subsubsection{Associativity}
@@ -125,7 +131,9 @@
 \subsubsection{Repetition}
 
 \begin{align*}
-  M &\Coloneqq e M \mid \epsilon
+  \begin{array}{rcl}
+  M & \Coloneq & e M \mid \epsilon
+  \end{array}
 \end{align*}
 
 \begin{gather*}
@@ -134,35 +142,35 @@
 
 \subsection{Producing Analysis}
 
-$s \Coloneqq 0 \mid 1$，$o \Coloneqq s \mid \symfail$
+$s \Coloneq 0 \mid 1$，$o \Coloneq \mathrm{s} \mid \mathrm{f}$
 
 \begin{itemize}
   \item $\epsilon \pto 0$
   \item $\sigma \pto 1$
-  \item $\sigma \pto \symfail$
+  \item $\sigma \pto \mathrm{f}$
   \item $A \assign e \in R$，$e \pto o$ ならば $A \pto o$
   \item $e_1 \pto 0$，$e_2 \pto 0$ ならば $e_1e_2 \pto 0$
   \item $e_1 \pto 1$，$e_2 \pto s$ ならば $e_1e_2 \pto 1$
-  \item $e_1 \pto s$，$e_2 \pto 1$ ならば $e_1e_2 \pto 1$
-  \item $e_1 \pto \symfail$ ならば $e_1e_2 \pto \symfail$
-  \item $e_1 \pto s$，$e_2 \pto \symfail$ ならば $e_1e_2 \pto \symfail$
-  \item $e_1 \pto s$ ならば $e_1 \mathrel{/} e_2 \pto s$
-  \item $e_1 \pto \symfail$，$e_2 \pto o$ ならば $e_1 \mathrel{/} e_2 \pto o$
+  \item $e_1 \pto \mathrm{s}$，$e_2 \pto 1$ ならば $e_1e_2 \pto 1$
+  \item $e_1 \pto \mathrm{f}$ ならば $e_1e_2 \pto \mathrm{f}$
+  \item $e_1 \pto \mathrm{s}$，$e_2 \pto \mathrm{f}$ ならば $e_1e_2 \pto \mathrm{f}$
+  \item $e_1 \pto \mathrm{s}$ ならば $e_1 \mathrel{/} e_2 \pto \mathrm{s}$
+  \item $e_1 \pto \mathrm{f}$，$e_2 \pto o$ ならば $e_1 \mathrel{/} e_2 \pto o$
   \item $e \pto 1$ ならば $e^* \pto 1$
-  \item $e \pto \symfail$ ならば $e^* \pto \symfail$
-  \item $e \pto s$ ならば $\mathop{!} e \pto \symfail$
-  \item $e \pto \symfail$ ならば $\mathop{!} e \pto 0$
+  \item $e \pto \mathrm{f}$ ならば $e^* \pto \mathrm{f}$
+  \item $e \pto \mathrm{s}$ ならば $\mathop{!} e \pto \mathrm{f}$
+  \item $e \pto \mathrm{f}$ ならば $\mathop{!} e \pto 0$
 \end{itemize}
 
 \begin{theorem}
   \hwordspace{}
   \begin{itemize}
-    \item $\langle e, x\rangle \to \epsilon$ ならば，$e \pto 0$
-    \item $\langle e, xy\rangle \to x$，$x \neq \epsilon$ ならば，$e \pto 1$
-    \item $\langle e, x\rangle \symfail$ ならば，$e \pto \symfail$
+    \item $\langle e, x\rangle \to \mathrm{s}(\epsilon)$ ならば，$e \pto 0$
+    \item $\langle e, xy\rangle \to \mathrm{s}(x)$，$x \neq \epsilon$ ならば，$e \pto 1$
+    \item $\langle e, x\rangle \to \mathrm{f}$ ならば，$e \pto \mathrm{f}$
   \end{itemize}
 \end{theorem}
 
 \begin{corollary}
-  $e \not\pto o$ ならば，$\langle e, xy\rangle \not\to x$ かつ $\langle e, xy\rangle \not{\symfail}$
+  $e \not\pto o$ ならば，$\langle e, xy\rangle \not\to \mathrm{s}(x)$ かつ $\langle e, xy\rangle \not\to \mathrm{f}$
 \end{corollary}

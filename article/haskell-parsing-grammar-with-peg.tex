@@ -1,0 +1,343 @@
+\section{Haskell Parsing with PEG}
+
+\cite{SimonMarlow:2010}
+
+\subsection{Lexical Syntax}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {program}
+    & \Coloneq & ({lexeme} \mid {whitespace})^* \\
+    {lexeme}
+    & \Coloneq & {qvarid} \\
+    & \mid & {qconid} \\
+    & \mid & {qvarsym} \\
+    & \mid & {qconsym} \\
+    & \mid & {literal} \\
+    & \mid & {special} \\
+    & \mid & {reservedop} \\
+    & \mid & {reservedid} \\
+    {literal}
+    & \Coloneq & {integer} \\
+    & \mid & {float} \\
+    & \mid & {char} \\
+    & \mid & {string} \\
+    {special}
+    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl)\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl,\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl;\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl[\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl]\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\{\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\}\textquotedbl}}
+    \\
+    {whitespace}
+    & \Coloneq & {whitestuff}^+
+    \\
+    {whitestuff}
+    & \Coloneq & {whitechar}
+    \mid {comment}
+    \mid {ncomment}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {whitechar}
+    & \Coloneq & {newline}
+    \mid \text{\texttt{\textquotedbl\textbackslash v\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\;\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash t\textquotedbl}}
+    \mid (\text{Unicode whitespace})
+    \\
+    {newline}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash r\textbackslash n\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash r\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash n\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash f\textquotedbl}}
+    \\
+    {comment}
+    & \Coloneq & {dashes}\; (! {symbol}\; {any}^*)^?\; {newline}
+    \\
+    {dashes}
+    & \Coloneq & \text{\texttt{\textquotedbl-\textquotedbl}}\; (\text{\texttt{\textquotedbl-\textquotedbl}})^+
+    \\
+    {opencom}
+    & \Coloneq & \text{\texttt{\textquotedbl\{-\textquotedbl}}
+    \\
+    {closecom}
+    & \Coloneq & \text{\texttt{\textquotedbl-\}\textquotedbl}}
+    \\
+    {ncomment}
+    & \Coloneq & {opencom}\; {ANYs}\; ({ncomment}\; {ANYs})^*\; {closecom}
+    \\
+    {ANYs}
+    & \Coloneq & ! ({ANY}^*\; ({opencom} \mid {closecom})\; {ANY}^*)\; {ANY}^*
+    \\
+    {ANY}
+    & \Coloneq & {graphic}
+    \mid {whitechar}
+    \\
+    {any}
+    & \Coloneq & {graphic}
+    \mid \text{\texttt{\textquotedbl\;\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash t\textquotedbl}}
+    \\
+    {graphic}
+    & \Coloneq & {small}
+    \mid {large}
+    \mid {symbol}
+    \mid {digit}
+    \mid {special}
+    \mid \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
+    \\
+    {small}
+    & \Coloneq & \text{\texttt{\textquotedbl a\textquotedbl}} \mid \text{\texttt{\textquotedbl b\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl z\textquotedbl}}
+    \mid (\text{Unicode lowercase letter})
+    \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}}
+    \\
+    {large}
+    & \Coloneq & \text{\texttt{\textquotedbl A\textquotedbl}} \mid \text{\texttt{\textquotedbl B\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl Z\textquotedbl}}
+    \mid (\text{Unicode uppercase letter})
+    \mid (\text{Unicode titlecase letter})
+    \\
+    {symbol}
+    & \Coloneq & \text{\texttt{\textquotedbl!\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\#\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\$\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\%\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\&\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl *\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl +\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl .\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl /\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl <\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl =\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl >\textquotedbl}}
+    \\
+    & \mid & \text{\texttt{\textquotedbl ?\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl @\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl |\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl -\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textasciitilde\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl :\textquotedbl}}
+    \\
+    & \mid & ! ({symbol} \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}} \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}})\; {uniSymbol}
+    \\
+    {uniSymbol}
+    & \Coloneq & (\text{Unicode symbol})
+    \mid (\text{Unicode punctuation})
+    \\
+    {digit}
+    & \Coloneq & \text{\texttt{\textquotedbl0\textquotedbl}} \mid \text{\texttt{\textquotedbl1\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl9\textquotedbl}}
+    \mid (\text{Unicode decimal digit})
+    \\
+    {octit}
+    & \Coloneq & \text{\texttt{\textquotedbl0\textquotedbl}} \mid \text{\texttt{\textquotedbl1\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl7\textquotedbl}}
+    \\
+    {hexit}
+    & \Coloneq & {digit}
+    \mid \text{\texttt{\textquotedbl A\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl F\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl a\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl f\textquotedbl}}
+    \\
+    {varid}
+    & \Coloneq & ! ({reservedid}\; !{other})\; {small}\; {other}^*
+    \\
+    {conid}
+    & \Coloneq & {large}\; {other}^*
+    \\
+    {other}
+    & \Coloneq & {small}
+    \mid {large}
+    \mid {digit}
+    \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
+    \\
+    {reservedid}
+    & \Coloneq & \text{\texttt{\textquotedbl case\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl class\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl data\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl default\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl deriving\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl do\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl else\textquotedbl}}
+    \\
+    & \mid & \text{\texttt{\textquotedbl foreign\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl if\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl import\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl in\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl infix\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl infixl\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl infixr\textquotedbl}}
+    \\
+    & \mid & \text{\texttt{\textquotedbl instance\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl let\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl module\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl newtype\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl of\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl then\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl type\textquotedbl}}
+    \\
+    & \mid & \text{\texttt{\textquotedbl where\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}}
+    \\
+    {varsym}
+    & \Coloneq & {!} (({reservedop} \mid {dashes})\; !{symbol} \mid \text{\texttt{\textquotedbl :\textquotedbl}})\; {symbol}^+
+    \\
+    {consym}
+    & \Coloneq & {!} ({reservedop}\; !{symbol})\; \text{\texttt{\textquotedbl :\textquotedbl}}\; {symbol}^*
+    \\
+    {reservedop}
+    & \Coloneq & \text{\texttt{\textquotedbl ..\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl :\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ::\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl =\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl \textbackslash\textbackslash\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl <-\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ->\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl @\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl \textasciitilde\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl =>\textquotedbl}}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {tyvar}
+    & \Coloneq & {varid}
+    \\
+    {tycon}
+    & \Coloneq & {conid}
+    \\
+    {tycls}
+    & \Coloneq & {conid}
+    \\
+    {modid}
+    & \Coloneq & ({conid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^*\; {conid}
+    \\
+    {qvarid}
+    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {varid}
+    \\
+    {qconid}
+    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {conid}
+    \\
+    {qtycon}
+    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {tycon}
+    \\
+    {qtycls}
+    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {tycls}
+    \\
+    {qvarsym}
+    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {varsym}
+    \\
+    {qconsym}
+    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {consym}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {decimal}
+    & \Coloneq & {digit}^+
+    \\
+    {octal}
+    & \Coloneq & {octit}^+
+    \\
+    {hexdecimal}
+    & \Coloneq & {hexit}^+
+    \\
+    {integer}
+    & \Coloneq & {decimal} \\
+    & \mid & \text{\texttt{\textquotedbl 0o\textquotedbl}}\; {octal} \mid \text{\texttt{\textquotedbl 0O\textquotedbl}}\; {octal} \\
+    & \mid & \text{\texttt{\textquotedbl 0x\textquotedbl}}\; {hexdecimal} \mid \text{\texttt{\textquotedbl 0X\textquotedbl}}\; {hexdecimal}
+    \\
+    {float}
+    & \Coloneq & {decimal}\; \text{\texttt{\textquotedbl .\textquotedbl}}\; {decimal}\; {exponent}^? \\
+    & \mid & {decimal}\; {exponent}
+    \\
+    {exponent}
+    & \Coloneq & (\text{\texttt{\textquotedbl e\textquotedbl}} \mid \text{\texttt{\textquotedbl E\textquotedbl}})\; (\text{\texttt{\textquotedbl +\textquotedbl}} \mid \text{\texttt{\textquotedbl -\textquotedbl}})\; {decimal}
+    \\
+    {char}
+    & \Coloneq & \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}\;({!}(\text{\texttt{\textquotedbl\textquotesingle\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}})\; {graphic} \mid \text{\texttt{\textquotedbl\;\textquotedbl}} \mid {!}\text{\texttt{\textquotedbl\textbackslash\textbackslash\&\textquotedbl}}\; {escape}) \; \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
+    \\
+    {string}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}\;({!}(\text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}})\; {graphic} \mid \text{\texttt{\textquotedbl\;\textquotedbl}} \mid {escape} \mid {gap})^* \; \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}
+    \\
+    {escape}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}} ({charesc} \mid {ascii} \mid {decimal} \mid \text{\texttt{\textquotedbl o\textquotedbl}}\; {octal} \mid \text{\texttt{\textquotedbl x\textquotedbl}}\; {hexdecimal})
+    \\
+    {charesc}
+    & \Coloneq & \text{\texttt{\textquotedbl a\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl b\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl f\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl n\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl r\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl t\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl v\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\&\textquotedbl}}
+    \\
+    {ascii}
+    & \Coloneq & \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}\; {cntrl}
+    \mid \text{\texttt{\textquotedbl NUL\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl SOH\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl STX\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ETX\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl EOT\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ENQ\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ACK\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl BEL\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl BS\textquotedbl}}
+    \\
+    & \mid & \text{\texttt{\textquotedbl HT\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl LF\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl VT\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl FF\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl CR\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl SO\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl SI\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl DLE\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl DC1\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl DC2\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl DC3\textquotedbl}}
+    \\
+    & \mid & \text{\texttt{\textquotedbl DC4\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl NAK\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl SYN\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ETB\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl CAN\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl EM\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl SUB\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ESC\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl FS\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl GS\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl RS\textquotedbl}}
+    \\
+    & \mid & \text{\texttt{\textquotedbl US\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl SP\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl DEL\textquotedbl}}
+    \\
+    {cntrl}
+    & \Coloneq & \text{\texttt{\textquotedbl A\textquotedbl}} \mid \text{\texttt{\textquotedbl B\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl Z\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl @\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl [\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl ]\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}}
+    \\
+    {gap}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}\; {whitechar}^+\; \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}
+  \end{array}
+\end{align*}
+
+\subsection{PEG with Layout}
+
+

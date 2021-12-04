@@ -5,17 +5,19 @@ Alias: STLC，$\lambda^{\to}$ \cite{Girard:1989}
 \subsection{Syntax}
 
 \begin{align*}
+  \begin{array}{rclr}
   e
-  &\BNFassign x &(\text{variable}) \\
-  &\BNFor e\; e &(\text{application}) \\
-  &\BNFor \lambda x: \tau\ldotp e &(\text{abstraction}) \\
-  &\BNFor c_A &(\text{constant}) \\
+  & \Coloneq & x &(\text{variable}) \\
+  & \mid & e\; e &(\text{application}) \\
+  & \mid & \lambda x: \tau\ldotp e &(\text{abstraction}) \\
+  & \mid & c_A &(\text{constant}) \\
   \tau
-  &\BNFassign A &(\text{atomic type}) \\
-  &\BNFor \tau \to \tau &(\text{function type}) \\
+  & \Coloneq & A &(\text{atomic type}) \\
+  & \mid & \tau \to \tau &(\text{function type}) \\
   \Gamma
-  &\BNFassign \cdot &(\text{empty}) \\
-  &\BNFor \Gamma, x: \tau &(\text{cons})
+  & \Coloneq & \cdot &(\text{empty}) \\
+  & \mid & \Gamma, x: \tau &(\text{cons})
+  \end{array}
 \end{align*}
 
 Convention:
@@ -149,13 +151,15 @@ $\fbox{$\Gamma \vdash e: \tau$}$
 \subsection{Evaluation Semantics (Call-By-Value)}
 
 \begin{align*}
+  \begin{array}{rcl}
   v
-  &\BNFassign \lambda x: \tau\ldotp e \\
-  &\BNFor c_A \\
+  & \Coloneq & \lambda x: \tau\ldotp e \\
+  & \mid & c_A \\
   C
-  &\BNFassign [] \\
-  &\BNFor C\; e \\
-  &\BNFor v\; C
+  & \Coloneq & [] \\
+  & \mid & C\; e \\
+  & \mid & v\; C
+  \end{array}
 \end{align*}
 
 Small Step:
