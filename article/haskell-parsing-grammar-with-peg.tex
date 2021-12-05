@@ -189,7 +189,7 @@
     & \Coloneq & {!} (({reservedop} \mid {dashes})\; !{symbol} \mid \text{\texttt{\textquotedbl :\textquotedbl}})\; {symbol}^+
     \\
     {consym}
-    & \Coloneq & {!} ({reservedop}\; !{symbol})\; \text{\texttt{\textquotedbl :\textquotedbl}}\; {symbol}^*
+    & \Coloneq & {!} ({reservedop}\; !{symbol})\; \text{\texttt{\textquotedbl :\textquotedbl}}\; {symbol}^+
     \\
     {reservedop}
     & \Coloneq & \text{\texttt{\textquotedbl ..\textquotedbl}}
@@ -207,13 +207,7 @@
 
 \begin{align*}
   \begin{array}{rcl}
-    {tyvar}
-    & \Coloneq & {varid}
-    \\
     {tycon}
-    & \Coloneq & {conid}
-    \\
-    {tycls}
     & \Coloneq & {conid}
     \\
     {modid}
@@ -226,10 +220,7 @@
     & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {conid}
     \\
     {qtycon}
-    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {tycon}
-    \\
-    {qtycls}
-    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {tycls}
+    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {conid}
     \\
     {qvarsym}
     & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {varsym}
@@ -338,6 +329,360 @@
   \end{array}
 \end{align*}
 
-\subsection{PEG with Layout}
+\subsection{Preprocess for Layout}
 
+\begin{align*}
+  L
+\end{align*}
 
+\subsection{PEG with Layout Tokens}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {module}
+    & \Coloneq & \text{\texttt{\textquotedbl module\textquotedbl}}\; {modid}\; {exports}^?\; \text{\texttt{\textquotedbl where\textquotedbl}}\; {body} \\
+    & \mid & {body} \\
+    {body}
+    & \Coloneq & {expbo}\; {bodyinl}\; {expbc} \\
+    & \mid & {impbo}\; {bodyinl}\; {impbc} \\
+    {bodyinl}
+    & \Coloneq & {impdecls}\; ;\; {topdecls} \\
+    & \mid & {impdecls} \\
+    & \mid & {topdecls} \\
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {exports}
+    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({export}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {export}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {export}
+    & \Coloneq & {qvar} \\
+    & \mid & {qtycon}\; (\text{\texttt{\textquotedbl(\textquotedbl}}\; (\text{\texttt{\textquotedbl..\textquotedbl}} \mid ({cname}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {cname} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}})^? \\
+    & \mid & \text{\texttt{\textquotedbl module\textquotedbl}}\; {modid} \\
+    {impdecl}
+    & \Coloneq & \text{\texttt{\textquotedbl import\textquotedbl}}\; \text{\texttt{\textquotedbl qualified\textquotedbl}}^?\; {modid}\; (\text{\texttt{\textquotedbl as\textquotedbl}}\; {modid})^?\; {impspec}^? \\
+    & \mid & \\
+    {impspec}
+    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl hiding\textquotedbl}}\;\text{\texttt{\textquotedbl(\textquotedbl}}\; ({import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {import}
+    & \Coloneq & {var} \\
+    & \mid & {tycon}\; (\text{\texttt{\textquotedbl(\textquotedbl}}\; (\text{\texttt{\textquotedbl..\textquotedbl}} \mid ({cname}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {cname} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}})^? \\
+    {cname}
+    & \Coloneq & {var} \mid {con}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {topdecls}
+    & \Coloneq & ({topdecl}\; ;)^*\; {topdecl} \mid \\
+    {topdecl}
+    & \Coloneq & \text{\texttt{\textquotedbl type\textquotedbl}}\; {simpletype}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {type} \\
+    & \mid & \text{\texttt{\textquotedbl data\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {simpletype}\; (\text{\texttt{\textquotedbl =\textquotedbl}}\; {constrs})^?\; {deriving}^? \\
+    & \mid & \text{\texttt{\textquotedbl newtype\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {simpletype}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {newconstr}\; {deriving}^? \\
+    & \mid & \text{\texttt{\textquotedbl class\textquotedbl}}\; ({scontext}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {tycon}\; {tyvar}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {cdecls})^? \\
+    & \mid & \text{\texttt{\textquotedbl instance\textquotedbl}}\; ({scontext}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {qtycon}\; {inst}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {idecls})^? \\
+    & \mid & \text{\texttt{\textquotedbl default\textquotedbl}}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; (({type}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {type} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl foreign\textquotedbl}}\; {fdecl} \\
+    & \mid & {decl}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {decls}
+    & \Coloneq & {expbo}\; {declsinl}\; {expbc} \\
+    & \mid & {impbo}\; {declsinl}\; {impbc} \\
+    {declsinl}
+    & \Coloneq & ({decl}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {decl} \mid \\
+    {decl}
+    & \Coloneq & {gendecl} \\
+    & \mid & ({funlhs} \mid {pat})\; {rhs} \\
+    {cdecls}
+    & \Coloneq & {expbo}\; {cdeclsinl}\; {expbc} \\
+    & \mid & {impbo}\; {cdeclsinl}\; {impbc} \\
+    {cdeclsinl}
+    & \Coloneq & ({cdecl}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {cdecl} \mid \\
+    {cdecl}
+    & \Coloneq & {gendecl} \\
+    & \mid & ({funlhs} \mid {var})\; {rhs} \\
+    {idecls}
+    & \Coloneq & {expbo}\; {ideclsinl}\; {expbc} \\
+    & \mid & {impbo}\; {ideclsinl}\; {impbc} \\
+    {ideclsinl}
+    & \Coloneq & ({idecl}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {idecl} \mid \\
+    {idecl}
+    & \Coloneq & ({funlhs} \mid {var})\; {rhs} \\
+    & \mid & \\
+    {gendecl}
+    & \Coloneq & {vars}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {type} \\
+    & \mid & {fixity}\; {integer}^?\; {ops} \\
+    & \mid & \\
+    {ops}
+    & \Coloneq & ({op}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {op} \\
+    {vars}
+    & \Coloneq & ({var}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {var} \\
+    {fixity}
+    & \Coloneq & \text{\texttt{\textquotedbl infixl\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl infixr\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl infix\textquotedbl}}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {type}
+    & \Coloneq & {btype}\; (\text{\texttt{\textquotedbl ->\textquotedbl}}\; {type})^? \\
+    {btype}
+    & \Coloneq & {btype}^?\; {atype} \\
+    {atype}
+    & \Coloneq & {gtycon} \\
+    & \mid & {tyvar} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({type}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {type}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {type}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {type}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {gtycon}
+    & \Coloneq & {qtycon} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl,\textquotedbl}}^+\; \text{\texttt{\textquotedbl)\textquotedbl}}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {context}
+    & \Coloneq & {class} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (({class}\; \text{\texttt{\textquotedbl,\textquotedbl}})\; {class} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}}
+    \\
+    {class}
+    & \Coloneq & {qtycon}\; {tyvar} \\
+    & \mid & {qtycon}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; {tyvar}\; {atype}^+\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {scontext}
+    & \Coloneq & {simpleclass} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (({simpleclass}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {simpleclass} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}}
+    \\
+    {simpleclass}
+    & \Coloneq & {qtycon}\; {tyvar}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {simpletype}
+    & \Coloneq & {tycon}\; {tyvar}^* \\
+    {constrs}
+    & \Coloneq & ({constr}\; \text{\texttt{\textquotedbl|\textquotedbl}})^*\; {constr} \\
+    {constr}
+    & \Coloneq & {con}\; {expbo}\; (({fielddecl}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fielddecl} \mid )\; {expbc} \\
+    & \mid & ({btype} \mid \text{\texttt{\textquotedbl!\textquotedbl}}\; {atype})\; {conop}\; ({btype} \mid \text{\texttt{\textquotedbl!\textquotedbl}}\; {atype}) \\
+    & \mid & {con}\; (\text{\texttt{\textquotedbl!\textquotedbl}}^?\; {atype})^* \\
+    {newconstr}
+    & \Coloneq & {con}\; {expbo}\; {var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; {type}\; {expbc} \\
+    & \mid & {con}\; {atype} \\
+    {fielddecl}
+    & \Coloneq & {vars}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; ({type} \mid \text{\texttt{\textquotedbl !\textquotedbl}}\; {atype}) \\
+    {deriving}
+    & \Coloneq & \text{\texttt{\textquotedbl deriving\textquotedbl}}\; {dclass} \\
+    & \mid & \text{\texttt{\textquotedbl deriving\textquotedbl}}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; ({dclass}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {dclass} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {dclass}
+    & \Coloneq & {qtycon} \\
+    {inst}
+    & \Coloneq & {qtycon} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {gtycon}\; {tyvar}^*\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({tyvar}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {tyvar}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {tyvar}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {tyvar}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; {tyvar}\; \text{\texttt{\textquotedbl)\textquotedbl}}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {fdecl}
+    & \Coloneq & \text{\texttt{\textquotedbl import\textquotedbl}}\; {callconv}\; {safety}^?\; {impent}\; {var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; {ftype} \\
+    & \mid & \text{\texttt{\textquotedbl export\textquotedbl}}\; {callconv}\; {expent}\; {var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; {ftype} \\
+    {callconv}
+    & \Coloneq & \text{\texttt{\textquotedbl ccall\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl stdcall\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl cplusplus\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl jvm\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl dotnet\textquotedbl}}
+    \\
+    & \mid & (\text{system-specific calling conventions}) \\
+    {impent}
+    & \Coloneq & {string}^? \\
+    {expent}
+    & \Coloneq & {string}^? \\
+    {safety}
+    & \Coloneq & \text{\texttt{\textquotedbl unsafe\textquotedbl}}
+    \mid \text{\texttt{\textquotedbl safe\textquotedbl}}
+    \\
+    {ftype}
+    & \Coloneq & {fatype}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; {ftype} \\
+    & \mid & {frtype} \\
+    {frtype}
+    & \Coloneq & {fatype} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {fatype}
+    & \Coloneq & {qtycon}\; {atype}^*
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {funlhs}
+    & \Coloneq & {var}\; {apat}^+ \\
+    & \mid & {pat}\; {varop}\; {pat} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {funlhs}\; \text{\texttt{\textquotedbl)\textquotedbl}}\; {apat}^+ \\
+    {rhs}
+    & \Coloneq & \text{\texttt{\textquotedbl =\textquotedbl}}\; {exp}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
+    & \mid & {gdrhs}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
+    {gdrhs}
+    & \Coloneq & {guards}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {exp}\; {gdrhs}^? \\
+    {guards}
+    & \Coloneq & ({guard}\; \text{\texttt{\textquotedbl ,\textquotedbl}})^*\; {guard} \mid \\
+    {guard}
+    & \Coloneq & {pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; {infixexp} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls} \\
+    & \mid & {infixexp}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {exp}
+    & \Coloneq & {infixexp}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})\; {type} \\
+    & \mid & {infixexp} \\
+    {infixexp}
+    & \Coloneq & \text{\texttt{\textquotedbl -\textquotedbl}}\; {infixexp} \\
+    & \mid & {lexp}\; {qop}\; {infixexp} \\
+    & \mid & {lexp} \\
+    {lexp}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}\; {apat}^+\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; {exp} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls}\; \text{\texttt{\textquotedbl in\textquotedbl}}\; {exp} \\
+    & \mid & \text{\texttt{\textquotedbl if\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl ;\textquotedbl}}^?\; \text{\texttt{\textquotedbl then\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl ;\textquotedbl}}^?\; \text{\texttt{\textquotedbl else\textquotedbl}}\; {exp} \\
+    & \mid & \text{\texttt{\textquotedbl case\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl of\textquotedbl}}\; {casealts} \\
+    & \mid & \text{\texttt{\textquotedbl do\textquotedbl}}\; {dostmts} \\
+    & \mid & {fexp} \\
+    {fexp}
+    & \Coloneq & {fexp}^?\; {aexp} \\
+    {aexp}
+    & \Coloneq & {literal} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({exp}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; ({exp}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {exp}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {exp}\; (\text{\texttt{\textquotedbl,\textquotedbl}}\; {exp})^?\; \text{\texttt{\textquotedbl..\textquotedbl}}\; {exp}^?\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl|\textquotedbl}}\; ({qual}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {qual}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {infixexp}\; {qop}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ! (\text{\texttt{\textquotedbl-\textquotedbl}}\; {infixexp})\; {qop}\; {infixexp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & {qcon}\; {expbo}\; (({fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fbind} \mid )\; {expbc} \\
+    & \mid & !({qcon}\; \text{\texttt{\textquotedbl\{\textquotedbl}})\; {aexp}\; {expbo}\; (({fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fbind} \mid )\; {expbc} \\
+    & \mid & {qvar} \\
+    & \mid & {gcon}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {qual}
+    & \Coloneq & {pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; {exp} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls} \\
+    & \mid & {exp} \\
+    {casealts}
+    & \Coloneq & {expbo}\; {alts}\; {expbc} \\
+    & \mid & {impbo}\; {alts}\; {impbc} \\
+    {alts}
+    & \Coloneq & ({alt}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {alt} \\
+    {alt}
+    & \Coloneq & {pat}\; \text{\texttt{\textquotedbl->\textquotedbl}}\; {exp}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
+    & \mid & {pat}\; {gdpat}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
+    & \mid & \\
+    {gdpat}
+    & \Coloneq & {guards}\; \text{\texttt{\textquotedbl->\textquotedbl}}\; {exp}\; {gdpat}^? \\
+    {dostmts}
+    & \Coloneq & {expbo}\; {stmts}\; {expbc} \\
+    & \mid & {impbo}\; {stmts}\; {impbc} \\
+    {stmts}
+    & \Coloneq & {stmt}^*\; {exp}\; \text{\texttt{\textquotedbl;\textquotedbl}}^? \\
+    {stmt}
+    & \Coloneq & {exp}\; \text{\texttt{\textquotedbl;\textquotedbl}} \\
+    & \mid & {pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl;\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls}\; \text{\texttt{\textquotedbl;\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl;\textquotedbl}} \\
+    {fbind}
+    & \Coloneq & {qvar}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {exp}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {pat}
+    & \Coloneq & {lpat}\; {qconop}\; {pat} \\
+    & \mid & {lpat} \\
+    {lpat}
+    & \Coloneq & \text{\texttt{\textquotedbl -\textquotedbl}}\; ({integer} \mid {float}) \\
+    & \mid & {gcon}\; {apat}^+ \\
+    & \mid & {apat} \\
+    {apat}
+    & \Coloneq & {var}\; (\text{\texttt{\textquotedbl @\textquotedbl}}\; {apat})^? \\
+    & \mid & {literal} \\
+    & \mid & \text{\texttt{\textquotedbl\textunderscore\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {pat}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({pat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {pat}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; ({pat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {pat}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}\; {apat} \\
+    & \mid & {qcon}\; {expbo}\; (({fpat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fpat} \mid )\; {expbc} \\
+    & \mid & {gcon} \\
+    {fpat}
+    & \Coloneq & {qvar}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {pat}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcl}
+    {gcon}
+    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl,\textquotedbl}}^+\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & {qcon} \\
+    {var}
+    & \Coloneq & {varid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {varsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {qvar}
+    & \Coloneq & {qvarid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {qvarsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {con}
+    & \Coloneq & {conid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {consym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {qcon}
+    & \Coloneq & {qconid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {gconsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    {varop}
+    & \Coloneq & {varsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {varid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    {qvarop}
+    & \Coloneq & {qvarsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {qvarid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    {conop}
+    & \Coloneq & {consym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {conid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    {qvarop}
+    & \Coloneq & {gconsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {qconid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    {op}
+    & \Coloneq & {varop} \mid {conop} \\
+    {qop}
+    & \Coloneq & {qvarop} \mid {qconop} \\
+    {gconsym}
+    & \Coloneq & \text{\texttt{\textquotedbl :\textquotedbl}} \mid {qconsym}
+  \end{array}
+\end{align*}
+
+\begin{align*}
+  \begin{array}{rcll}
+    {expbo}
+    & \Coloneq & \text{\texttt{\textquotedbl\{\textquotedbl}} &\{n \mapsto n + 1\} \\
+    {expbc}
+    & \Coloneq & \text{\texttt{\textquotedbl\}\textquotedbl}} &\{n \mapsto n - 1\} \\
+    {impbo}
+    & \Coloneq & <n, \text{\texttt{\{}}> &\{n \mapsto n + 1\} \\
+    {impbc}
+    & \Coloneq & <n, \text{\texttt{\}}}> &\{n \mapsto n - 1\} \\
+    & \mid & &\{n \mapsto n - 1\}
+  \end{array}
+\end{align*}
