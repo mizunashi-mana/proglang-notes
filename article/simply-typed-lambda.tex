@@ -253,7 +253,7 @@ $\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
 \end{theorem}
 
 \begin{theorem}[Respect Evaluation]
-  \theolabel{stlc:smallstep-equiv}
+  \label{stlc:theorem:smallstep-equiv}
   $e_1 \equiv e_2: \tau$ の時，$e'_1 \smalleval^* e_1$，$e_2 \smalleval^* e'_2$ ならば $e'_1 \equiv e'_2: \tau$．
 \end{theorem}
 
@@ -261,5 +261,5 @@ $\fbox{$\Gamma \vdash e_1 \equiv e_2: \tau$}$
   $e_1 \equiv e_2: \tau$ の時，$e_1 \smalleval^* e'_1$，$e_2 \smalleval^* e'_2$ ならば $e'_1 \equiv e'_2: \tau$．
 \end{corollary}
 \begin{proof}
-  $e_1 \smalleval^* e_1$ より，\theoref{stlc:smallstep-equiv}から $e_1 \equiv e'_2: \tau$．よって，T-Sym から $e'_2 \equiv e_1: \tau$ であり，$e'_2 \smalleval^* e'_2$ より\theoref{stlc:smallstep-equiv}から $e'_2 \equiv e'_1: \tau$．故に，T-Sym から $e'_1 \equiv e'_2: \tau$．
+  $e_1 \smalleval^* e_1$ より，\cref{stlc:theorem:smallstep-equiv}から $e_1 \equiv e'_2: \tau$．よって，T-Sym から $e'_2 \equiv e_1: \tau$ であり，$e'_2 \smalleval^* e'_2$ より\cref{stlc:theorem:smallstep-equiv}から $e'_2 \equiv e'_1: \tau$．故に，T-Sym から $e'_1 \equiv e'_2: \tau$．
 \end{proof}

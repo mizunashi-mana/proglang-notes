@@ -1,15 +1,14 @@
 % font settings
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[notext]{stix2}
-\usepackage{lipsum}
+\usepackage[no-math,ipaex]{luatexja-preset}
 
-% japanese fonts not support italic
-\DeclareFontShape{JT2}{gt}{m}{it}{<->ssub*gt/m/n}{}
-\DeclareFontShape{JY2}{gt}{m}{it}{<->ssub*gt/m/n}{}
-\DeclareFontShape{JT2}{mc}{b}{it}{<->ssub*mc/b/n}{}
-\DeclareFontShape{JY2}{mc}{b}{it}{<->ssub*mc/b/n}{}
+\usepackage{unicode-math}
+\setmathfont{STIX Two Math}
+
+% some math fonts not support bold
+\DeclareFontShape{TU}{STIXTwoMath(1)}{b}{n}{<->ssub*STIXTwoMath(1)/m/n}{}
+\DeclareFontShape{TU}{STIXTwoMath(2)}{b}{n}{<->ssub*STIXTwoMath(2)/m/n}{}
+\DeclareFontShape{TU}{STIXTwoMath(3)}{b}{n}{<->ssub*STIXTwoMath(3)/m/n}{}
 
 \usepackage[margin=5em,includefoot]{geometry}
 
-\bibliographystyle{amsalpha-nodash}
+\bibliographystyle{alpha}

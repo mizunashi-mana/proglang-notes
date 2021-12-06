@@ -7,7 +7,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export TEXMFCNF="${TEXMFCNF:-".:"}"
 
 DEV_TOOLS=(
-  platex
+  lualatex
+  luatexja
   latexmk
   latexpand
   latexdiff
@@ -15,15 +16,10 @@ DEV_TOOLS=(
 
 USING_PACKAGES=(
   ipaex
-
-  type1cm
-  lipsum
-
-  pdftexcmds
+  stix2-otf
 
   nag
   onlyamsmath
-  stmaryrd
   algorithms
   algorithmicx
   minted
@@ -38,11 +34,11 @@ USING_PACKAGES=(
   changepage
   mhchem
   xypic
+  creveref
 )
 
 DEPENDENCY_PACKAGES=(
   l3packages
-  float
   fvextra
   etoolbox
   xstring
