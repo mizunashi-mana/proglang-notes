@@ -674,15 +674,24 @@
 \end{align*}
 
 \begin{align*}
-  \begin{array}{rcll}
+  \begin{array}{rclll}
     {expbo}
-    & \Coloneq & \{l\} \text{\texttt{\textquotedbl\{\textquotedbl}} &\{:l\} \\
+    & \Coloneq & \{l\} &\text{\texttt{\textquotedbl\{\textquotedbl}} &\{\text{\texttt{\textquotedbl\{\textquotedbl}}:l\} \\
     {expbc}
-    & \Coloneq & \{l\} \text{\texttt{\textquotedbl\}\textquotedbl}} &\{n \mapsto n - 1\} \\
+    & \Coloneq & \{\text{\texttt{\textquotedbl\{\textquotedbl}}:l\} &\text{\texttt{\textquotedbl\}\textquotedbl}} &\{l\} \\
     {impbo}
-    & \Coloneq & <n, \text{\texttt{\{}}> &\{n \mapsto n + 1\} \\
+    & \Coloneq & \{l\} & \langle n\rangle &\{\langle n\rangle:l\} \\
     {impbc}
-    & \Coloneq & <n, \text{\texttt{\}}}> &\{n \mapsto n - 1\} \\
-    & \mid & &\{n \mapsto n - 1\}
+    & \Coloneq & \{\langle m\rangle:l\} &\epsilon &\{l\} \\
+    {semi}
+    & \Coloneq & &\text{\texttt{\textquotedbl ;\textquotedbl}} \\
+    & \mid & \{\langle m\rangle:l\} & \langle n\rangle &\{\langle m\rangle:l \mid m = n\}
   \end{array}
+\end{align*}
+
+\begin{align*}
+  \mathrm{skip}(l, t) &= \left\{\begin{array}{ll}
+    \mathrm{true} &(l = \langle m\rangle:l' \land t = \langle n\rangle \land m < n) \\
+    \mathrm{false} &(\text{otherwise})
+  \end{array}\right.
 \end{align*}
