@@ -18,6 +18,7 @@ USING_PACKAGES=(
   ipaex
   stix2-otf
 
+  float
   nag
   onlyamsmath
   algorithms
