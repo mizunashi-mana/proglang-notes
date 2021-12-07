@@ -72,7 +72,6 @@ jobs:
       -
         name: Make public
         run: |
-            mkdir -p public
             cp main.pdf public/
 
       -
