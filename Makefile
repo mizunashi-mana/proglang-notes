@@ -77,6 +77,7 @@ lessclean:
 	$(FIND) . -name '*.dvi' -delete
 	$(FIND) . -name '*.nav' -delete
 	$(FIND) . -name '*.vrb' -delete
+	$(FIND) . -name '*.toc' -delete
 
 remove: clean
 	$(RM) $(TARGET)
