@@ -207,9 +207,6 @@
 
 \begin{align*}
   \begin{array}{rcl}
-    \mathit{tycon}
-    & \Coloneq & \mathit{conid}
-    \\
     \mathit{modid}
     & \Coloneq & (\mathit{conid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^*\; \mathit{conid}
     \\
@@ -217,9 +214,6 @@
     & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{varid}
     \\
     \mathit{qconid}
-    & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{conid}
-    \\
-    \mathit{qtycon}
     & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{conid}
     \\
     \mathit{qvarsym}
@@ -695,7 +689,13 @@
     \mathit{qop}
     & \Coloneq & \mathit{qvarop} \mid \mathit{qconop} \\
     \mathit{gconsym}
-    & \Coloneq & \text{\texttt{\textquotedbl :\textquotedbl}} \mid \mathit{qconsym}
+    & \Coloneq & \text{\texttt{\textquotedbl :\textquotedbl}} \mid \mathit{qconsym} \\
+    \mathit{tyvar}
+    & \Coloneq & \mathit{varid} \\
+    \mathit{tycon}
+    & \Coloneq & \mathit{conid} \\
+    \mathit{qtycon}
+    & \Coloneq & \mathit{qconid}
   \end{array}
 \end{align*}
 
