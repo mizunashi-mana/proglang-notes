@@ -332,7 +332,33 @@
 \subsection{Preprocess for Layout}
 
 \begin{align*}
-  L
+  L(s) &= \left\{\begin{array}{ll}
+    L_1(r', s) &(s = t:s', \mathrm{pos}(t) = (r', c'), \mathrm{isflt}(t)) \\
+    \{c'\}:\langle c'\rangle:L_1(r', s) &(s = t:s', \mathrm{pos}(t) = (r', c'), \not\mathrm{isflt}(t)) \\
+    \{0\}:\epsilon &(s = \epsilon)
+  \end{array}\right. \\
+  L_1(r, s) &= \left\{\begin{array}{ll}
+    \langle c'\rangle:L_2(r', c', t, s') &(s = t:s', \mathrm{pos}(t) = (r', c'), r \neq r') \\
+    L_2(r', c', t, s') &(s = t:s', \mathrm{pos}(t) = (r', c'), r = r') \\
+    \epsilon &(s = \epsilon)
+  \end{array}\right. \\
+  L_2(r_1, c_1, t_1, s) &= \left\{\begin{array}{ll}
+    t_1:t_2:L_1(r_2, s') &(\mathrm{islt}(t_1), s = t_2:s', \mathrm{pos}(t_2) = (r_2, c_2), t_2 = \text{\texttt{\textquotedbl\{\textquotedbl}}) \\
+    t_1:\{c_2\}:\langle c_2\rangle:t_2:L_1(r_2, s') &(\mathrm{islt}(t_1), s = t_2:s', \mathrm{pos}(t_2) = (r_2, c_2), t_2 \neq \text{\texttt{\textquotedbl\{\textquotedbl}}) \\
+    t_1:\{0\}:\epsilon &(\mathrm{islt}(t_1), s = \epsilon) \\
+    t_1:L_1(r_1, s) &(\not\mathrm{islt}(t_1))
+  \end{array}\right. \\
+  \mathrm{islft}(t) &= \left\{\begin{array}{ll}
+    \top &(t = \text{\texttt{\textquotedbl module\textquotedbl}}) \\
+    \bot &(\text{otherwise})
+  \end{array}\right. \\
+  \mathrm{islt}(t) &= \left\{\begin{array}{ll}
+    \top &(t = \text{\texttt{\textquotedbl let\textquotedbl}}) \\
+    \top &(t = \text{\texttt{\textquotedbl where\textquotedbl}}) \\
+    \top &(t = \text{\texttt{\textquotedbl do\textquotedbl}}) \\
+    \top &(t = \text{\texttt{\textquotedbl of\textquotedbl}}) \\
+    \bot &(\text{otherwise})
+  \end{array}\right.
 \end{align*}
 
 \subsection{PEG with Layout Tokens}
@@ -676,16 +702,18 @@
 \begin{align*}
   \begin{array}{rclll}
     {expbo}
-    & \Coloneq & \{l\} &\text{\texttt{\textquotedbl\{\textquotedbl}} &\{\text{\texttt{\textquotedbl\{\textquotedbl}}:l\} \\
+    & \Coloneq & [l] &\text{\texttt{\textquotedbl\{\textquotedbl}} &[0:l] \\
     {expbc}
-    & \Coloneq & \{\text{\texttt{\textquotedbl\{\textquotedbl}}:l\} &\text{\texttt{\textquotedbl\}\textquotedbl}} &\{l\} \\
+    & \Coloneq & [0:l] &\text{\texttt{\textquotedbl\}\textquotedbl}} &[l] \\
     {impbo}
-    & \Coloneq & \{l\} & \langle n\rangle &\{\langle n\rangle:l\} \\
+    & \Coloneq & [m:l] &\{ n\} &[n:m:l \mid n < m] \\
+    & \mid & [m:l] &\{ n\} &[(n + 1):m:l \mid n \geq m] \\
+    & \mid & [\epsilon] &\{ n\} &[n:\epsilon \mid n > 0] \\
     {impbc}
-    & \Coloneq & \{\langle m\rangle:l\} &\epsilon &\{l\} \\
+    & \Coloneq & [m:l] &\epsilon &[l \mid m > 0] \\
     {semi}
     & \Coloneq & &\text{\texttt{\textquotedbl ;\textquotedbl}} \\
-    & \mid & \{\langle m\rangle:l\} & \langle n\rangle &\{\langle m\rangle:l \mid m = n\}
+    & \mid & [m:l] & \langle n\rangle &[m:l \mid m = n]
   \end{array}
 \end{align*}
 
