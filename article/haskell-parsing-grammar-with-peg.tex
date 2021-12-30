@@ -6,23 +6,23 @@
 
 \begin{align*}
   \begin{array}{rcl}
-    {program}
-    & \Coloneq & ({lexeme} \mid {whitespace})^* \\
-    {lexeme}
-    & \Coloneq & {qvarid} \\
-    & \mid & {qconid} \\
-    & \mid & {qvarsym} \\
-    & \mid & {qconsym} \\
-    & \mid & {literal} \\
-    & \mid & {special} \\
-    & \mid & {reservedop} \\
-    & \mid & {reservedid} \\
-    {literal}
-    & \Coloneq & {integer} \\
-    & \mid & {float} \\
-    & \mid & {char} \\
-    & \mid & {string} \\
-    {special}
+    \mathit{program}
+    & \Coloneq & (\mathit{lexeme} \mid \mathit{whitespace})^* \\
+    \mathit{lexeme}
+    & \Coloneq & \mathit{qvarid} \\
+    & \mid & \mathit{qconid} \\
+    & \mid & \mathit{qvarsym} \\
+    & \mid & \mathit{qconsym} \\
+    & \mid & \mathit{literal} \\
+    & \mid & \mathit{special} \\
+    & \mid & \mathit{reservedop} \\
+    & \mid & \mathit{reservedid} \\
+    \mathit{literal}
+    & \Coloneq & \mathit{integer} \\
+    & \mid & \mathit{float} \\
+    & \mid & \mathit{char} \\
+    & \mid & \mathit{string} \\
+    \mathit{special}
     & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}
     \mid \text{\texttt{\textquotedbl)\textquotedbl}}
     \mid \text{\texttt{\textquotedbl,\textquotedbl}}
@@ -33,78 +33,78 @@
     \mid \text{\texttt{\textquotedbl\{\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\}\textquotedbl}}
     \\
-    {whitespace}
-    & \Coloneq & {whitestuff}^+
+    \mathit{whitespace}
+    & \Coloneq & \mathit{whitestuff}^+
     \\
-    {whitestuff}
-    & \Coloneq & {whitechar}
-    \mid {comment}
-    \mid {ncomment}
+    \mathit{whitestuff}
+    & \Coloneq & \mathit{whitechar}
+    \mid \mathit{comment}
+    \mid \mathit{ncomment}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {whitechar}
-    & \Coloneq & {newline}
+    \mathit{whitechar}
+    & \Coloneq & \mathit{newline}
     \mid \text{\texttt{\textquotedbl\textbackslash v\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\;\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textbackslash t\textquotedbl}}
     \mid (\text{Unicode whitespace})
     \\
-    {newline}
+    \mathit{newline}
     & \Coloneq & \text{\texttt{\textquotedbl\textbackslash r\textbackslash n\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textbackslash r\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textbackslash n\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textbackslash f\textquotedbl}}
     \\
-    {comment}
-    & \Coloneq & {dashes}\; (! {symbol}\; {any}^*)^?\; {newline}
+    \mathit{comment}
+    & \Coloneq & \mathit{dashes}\; (! \mathit{symbol}\; \mathit{any}^*)^?\; \mathit{newline}
     \\
-    {dashes}
+    \mathit{dashes}
     & \Coloneq & \text{\texttt{\textquotedbl-\textquotedbl}}\; (\text{\texttt{\textquotedbl-\textquotedbl}})^+
     \\
-    {opencom}
+    \mathit{opencom}
     & \Coloneq & \text{\texttt{\textquotedbl\{-\textquotedbl}}
     \\
-    {closecom}
+    \mathit{closecom}
     & \Coloneq & \text{\texttt{\textquotedbl-\}\textquotedbl}}
     \\
-    {ncomment}
-    & \Coloneq & {opencom}\; {ANYs}\; ({ncomment}\; {ANYs})^*\; {closecom}
+    \mathit{ncomment}
+    & \Coloneq & \mathit{opencom}\; \mathit{ANYs}\; (\mathit{ncomment}\; \mathit{ANYs})^*\; \mathit{closecom}
     \\
-    {ANYs}
-    & \Coloneq & ! ({ANY}^*\; ({opencom} \mid {closecom})\; {ANY}^*)\; {ANY}^*
+    \mathit{ANYs}
+    & \Coloneq & ! (\mathit{ANY}^*\; (\mathit{opencom} \mid \mathit{closecom})\; \mathit{ANY}^*)\; \mathit{ANY}^*
     \\
-    {ANY}
-    & \Coloneq & {graphic}
-    \mid {whitechar}
+    \mathit{ANY}
+    & \Coloneq & \mathit{graphic}
+    \mid \mathit{whitechar}
     \\
-    {any}
-    & \Coloneq & {graphic}
+    \mathit{any}
+    & \Coloneq & \mathit{graphic}
     \mid \text{\texttt{\textquotedbl\;\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textbackslash t\textquotedbl}}
     \\
-    {graphic}
-    & \Coloneq & {small}
-    \mid {large}
-    \mid {symbol}
-    \mid {digit}
-    \mid {special}
+    \mathit{graphic}
+    & \Coloneq & \mathit{small}
+    \mid \mathit{large}
+    \mid \mathit{symbol}
+    \mid \mathit{digit}
+    \mid \mathit{special}
     \mid \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
     \\
-    {small}
+    \mathit{small}
     & \Coloneq & \text{\texttt{\textquotedbl a\textquotedbl}} \mid \text{\texttt{\textquotedbl b\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl z\textquotedbl}}
     \mid (\text{Unicode lowercase letter})
     \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}}
     \\
-    {large}
+    \mathit{large}
     & \Coloneq & \text{\texttt{\textquotedbl A\textquotedbl}} \mid \text{\texttt{\textquotedbl B\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl Z\textquotedbl}}
     \mid (\text{Unicode uppercase letter})
     \mid (\text{Unicode titlecase letter})
     \\
-    {symbol}
+    \mathit{symbol}
     & \Coloneq & \text{\texttt{\textquotedbl!\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\#\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\$\textquotedbl}}
@@ -127,37 +127,37 @@
     \mid \text{\texttt{\textquotedbl\textasciitilde\textquotedbl}}
     \mid \text{\texttt{\textquotedbl :\textquotedbl}}
     \\
-    & \mid & ! ({symbol} \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}} \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}})\; {uniSymbol}
+    & \mid & ! (\mathit{symbol} \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}} \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}})\; \mathit{uniSymbol}
     \\
-    {uniSymbol}
+    \mathit{uniSymbol}
     & \Coloneq & (\text{Unicode symbol})
     \mid (\text{Unicode punctuation})
     \\
-    {digit}
+    \mathit{digit}
     & \Coloneq & \text{\texttt{\textquotedbl0\textquotedbl}} \mid \text{\texttt{\textquotedbl1\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl9\textquotedbl}}
     \mid (\text{Unicode decimal digit})
     \\
-    {octit}
+    \mathit{octit}
     & \Coloneq & \text{\texttt{\textquotedbl0\textquotedbl}} \mid \text{\texttt{\textquotedbl1\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl7\textquotedbl}}
     \\
-    {hexit}
-    & \Coloneq & {digit}
+    \mathit{hexit}
+    & \Coloneq & \mathit{digit}
     \mid \text{\texttt{\textquotedbl A\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl F\textquotedbl}}
     \mid \text{\texttt{\textquotedbl a\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl f\textquotedbl}}
     \\
-    {varid}
-    & \Coloneq & ! ({reservedid}\; !{other})\; {small}\; {other}^*
+    \mathit{varid}
+    & \Coloneq & ! (\mathit{reservedid}\; !\mathit{other})\; \mathit{small}\; \mathit{other}^*
     \\
-    {conid}
-    & \Coloneq & {large}\; {other}^*
+    \mathit{conid}
+    & \Coloneq & \mathit{large}\; \mathit{other}^*
     \\
-    {other}
-    & \Coloneq & {small}
-    \mid {large}
-    \mid {digit}
+    \mathit{other}
+    & \Coloneq & \mathit{small}
+    \mid \mathit{large}
+    \mid \mathit{digit}
     \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
     \\
-    {reservedid}
+    \mathit{reservedid}
     & \Coloneq & \text{\texttt{\textquotedbl case\textquotedbl}}
     \mid \text{\texttt{\textquotedbl class\textquotedbl}}
     \mid \text{\texttt{\textquotedbl data\textquotedbl}}
@@ -185,13 +185,13 @@
     & \mid & \text{\texttt{\textquotedbl where\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}}
     \\
-    {varsym}
-    & \Coloneq & {!} (({reservedop} \mid {dashes})\; !{symbol} \mid \text{\texttt{\textquotedbl :\textquotedbl}})\; {symbol}^+
+    \mathit{varsym}
+    & \Coloneq & {!} ((\mathit{reservedop} \mid \mathit{dashes})\; !\mathit{symbol} \mid \text{\texttt{\textquotedbl :\textquotedbl}})\; \mathit{symbol}^+
     \\
-    {consym}
-    & \Coloneq & {!} ({reservedop}\; !{symbol})\; \text{\texttt{\textquotedbl :\textquotedbl}}\; {symbol}^+
+    \mathit{consym}
+    & \Coloneq & {!} (\mathit{reservedop}\; !\mathit{symbol})\; \text{\texttt{\textquotedbl :\textquotedbl}}\; \mathit{symbol}^+
     \\
-    {reservedop}
+    \mathit{reservedop}
     & \Coloneq & \text{\texttt{\textquotedbl ..\textquotedbl}}
     \mid \text{\texttt{\textquotedbl :\textquotedbl}}
     \mid \text{\texttt{\textquotedbl ::\textquotedbl}}
@@ -207,62 +207,62 @@
 
 \begin{align*}
   \begin{array}{rcl}
-    {tycon}
-    & \Coloneq & {conid}
+    \mathit{tycon}
+    & \Coloneq & \mathit{conid}
     \\
-    {modid}
-    & \Coloneq & ({conid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^*\; {conid}
+    \mathit{modid}
+    & \Coloneq & (\mathit{conid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^*\; \mathit{conid}
     \\
-    {qvarid}
-    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {varid}
+    \mathit{qvarid}
+    & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{varid}
     \\
-    {qconid}
-    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {conid}
+    \mathit{qconid}
+    & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{conid}
     \\
-    {qtycon}
-    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {conid}
+    \mathit{qtycon}
+    & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{conid}
     \\
-    {qvarsym}
-    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {varsym}
+    \mathit{qvarsym}
+    & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{varsym}
     \\
-    {qconsym}
-    & \Coloneq & ({modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; {consym}
+    \mathit{qconsym}
+    & \Coloneq & (\mathit{modid}\; \text{\texttt{\textquotedbl .\textquotedbl}})^?\; \mathit{consym}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {decimal}
-    & \Coloneq & {digit}^+
+    \mathit{decimal}
+    & \Coloneq & \mathit{digit}^+
     \\
-    {octal}
-    & \Coloneq & {octit}^+
+    \mathit{octal}
+    & \Coloneq & \mathit{octit}^+
     \\
-    {hexdecimal}
-    & \Coloneq & {hexit}^+
+    \mathit{hexdecimal}
+    & \Coloneq & \mathit{hexit}^+
     \\
-    {integer}
-    & \Coloneq & {decimal} \\
-    & \mid & \text{\texttt{\textquotedbl 0o\textquotedbl}}\; {octal} \mid \text{\texttt{\textquotedbl 0O\textquotedbl}}\; {octal} \\
-    & \mid & \text{\texttt{\textquotedbl 0x\textquotedbl}}\; {hexdecimal} \mid \text{\texttt{\textquotedbl 0X\textquotedbl}}\; {hexdecimal}
+    \mathit{integer}
+    & \Coloneq & \mathit{decimal} \\
+    & \mid & \text{\texttt{\textquotedbl 0o\textquotedbl}}\; \mathit{octal} \mid \text{\texttt{\textquotedbl 0O\textquotedbl}}\; \mathit{octal} \\
+    & \mid & \text{\texttt{\textquotedbl 0x\textquotedbl}}\; \mathit{hexdecimal} \mid \text{\texttt{\textquotedbl 0X\textquotedbl}}\; \mathit{hexdecimal}
     \\
-    {float}
-    & \Coloneq & {decimal}\; \text{\texttt{\textquotedbl .\textquotedbl}}\; {decimal}\; {exponent}^? \\
-    & \mid & {decimal}\; {exponent}
+    \mathit{float}
+    & \Coloneq & \mathit{decimal}\; \text{\texttt{\textquotedbl .\textquotedbl}}\; \mathit{decimal}\; \mathit{exponent}^? \\
+    & \mid & \mathit{decimal}\; \mathit{exponent}
     \\
-    {exponent}
-    & \Coloneq & (\text{\texttt{\textquotedbl e\textquotedbl}} \mid \text{\texttt{\textquotedbl E\textquotedbl}})\; (\text{\texttt{\textquotedbl +\textquotedbl}} \mid \text{\texttt{\textquotedbl -\textquotedbl}})\; {decimal}
+    \mathit{exponent}
+    & \Coloneq & (\text{\texttt{\textquotedbl e\textquotedbl}} \mid \text{\texttt{\textquotedbl E\textquotedbl}})\; (\text{\texttt{\textquotedbl +\textquotedbl}} \mid \text{\texttt{\textquotedbl -\textquotedbl}})\; \mathit{decimal}
     \\
-    {char}
-    & \Coloneq & \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}\;({!}(\text{\texttt{\textquotedbl\textquotesingle\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}})\; {graphic} \mid \text{\texttt{\textquotedbl\;\textquotedbl}} \mid {!}\text{\texttt{\textquotedbl\textbackslash\textbackslash\&\textquotedbl}}\; {escape}) \; \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
+    \mathit{char}
+    & \Coloneq & \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}\;({!}(\text{\texttt{\textquotedbl\textquotesingle\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}})\; \mathit{graphic} \mid \text{\texttt{\textquotedbl\;\textquotedbl}} \mid {!}\text{\texttt{\textquotedbl\textbackslash\textbackslash\&\textquotedbl}}\; \mathit{escape}) \; \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
     \\
-    {string}
-    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}\;({!}(\text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}})\; {graphic} \mid \text{\texttt{\textquotedbl\;\textquotedbl}} \mid {escape} \mid {gap})^* \; \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}
+    \mathit{string}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}\;({!}(\text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}} \mid \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}})\; \mathit{graphic} \mid \text{\texttt{\textquotedbl\;\textquotedbl}} \mid \mathit{escape} \mid \mathit{gap})^* \; \text{\texttt{\textquotedbl\textbackslash\textquotedbl\textquotedbl}}
     \\
-    {escape}
-    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}} ({charesc} \mid {ascii} \mid {decimal} \mid \text{\texttt{\textquotedbl o\textquotedbl}}\; {octal} \mid \text{\texttt{\textquotedbl x\textquotedbl}}\; {hexdecimal})
+    \mathit{escape}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}} (\mathit{charesc} \mid \mathit{ascii} \mid \mathit{decimal} \mid \text{\texttt{\textquotedbl o\textquotedbl}}\; \mathit{octal} \mid \text{\texttt{\textquotedbl x\textquotedbl}}\; \mathit{hexdecimal})
     \\
-    {charesc}
+    \mathit{charesc}
     & \Coloneq & \text{\texttt{\textquotedbl a\textquotedbl}}
     \mid \text{\texttt{\textquotedbl b\textquotedbl}}
     \mid \text{\texttt{\textquotedbl f\textquotedbl}}
@@ -275,8 +275,8 @@
     \mid \text{\texttt{\textquotedbl\textquotesingle\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\&\textquotedbl}}
     \\
-    {ascii}
-    & \Coloneq & \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}\; {cntrl}
+    \mathit{ascii}
+    & \Coloneq & \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}\; \mathit{cntrl}
     \mid \text{\texttt{\textquotedbl NUL\textquotedbl}}
     \mid \text{\texttt{\textquotedbl SOH\textquotedbl}}
     \mid \text{\texttt{\textquotedbl STX\textquotedbl}}
@@ -315,7 +315,7 @@
     \mid \text{\texttt{\textquotedbl SP\textquotedbl}}
     \mid \text{\texttt{\textquotedbl DEL\textquotedbl}}
     \\
-    {cntrl}
+    \mathit{cntrl}
     & \Coloneq & \text{\texttt{\textquotedbl A\textquotedbl}} \mid \text{\texttt{\textquotedbl B\textquotedbl}} \mid \cdots \mid \text{\texttt{\textquotedbl Z\textquotedbl}}
     \mid \text{\texttt{\textquotedbl @\textquotedbl}}
     \mid \text{\texttt{\textquotedbl [\textquotedbl}}
@@ -324,8 +324,8 @@
     \mid \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}
     \mid \text{\texttt{\textquotedbl\textunderscore\textquotedbl}}
     \\
-    {gap}
-    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}\; {whitechar}^+\; \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}
+    \mathit{gap}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}\; \mathit{whitechar}^+\; \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}
   \end{array}
 \end{align*}
 
@@ -365,92 +365,92 @@
 
 \begin{align*}
   \begin{array}{rcl}
-    {module}
-    & \Coloneq & \text{\texttt{\textquotedbl module\textquotedbl}}\; {modid}\; {exports}^?\; \text{\texttt{\textquotedbl where\textquotedbl}}\; {body} \\
-    & \mid & {body} \\
-    {body}
-    & \Coloneq & {expbo}\; {bodyinl}\; {expbc} \\
-    & \mid & {impbo}\; {bodyinl}\; {impbc} \\
-    {bodyinl}
-    & \Coloneq & {impdecls}\; ;\; {topdecls} \\
-    & \mid & {impdecls} \\
-    & \mid & {topdecls} \\
+    \mathit{module}
+    & \Coloneq & \text{\texttt{\textquotedbl module\textquotedbl}}\; \mathit{modid}\; \mathit{exports}^?\; \text{\texttt{\textquotedbl where\textquotedbl}}\; \mathit{body} \\
+    & \mid & \mathit{body} \\
+    \mathit{body}
+    & \Coloneq & \mathit{expbo}\; \mathit{bodyinl}\; \mathit{expbc} \\
+    & \mid & \mathit{impbo}\; \mathit{bodyinl}\; \mathit{impbc} \\
+    \mathit{bodyinl}
+    & \Coloneq & \mathit{impdecls}\; \mathit{semi}\; \mathit{topdecls} \\
+    & \mid & \mathit{impdecls} \\
+    & \mid & \mathit{topdecls} \\
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {exports}
-    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({export}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {export}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {export}
-    & \Coloneq & {qvar} \\
-    & \mid & {qtycon}\; (\text{\texttt{\textquotedbl(\textquotedbl}}\; (\text{\texttt{\textquotedbl..\textquotedbl}} \mid ({cname}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {cname} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}})^? \\
-    & \mid & \text{\texttt{\textquotedbl module\textquotedbl}}\; {modid} \\
-    {impdecl}
-    & \Coloneq & \text{\texttt{\textquotedbl import\textquotedbl}}\; \text{\texttt{\textquotedbl qualified\textquotedbl}}^?\; {modid}\; (\text{\texttt{\textquotedbl as\textquotedbl}}\; {modid})^?\; {impspec}^? \\
+    \mathit{exports}
+    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{export}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{export}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{export}
+    & \Coloneq & \mathit{qvar} \\
+    & \mid & \mathit{qtycon}\; (\text{\texttt{\textquotedbl(\textquotedbl}}\; (\text{\texttt{\textquotedbl..\textquotedbl}} \mid (\mathit{cname}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{cname} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}})^? \\
+    & \mid & \text{\texttt{\textquotedbl module\textquotedbl}}\; \mathit{modid} \\
+    \mathit{impdecl}
+    & \Coloneq & \text{\texttt{\textquotedbl import\textquotedbl}}\; \text{\texttt{\textquotedbl qualified\textquotedbl}}^?\; \mathit{modid}\; (\text{\texttt{\textquotedbl as\textquotedbl}}\; \mathit{modid})^?\; \mathit{impspec}^? \\
     & \mid & \\
-    {impspec}
-    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl hiding\textquotedbl}}\;\text{\texttt{\textquotedbl(\textquotedbl}}\; ({import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {import}
-    & \Coloneq & {var} \\
-    & \mid & {tycon}\; (\text{\texttt{\textquotedbl(\textquotedbl}}\; (\text{\texttt{\textquotedbl..\textquotedbl}} \mid ({cname}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {cname} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}})^? \\
-    {cname}
-    & \Coloneq & {var} \mid {con}
+    \mathit{impspec}
+    & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl hiding\textquotedbl}}\;\text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{import}
+    & \Coloneq & \mathit{var} \\
+    & \mid & \mathit{tycon}\; (\text{\texttt{\textquotedbl(\textquotedbl}}\; (\text{\texttt{\textquotedbl..\textquotedbl}} \mid (\mathit{cname}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{cname} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}})^? \\
+    \mathit{cname}
+    & \Coloneq & \mathit{var} \mid \mathit{con}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {topdecls}
-    & \Coloneq & ({topdecl}\; ;)^*\; {topdecl} \mid \\
-    {topdecl}
-    & \Coloneq & \text{\texttt{\textquotedbl type\textquotedbl}}\; {simpletype}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {type} \\
-    & \mid & \text{\texttt{\textquotedbl data\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {simpletype}\; (\text{\texttt{\textquotedbl =\textquotedbl}}\; {constrs})^?\; {deriving}^? \\
-    & \mid & \text{\texttt{\textquotedbl newtype\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {simpletype}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {newconstr}\; {deriving}^? \\
-    & \mid & \text{\texttt{\textquotedbl class\textquotedbl}}\; ({scontext}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {tycon}\; {tyvar}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {cdecls})^? \\
-    & \mid & \text{\texttt{\textquotedbl instance\textquotedbl}}\; ({scontext}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {qtycon}\; {inst}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {idecls})^? \\
-    & \mid & \text{\texttt{\textquotedbl default\textquotedbl}}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; (({type}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {type} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl foreign\textquotedbl}}\; {fdecl} \\
-    & \mid & {decl}
+    \mathit{topdecls}
+    & \Coloneq & (\mathit{topdecl}\; \mathit{semi})^*\; \mathit{topdecl} \mid \\
+    \mathit{topdecl}
+    & \Coloneq & \text{\texttt{\textquotedbl type\textquotedbl}}\; \mathit{simpletype}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{type} \\
+    & \mid & \text{\texttt{\textquotedbl data\textquotedbl}}\; (\mathit{context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; \mathit{simpletype}\; (\text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{constrs})^?\; \mathit{deriving}^? \\
+    & \mid & \text{\texttt{\textquotedbl newtype\textquotedbl}}\; (\mathit{context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; \mathit{simpletype}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{newconstr}\; \mathit{deriving}^? \\
+    & \mid & \text{\texttt{\textquotedbl class\textquotedbl}}\; (\mathit{scontext}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; \mathit{tycon}\; \mathit{tyvar}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; \mathit{cdecls})^? \\
+    & \mid & \text{\texttt{\textquotedbl instance\textquotedbl}}\; (\mathit{scontext}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; \mathit{qtycon}\; \mathit{inst}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; \mathit{idecls})^? \\
+    & \mid & \text{\texttt{\textquotedbl default\textquotedbl}}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; ((\mathit{type}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{type} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl foreign\textquotedbl}}\; \mathit{fdecl} \\
+    & \mid & \mathit{decl}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {decls}
-    & \Coloneq & {expbo}\; {declsinl}\; {expbc} \\
-    & \mid & {impbo}\; {declsinl}\; {impbc} \\
-    {declsinl}
-    & \Coloneq & ({decl}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {decl} \mid \\
-    {decl}
-    & \Coloneq & {gendecl} \\
-    & \mid & ({funlhs} \mid {pat})\; {rhs} \\
-    {cdecls}
-    & \Coloneq & {expbo}\; {cdeclsinl}\; {expbc} \\
-    & \mid & {impbo}\; {cdeclsinl}\; {impbc} \\
-    {cdeclsinl}
-    & \Coloneq & ({cdecl}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {cdecl} \mid \\
-    {cdecl}
-    & \Coloneq & {gendecl} \\
-    & \mid & ({funlhs} \mid {var})\; {rhs} \\
-    {idecls}
-    & \Coloneq & {expbo}\; {ideclsinl}\; {expbc} \\
-    & \mid & {impbo}\; {ideclsinl}\; {impbc} \\
-    {ideclsinl}
-    & \Coloneq & ({idecl}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {idecl} \mid \\
-    {idecl}
-    & \Coloneq & ({funlhs} \mid {var})\; {rhs} \\
+    \mathit{decls}
+    & \Coloneq & \mathit{expbo}\; \mathit{declsinl}\; \mathit{expbc} \\
+    & \mid & \mathit{impbo}\; \mathit{declsinl}\; \mathit{impbc} \\
+    \mathit{declsinl}
+    & \Coloneq & (\mathit{decl}\; \mathit{semi})^*\; \mathit{decl} \mid \\
+    \mathit{decl}
+    & \Coloneq & \mathit{gendecl} \\
+    & \mid & (\mathit{funlhs} \mid \mathit{pat})\; \mathit{rhs} \\
+    \mathit{cdecls}
+    & \Coloneq & \mathit{expbo}\; \mathit{cdeclsinl}\; \mathit{expbc} \\
+    & \mid & \mathit{impbo}\; \mathit{cdeclsinl}\; \mathit{impbc} \\
+    \mathit{cdeclsinl}
+    & \Coloneq & (\mathit{cdecl}\; \mathit{semi})^*\; \mathit{cdecl} \mid \\
+    \mathit{cdecl}
+    & \Coloneq & \mathit{gendecl} \\
+    & \mid & (\mathit{funlhs} \mid \mathit{var})\; \mathit{rhs} \\
+    \mathit{idecls}
+    & \Coloneq & \mathit{expbo}\; \mathit{ideclsinl}\; \mathit{expbc} \\
+    & \mid & \mathit{impbo}\; \mathit{ideclsinl}\; \mathit{impbc} \\
+    \mathit{ideclsinl}
+    & \Coloneq & (\mathit{idecl}\; \mathit{semi})^*\; \mathit{idecl} \mid \\
+    \mathit{idecl}
+    & \Coloneq & (\mathit{funlhs} \mid \mathit{var})\; \mathit{rhs} \\
     & \mid & \\
-    {gendecl}
-    & \Coloneq & {vars}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; {type} \\
-    & \mid & {fixity}\; {integer}^?\; {ops} \\
+    \mathit{gendecl}
+    & \Coloneq & \mathit{vars}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; (\mathit{context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})^?\; \mathit{type} \\
+    & \mid & \mathit{fixity}\; \mathit{integer}^?\; \mathit{ops} \\
     & \mid & \\
-    {ops}
-    & \Coloneq & ({op}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {op} \\
-    {vars}
-    & \Coloneq & ({var}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {var} \\
-    {fixity}
+    \mathit{ops}
+    & \Coloneq & (\mathit{op}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{op} \\
+    \mathit{vars}
+    & \Coloneq & (\mathit{var}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{var} \\
+    \mathit{fixity}
     & \Coloneq & \text{\texttt{\textquotedbl infixl\textquotedbl}}
     \mid \text{\texttt{\textquotedbl infixr\textquotedbl}}
     \mid \text{\texttt{\textquotedbl infix\textquotedbl}}
@@ -459,18 +459,18 @@
 
 \begin{align*}
   \begin{array}{rcl}
-    {type}
-    & \Coloneq & {btype}\; (\text{\texttt{\textquotedbl ->\textquotedbl}}\; {type})^? \\
-    {btype}
-    & \Coloneq & {btype}^?\; {atype} \\
-    {atype}
-    & \Coloneq & {gtycon} \\
-    & \mid & {tyvar} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({type}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {type}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {type}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {type}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {gtycon}
-    & \Coloneq & {qtycon} \\
+    \mathit{type}
+    & \Coloneq & \mathit{btype}\; (\text{\texttt{\textquotedbl ->\textquotedbl}}\; \mathit{type})^? \\
+    \mathit{btype}
+    & \Coloneq & \mathit{btype}^?\; \mathit{atype} \\
+    \mathit{atype}
+    & \Coloneq & \mathit{gtycon} \\
+    & \mid & \mathit{tyvar} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{type}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; \mathit{type}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \mathit{type}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{type}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{gtycon}
+    & \Coloneq & \mathit{qtycon} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
@@ -480,57 +480,57 @@
 
 \begin{align*}
   \begin{array}{rcl}
-    {context}
-    & \Coloneq & {class} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (({class}\; \text{\texttt{\textquotedbl,\textquotedbl}})\; {class} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}}
+    \mathit{context}
+    & \Coloneq & \mathit{class} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ((\mathit{class}\; \text{\texttt{\textquotedbl,\textquotedbl}})\; \mathit{class} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}}
     \\
-    {class}
-    & \Coloneq & {qtycon}\; {tyvar} \\
-    & \mid & {qtycon}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; {tyvar}\; {atype}^+\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {scontext}
-    & \Coloneq & {simpleclass} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (({simpleclass}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {simpleclass} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}}
+    \mathit{class}
+    & \Coloneq & \mathit{qtycon}\; \mathit{tyvar} \\
+    & \mid & \mathit{qtycon}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{tyvar}\; \mathit{atype}^+\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{scontext}
+    & \Coloneq & \mathit{simpleclass} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ((\mathit{simpleclass}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{simpleclass} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}}
     \\
-    {simpleclass}
-    & \Coloneq & {qtycon}\; {tyvar}
+    \mathit{simpleclass}
+    & \Coloneq & \mathit{qtycon}\; \mathit{tyvar}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {simpletype}
-    & \Coloneq & {tycon}\; {tyvar}^* \\
-    {constrs}
-    & \Coloneq & ({constr}\; \text{\texttt{\textquotedbl|\textquotedbl}})^*\; {constr} \\
-    {constr}
-    & \Coloneq & {con}\; {expbo}\; (({fielddecl}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fielddecl} \mid )\; {expbc} \\
-    & \mid & ({btype} \mid \text{\texttt{\textquotedbl!\textquotedbl}}\; {atype})\; {conop}\; ({btype} \mid \text{\texttt{\textquotedbl!\textquotedbl}}\; {atype}) \\
-    & \mid & {con}\; (\text{\texttt{\textquotedbl!\textquotedbl}}^?\; {atype})^* \\
-    {newconstr}
-    & \Coloneq & {con}\; {expbo}\; {var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; {type}\; {expbc} \\
-    & \mid & {con}\; {atype} \\
-    {fielddecl}
-    & \Coloneq & {vars}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; ({type} \mid \text{\texttt{\textquotedbl !\textquotedbl}}\; {atype}) \\
-    {deriving}
-    & \Coloneq & \text{\texttt{\textquotedbl deriving\textquotedbl}}\; {dclass} \\
-    & \mid & \text{\texttt{\textquotedbl deriving\textquotedbl}}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; ({dclass}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {dclass} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {dclass}
-    & \Coloneq & {qtycon} \\
-    {inst}
-    & \Coloneq & {qtycon} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {gtycon}\; {tyvar}^*\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({tyvar}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {tyvar}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {tyvar}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {tyvar}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; {tyvar}\; \text{\texttt{\textquotedbl)\textquotedbl}}
+    \mathit{simpletype}
+    & \Coloneq & \mathit{tycon}\; \mathit{tyvar}^* \\
+    \mathit{constrs}
+    & \Coloneq & (\mathit{constr}\; \text{\texttt{\textquotedbl|\textquotedbl}})^*\; \mathit{constr} \\
+    \mathit{constr}
+    & \Coloneq & \mathit{con}\; \mathit{expbo}\; ((\mathit{fielddecl}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fielddecl} \mid )\; \mathit{expbc} \\
+    & \mid & (\mathit{btype} \mid \text{\texttt{\textquotedbl!\textquotedbl}}\; \mathit{atype})\; \mathit{conop}\; (\mathit{btype} \mid \text{\texttt{\textquotedbl!\textquotedbl}}\; \mathit{atype}) \\
+    & \mid & \mathit{con}\; (\text{\texttt{\textquotedbl!\textquotedbl}}^?\; \mathit{atype})^* \\
+    \mathit{newconstr}
+    & \Coloneq & \mathit{con}\; \mathit{expbo}\; \mathit{var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; \mathit{type}\; \mathit{expbc} \\
+    & \mid & \mathit{con}\; \mathit{atype} \\
+    \mathit{fielddecl}
+    & \Coloneq & \mathit{vars}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; (\mathit{type} \mid \text{\texttt{\textquotedbl !\textquotedbl}}\; \mathit{atype}) \\
+    \mathit{deriving}
+    & \Coloneq & \text{\texttt{\textquotedbl deriving\textquotedbl}}\; \mathit{dclass} \\
+    & \mid & \text{\texttt{\textquotedbl deriving\textquotedbl}}\; \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{dclass}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{dclass} \mid )\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{dclass}
+    & \Coloneq & \mathit{qtycon} \\
+    \mathit{inst}
+    & \Coloneq & \mathit{qtycon} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{gtycon}\; \mathit{tyvar}^*\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{tyvar}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; \mathit{tyvar}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \mathit{tyvar}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{tyvar}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; \mathit{tyvar}\; \text{\texttt{\textquotedbl)\textquotedbl}}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {fdecl}
-    & \Coloneq & \text{\texttt{\textquotedbl import\textquotedbl}}\; {callconv}\; {safety}^?\; {impent}\; {var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; {ftype} \\
-    & \mid & \text{\texttt{\textquotedbl export\textquotedbl}}\; {callconv}\; {expent}\; {var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; {ftype} \\
-    {callconv}
+    \mathit{fdecl}
+    & \Coloneq & \text{\texttt{\textquotedbl import\textquotedbl}}\; \mathit{callconv}\; \mathit{safety}^?\; \mathit{impent}\; \mathit{var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; \mathit{ftype} \\
+    & \mid & \text{\texttt{\textquotedbl export\textquotedbl}}\; \mathit{callconv}\; \mathit{expent}\; \mathit{var}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; \mathit{ftype} \\
+    \mathit{callconv}
     & \Coloneq & \text{\texttt{\textquotedbl ccall\textquotedbl}}
     \mid \text{\texttt{\textquotedbl stdcall\textquotedbl}}
     \mid \text{\texttt{\textquotedbl cplusplus\textquotedbl}}
@@ -538,180 +538,180 @@
     \mid \text{\texttt{\textquotedbl dotnet\textquotedbl}}
     \\
     & \mid & (\text{system-specific calling conventions}) \\
-    {impent}
-    & \Coloneq & {string}^? \\
-    {expent}
-    & \Coloneq & {string}^? \\
-    {safety}
+    \mathit{impent}
+    & \Coloneq & \mathit{string}^? \\
+    \mathit{expent}
+    & \Coloneq & \mathit{string}^? \\
+    \mathit{safety}
     & \Coloneq & \text{\texttt{\textquotedbl unsafe\textquotedbl}}
     \mid \text{\texttt{\textquotedbl safe\textquotedbl}}
     \\
-    {ftype}
-    & \Coloneq & {fatype}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; {ftype} \\
-    & \mid & {frtype} \\
-    {frtype}
-    & \Coloneq & {fatype} \\
+    \mathit{ftype}
+    & \Coloneq & \mathit{fatype}\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; \mathit{ftype} \\
+    & \mid & \mathit{frtype} \\
+    \mathit{frtype}
+    & \Coloneq & \mathit{fatype} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {fatype}
-    & \Coloneq & {qtycon}\; {atype}^*
+    \mathit{fatype}
+    & \Coloneq & \mathit{qtycon}\; \mathit{atype}^*
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {funlhs}
-    & \Coloneq & {var}\; {apat}^+ \\
-    & \mid & {pat}\; {varop}\; {pat} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {funlhs}\; \text{\texttt{\textquotedbl)\textquotedbl}}\; {apat}^+ \\
-    {rhs}
-    & \Coloneq & \text{\texttt{\textquotedbl =\textquotedbl}}\; {exp}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
-    & \mid & {gdrhs}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
-    {gdrhs}
-    & \Coloneq & {guards}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {exp}\; {gdrhs}^? \\
-    {guards}
-    & \Coloneq & ({guard}\; \text{\texttt{\textquotedbl ,\textquotedbl}})^*\; {guard} \mid \\
-    {guard}
-    & \Coloneq & {pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; {infixexp} \\
-    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls} \\
-    & \mid & {infixexp}
+    \mathit{funlhs}
+    & \Coloneq & \mathit{var}\; \mathit{apat}^+ \\
+    & \mid & \mathit{pat}\; \mathit{varop}\; \mathit{pat} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{funlhs}\; \text{\texttt{\textquotedbl)\textquotedbl}}\; \mathit{apat}^+ \\
+    \mathit{rhs}
+    & \Coloneq & \text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{exp}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; \mathit{decls})^? \\
+    & \mid & \mathit{gdrhs}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; \mathit{decls})^? \\
+    \mathit{gdrhs}
+    & \Coloneq & \mathit{guards}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{exp}\; \mathit{gdrhs}^? \\
+    \mathit{guards}
+    & \Coloneq & (\mathit{guard}\; \text{\texttt{\textquotedbl ,\textquotedbl}})^*\; \mathit{guard} \mid \\
+    \mathit{guard}
+    & \Coloneq & \mathit{pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; \mathit{infixexp} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; \mathit{decls} \\
+    & \mid & \mathit{infixexp}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {exp}
-    & \Coloneq & {infixexp}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; ({context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})\; {type} \\
-    & \mid & {infixexp} \\
-    {infixexp}
-    & \Coloneq & \text{\texttt{\textquotedbl -\textquotedbl}}\; {infixexp} \\
-    & \mid & {lexp}\; {qop}\; {infixexp} \\
-    & \mid & {lexp} \\
-    {lexp}
-    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}\; {apat}^+\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; {exp} \\
-    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls}\; \text{\texttt{\textquotedbl in\textquotedbl}}\; {exp} \\
-    & \mid & \text{\texttt{\textquotedbl if\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl ;\textquotedbl}}^?\; \text{\texttt{\textquotedbl then\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl ;\textquotedbl}}^?\; \text{\texttt{\textquotedbl else\textquotedbl}}\; {exp} \\
-    & \mid & \text{\texttt{\textquotedbl case\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl of\textquotedbl}}\; {casealts} \\
-    & \mid & \text{\texttt{\textquotedbl do\textquotedbl}}\; {dostmts} \\
-    & \mid & {fexp} \\
-    {fexp}
-    & \Coloneq & {fexp}^?\; {aexp} \\
-    {aexp}
-    & \Coloneq & {literal} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({exp}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; ({exp}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {exp}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {exp}\; (\text{\texttt{\textquotedbl,\textquotedbl}}\; {exp})^?\; \text{\texttt{\textquotedbl..\textquotedbl}}\; {exp}^?\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl|\textquotedbl}}\; ({qual}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {qual}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {infixexp}\; {qop}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ! (\text{\texttt{\textquotedbl-\textquotedbl}}\; {infixexp})\; {qop}\; {infixexp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & {qcon}\; {expbo}\; (({fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fbind} \mid )\; {expbc} \\
-    & \mid & !({qcon}\; \text{\texttt{\textquotedbl\{\textquotedbl}})\; {aexp}\; {expbo}\; (({fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fbind} \mid )\; {expbc} \\
-    & \mid & {qvar} \\
-    & \mid & {gcon}
+    \mathit{exp}
+    & \Coloneq & \mathit{infixexp}\; \text{\texttt{\textquotedbl ::\textquotedbl}}\; (\mathit{context}\; \text{\texttt{\textquotedbl =>\textquotedbl}})\; \mathit{type} \\
+    & \mid & \mathit{infixexp} \\
+    \mathit{infixexp}
+    & \Coloneq & \text{\texttt{\textquotedbl -\textquotedbl}}\; \mathit{infixexp} \\
+    & \mid & \mathit{lexp}\; \mathit{qop}\; \mathit{infixexp} \\
+    & \mid & \mathit{lexp} \\
+    \mathit{lexp}
+    & \Coloneq & \text{\texttt{\textquotedbl\textbackslash\textbackslash\textquotedbl}}\; \mathit{apat}^+\; \text{\texttt{\textquotedbl ->\textquotedbl}}\; \mathit{exp} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; \mathit{decls}\; \text{\texttt{\textquotedbl in\textquotedbl}}\; \mathit{exp} \\
+    & \mid & \text{\texttt{\textquotedbl if\textquotedbl}}\; \mathit{exp}\; \mathit{semi}^?\; \text{\texttt{\textquotedbl then\textquotedbl}}\; \mathit{exp}\; \mathit{semi}^?\; \text{\texttt{\textquotedbl else\textquotedbl}}\; \mathit{exp} \\
+    & \mid & \text{\texttt{\textquotedbl case\textquotedbl}}\; \mathit{exp}\; \text{\texttt{\textquotedbl of\textquotedbl}}\; \mathit{casealts} \\
+    & \mid & \text{\texttt{\textquotedbl do\textquotedbl}}\; \mathit{dostmts} \\
+    & \mid & \mathit{fexp} \\
+    \mathit{fexp}
+    & \Coloneq & \mathit{fexp}^?\; \mathit{aexp} \\
+    \mathit{aexp}
+    & \Coloneq & \mathit{literal} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{exp}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; \mathit{exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; (\mathit{exp}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{exp}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \mathit{exp}\; (\text{\texttt{\textquotedbl,\textquotedbl}}\; \mathit{exp})^?\; \text{\texttt{\textquotedbl..\textquotedbl}}\; \mathit{exp}^?\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \mathit{exp}\; \text{\texttt{\textquotedbl|\textquotedbl}}\; (\mathit{qual}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{qual}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{infixexp}\; \mathit{qop}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ! (\text{\texttt{\textquotedbl-\textquotedbl}}\; \mathit{infixexp})\; \mathit{qop}\; \mathit{infixexp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \mathit{qcon}\; \mathit{expbo}\; (({fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind} \mid )\; \mathit{expbc} \\
+    & \mid & !({qcon}\; \text{\texttt{\textquotedbl\{\textquotedbl}})\; \mathit{aexp}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind} \mid )\; \mathit{expbc} \\
+    & \mid & \mathit{qvar} \\
+    & \mid & \mathit{gcon}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {qual}
-    & \Coloneq & {pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; {exp} \\
-    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls} \\
-    & \mid & {exp} \\
-    {casealts}
-    & \Coloneq & {expbo}\; {alts}\; {expbc} \\
-    & \mid & {impbo}\; {alts}\; {impbc} \\
-    {alts}
-    & \Coloneq & ({alt}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; {alt} \\
-    {alt}
-    & \Coloneq & {pat}\; \text{\texttt{\textquotedbl->\textquotedbl}}\; {exp}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
-    & \mid & {pat}\; {gdpat}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; {decls})^? \\
+    \mathit{qual}
+    & \Coloneq & \mathit{pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; \mathit{exp} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; \mathit{decls} \\
+    & \mid & \mathit{exp} \\
+    \mathit{casealts}
+    & \Coloneq & \mathit{expbo}\; \mathit{alts}\; \mathit{expbc} \\
+    & \mid & \mathit{impbo}\; \mathit{alts}\; \mathit{impbc} \\
+    \mathit{alts}
+    & \Coloneq & (\mathit{alt}\; \mathit{semi})^*\; \mathit{alt} \\
+    \mathit{alt}
+    & \Coloneq & \mathit{pat}\; \text{\texttt{\textquotedbl->\textquotedbl}}\; \mathit{exp}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; \mathit{decls})^? \\
+    & \mid & \mathit{pat}\; \mathit{gdpat}\; (\text{\texttt{\textquotedbl where\textquotedbl}}\; \mathit{decls})^? \\
     & \mid & \\
-    {gdpat}
-    & \Coloneq & {guards}\; \text{\texttt{\textquotedbl->\textquotedbl}}\; {exp}\; {gdpat}^? \\
-    {dostmts}
-    & \Coloneq & {expbo}\; {stmts}\; {expbc} \\
-    & \mid & {impbo}\; {stmts}\; {impbc} \\
-    {stmts}
-    & \Coloneq & {stmt}^*\; {exp}\; \text{\texttt{\textquotedbl;\textquotedbl}}^? \\
-    {stmt}
-    & \Coloneq & {exp}\; \text{\texttt{\textquotedbl;\textquotedbl}} \\
-    & \mid & {pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; {exp}\; \text{\texttt{\textquotedbl;\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; {decls}\; \text{\texttt{\textquotedbl;\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl;\textquotedbl}} \\
-    {fbind}
-    & \Coloneq & {qvar}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {exp}
+    \mathit{gdpat}
+    & \Coloneq & \mathit{guards}\; \text{\texttt{\textquotedbl->\textquotedbl}}\; \mathit{exp}\; \mathit{gdpat}^? \\
+    \mathit{dostmts}
+    & \Coloneq & \mathit{expbo}\; \mathit{stmts}\; \mathit{expbc} \\
+    & \mid & \mathit{impbo}\; \mathit{stmts}\; \mathit{impbc} \\
+    \mathit{stmts}
+    & \Coloneq & \mathit{stmt}^*\; \mathit{exp}\; \mathit{semi}^? \\
+    \mathit{stmt}
+    & \Coloneq & \mathit{exp}\; \mathit{semi} \\
+    & \mid & \mathit{pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; \mathit{exp}\; \mathit{semi} \\
+    & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; \mathit{decls}\; \mathit{semi} \\
+    & \mid & \mathit{semi} \\
+    \mathit{fbind}
+    & \Coloneq & \mathit{qvar}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{exp}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {pat}
-    & \Coloneq & {lpat}\; {qconop}\; {pat} \\
-    & \mid & {lpat} \\
-    {lpat}
-    & \Coloneq & \text{\texttt{\textquotedbl -\textquotedbl}}\; ({integer} \mid {float}) \\
-    & \mid & {gcon}\; {apat}^+ \\
-    & \mid & {apat} \\
-    {apat}
-    & \Coloneq & {var}\; (\text{\texttt{\textquotedbl @\textquotedbl}}\; {apat})^? \\
-    & \mid & {literal} \\
+    \mathit{pat}
+    & \Coloneq & \mathit{lpat}\; \mathit{qconop}\; \mathit{pat} \\
+    & \mid & \mathit{lpat} \\
+    \mathit{lpat}
+    & \Coloneq & \text{\texttt{\textquotedbl -\textquotedbl}}\; (\mathit{integer} \mid \mathit{float}) \\
+    & \mid & \mathit{gcon}\; \mathit{apat}^+ \\
+    & \mid & \mathit{apat} \\
+    \mathit{apat}
+    & \Coloneq & \mathit{var}\; (\text{\texttt{\textquotedbl @\textquotedbl}}\; \mathit{apat})^? \\
+    & \mid & \mathit{literal} \\
     & \mid & \text{\texttt{\textquotedbl\textunderscore\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; {pat}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ({pat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; {pat}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; ({pat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {pat}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
-    & \mid & \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}\; {apat} \\
-    & \mid & {qcon}\; {expbo}\; (({fpat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; {fpat} \mid )\; {expbc} \\
-    & \mid & {gcon} \\
-    {fpat}
-    & \Coloneq & {qvar}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; {pat}
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{pat}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{pat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; \mathit{pat}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; (\mathit{pat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{pat}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
+    & \mid & \text{\texttt{\textquotedbl\textasciicircum\textquotedbl}}\; \mathit{apat} \\
+    & \mid & \mathit{qcon}\; \mathit{expbo}\; ((\mathit{fpat}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fpat} \mid )\; \mathit{expbc} \\
+    & \mid & \mathit{gcon} \\
+    \mathit{fpat}
+    & \Coloneq & \mathit{qvar}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{pat}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rcl}
-    {gcon}
+    \mathit{gcon}
     & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \text{\texttt{\textquotedbl,\textquotedbl}}^+\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & {qcon} \\
-    {var}
-    & \Coloneq & {varid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {varsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {qvar}
-    & \Coloneq & {qvarid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {qvarsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {con}
-    & \Coloneq & {conid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {consym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {qcon}
-    & \Coloneq & {qconid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; {gconsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    {varop}
-    & \Coloneq & {varsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {varid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
-    {qvarop}
-    & \Coloneq & {qvarsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {qvarid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
-    {conop}
-    & \Coloneq & {consym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {conid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
-    {qvarop}
-    & \Coloneq & {gconsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; {qconid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
-    {op}
-    & \Coloneq & {varop} \mid {conop} \\
-    {qop}
-    & \Coloneq & {qvarop} \mid {qconop} \\
-    {gconsym}
-    & \Coloneq & \text{\texttt{\textquotedbl :\textquotedbl}} \mid {qconsym}
+    & \mid & \mathit{qcon} \\
+    \mathit{var}
+    & \Coloneq & \mathit{varid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{varsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{qvar}
+    & \Coloneq & \mathit{qvarid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{qvarsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{con}
+    & \Coloneq & \mathit{conid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{consym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{qcon}
+    & \Coloneq & \mathit{qconid} \mid \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{gconsym}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
+    \mathit{varop}
+    & \Coloneq & \mathit{varsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; \mathit{varid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    \mathit{qvarop}
+    & \Coloneq & \mathit{qvarsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; \mathit{qvarid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    \mathit{conop}
+    & \Coloneq & \mathit{consym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; \mathit{conid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    \mathit{qvarop}
+    & \Coloneq & \mathit{gconsym} \mid \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}}\; \mathit{qconid}\; \text{\texttt{\textquotedbl\textasciigrave\textquotedbl}} \\
+    \mathit{op}
+    & \Coloneq & \mathit{varop} \mid \mathit{conop} \\
+    \mathit{qop}
+    & \Coloneq & \mathit{qvarop} \mid \mathit{qconop} \\
+    \mathit{gconsym}
+    & \Coloneq & \text{\texttt{\textquotedbl :\textquotedbl}} \mid \mathit{qconsym}
   \end{array}
 \end{align*}
 
 \begin{align*}
   \begin{array}{rclll}
-    {expbo}
+    \mathit{expbo}
     & \Coloneq & [l] &\text{\texttt{\textquotedbl\{\textquotedbl}} &[0:l] \\
-    {expbc}
+    \mathit{expbc}
     & \Coloneq & [0:l] &\text{\texttt{\textquotedbl\}\textquotedbl}} &[l] \\
-    {impbo}
+    \mathit{impbo}
     & \Coloneq & [m:l] &\{ n\} &[n:m:l \mid n < m] \\
     & \mid & [m:l] &\{ n\} &[(n + 1):m:l \mid n \geq m] \\
     & \mid & [\epsilon] &\{ n\} &[n:\epsilon \mid n > 0] \\
-    {impbc}
+    \mathit{impbc}
     & \Coloneq & [m:l] &\epsilon &[l \mid m > 0] \\
-    {semi}
+    \mathit{semi}
     & \Coloneq & &\text{\texttt{\textquotedbl ;\textquotedbl}} \\
     & \mid & [m:l] & \langle n\rangle &[m:l \mid m = n]
   \end{array}
