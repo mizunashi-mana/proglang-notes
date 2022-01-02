@@ -718,8 +718,8 @@
 \end{align*}
 
 \begin{align*}
-  \mathrm{skip}(l, t) &= \left\{\begin{array}{ll}
-    \mathrm{true} &(l = \langle m\rangle:l' \land t = \langle n\rangle \land m < n) \\
-    \mathrm{false} &(\text{otherwise})
-  \end{array}\right.
+  \begin{array}{rclll}
+    \mathrm{skip}
+    &\Coloneq & [m:l] &\langle n\rangle &[m:l \mid m < n]
+  \end{array}
 \end{align*}
