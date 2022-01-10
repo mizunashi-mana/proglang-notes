@@ -327,8 +327,8 @@
 
 \begin{align*}
   L(s) &= \left\{\begin{array}{ll}
-    L_1(r', s) &(s = t:s', \mathrm{pos}(t) = (r', c'), \mathrm{isflt}(t)) \\
-    \{c'\}:\langle c'\rangle:L_1(r', s) &(s = t:s', \mathrm{pos}(t) = (r', c'), \not\mathrm{isflt}(t)) \\
+    L_1(r', s) &(s = t:s', \mathrm{pos}(t) = (r', c'), \mathrm{islft}(t)) \\
+    \{c'\}:\langle c'\rangle:L_1(r', s) &(s = t:s', \mathrm{pos}(t) = (r', c'), \not\mathrm{islft}(t)) \\
     \{0\}:\epsilon &(s = \epsilon)
   \end{array}\right. \\
   L_1(r, s) &= \left\{\begin{array}{ll}
@@ -601,8 +601,8 @@
     & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \mathit{exp}\; \text{\texttt{\textquotedbl|\textquotedbl}}\; (\mathit{qual}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{qual}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{infixexp}\; \mathit{qop}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ! (\text{\texttt{\textquotedbl-\textquotedbl}}\; \mathit{infixexp})\; \mathit{qop}\; \mathit{infixexp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \mathit{qcon}\; \mathit{expbo}\; (({fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
-    & \mid & !({qcon}\; \text{\texttt{\textquotedbl\{\textquotedbl}})\; \mathit{aexp}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
+    & \mid & \mathit{qcon}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
+    & \mid & !(\mathit{qcon}\; \text{\texttt{\textquotedbl\{\textquotedbl}})\; \mathit{aexp}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
     & \mid & \mathit{qvar} \\
     & \mid & \mathit{gcon}
   \end{array}
