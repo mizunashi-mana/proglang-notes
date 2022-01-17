@@ -366,7 +366,7 @@
     & \Coloneq & \mathit{expbo}\; \mathit{bodyinl}\; \mathit{expbc} \\
     & \mid & \mathit{impbo}\; \mathit{bodyinl}\; \mathit{impbc} \\
     \mathit{bodyinl}
-    & \Coloneq & \mathit{impdecls}\; \mathit{semi}\; \mathit{topdecls} \\
+    & \Coloneq & \mathit{impdecls}\; \mathit{semi}^+\; \mathit{topdecls} \\
     & \mid & \mathit{impdecls} \\
     & \mid & \mathit{topdecls} \\
   \end{array}
@@ -375,7 +375,7 @@
 \begin{align*}
   \begin{array}{rcl}
     \mathit{impdecls}
-    & \Coloneq & (\mathit{impdecl}\; \text{\texttt{\textquotedbl;\textquotedbl}})^*\; \mathit{impdecl}
+    & \Coloneq & \mathit{semi}^* (\mathit{impdecl}\; \mathit{semi}^+)^*\; \mathit{impdecl}
     \\
     \mathit{exports}
     & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{export}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{export}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
@@ -385,7 +385,6 @@
     & \mid & \text{\texttt{\textquotedbl module\textquotedbl}}\; \mathit{modid} \\
     \mathit{impdecl}
     & \Coloneq & \text{\texttt{\textquotedbl import\textquotedbl}}\; \text{\texttt{\textquotedbl qualified\textquotedbl}}^?\; \mathit{modid}\; (\text{\texttt{\textquotedbl as\textquotedbl}}\; \mathit{modid})^?\; \mathit{impspec}^? \\
-    & \mid & \\
     \mathit{impspec}
     & \Coloneq & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl hiding\textquotedbl}}\;\text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{import}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{import}^?\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
@@ -709,8 +708,7 @@
     \mathit{expbc}
     & \Coloneq & [0:l] &\text{\texttt{\textquotedbl\}\textquotedbl}} &[l] \\
     \mathit{impbo}
-    & \Coloneq & [m:l] &\{ n\} &[n:m:l \mid n < m] \\
-    & \mid & [m:l] &\{ n\} &[(n + 1):m:l \mid n \geq m] \\
+    & \Coloneq & [m:l] &\{ n\} &[n:m:l \mid n > m] \\
     & \mid & [\epsilon] &\{ n\} &[n:\epsilon \mid n > 0] \\
     \mathit{impbc}
     & \Coloneq & [m:l] &\epsilon &[l \mid m > 0] \\
