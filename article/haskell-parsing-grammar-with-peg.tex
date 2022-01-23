@@ -420,16 +420,16 @@
     \mathit{declsinl}
     & \Coloneq & (\mathit{decl}\; \mathit{semi})^*\; \mathit{decl} \mid \\
     \mathit{decl}
-    & \Coloneq & \mathit{gendecl} \\
-    & \mid & (\mathit{funlhs} \mid \mathit{pat})\; \mathit{rhs} \\
+    & \Coloneq & (\mathit{funlhs} \mid \mathit{pat})\; \mathit{rhs} \\
+    & \mid & \mathit{gendecl} \\
     \mathit{cdecls}
     & \Coloneq & \mathit{expbo}\; \mathit{cdeclsinl}\; \mathit{expbc} \\
     & \mid & \mathit{impbo}\; \mathit{cdeclsinl}\; \mathit{impbc} \\
     \mathit{cdeclsinl}
     & \Coloneq & (\mathit{cdecl}\; \mathit{semi})^*\; \mathit{cdecl} \mid \\
     \mathit{cdecl}
-    & \Coloneq & \mathit{gendecl} \\
-    & \mid & (\mathit{funlhs} \mid \mathit{var})\; \mathit{rhs} \\
+    & \Coloneq & (\mathit{funlhs} \mid \mathit{var})\; \mathit{rhs} \\
+    & \mid & \mathit{gendecl} \\
     \mathit{idecls}
     & \Coloneq & \mathit{expbo}\; \mathit{ideclsinl}\; \mathit{expbc} \\
     & \mid & \mathit{impbo}\; \mathit{ideclsinl}\; \mathit{impbc} \\
@@ -513,7 +513,7 @@
     \mathit{dclass}
     & \Coloneq & \mathit{qtycon} \\
     \mathit{inst}
-    & \Coloneq & \mathit{qtycon} \\
+    & \Coloneq & \mathit{gtycon} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{gtycon}\; \mathit{tyvar}^*\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{tyvar}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; \mathit{tyvar}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \mathit{tyvar}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
@@ -565,7 +565,7 @@
     \mathit{gdrhs}
     & \Coloneq & \mathit{guards}\; \text{\texttt{\textquotedbl =\textquotedbl}}\; \mathit{exp}\; \mathit{gdrhs}^? \\
     \mathit{guards}
-    & \Coloneq & (\mathit{guard}\; \text{\texttt{\textquotedbl ,\textquotedbl}})^*\; \mathit{guard} \mid \\
+    & \Coloneq & \text{\texttt{\textquotedbl |\textquotedbl}}\; (\mathit{guard}\; \text{\texttt{\textquotedbl ,\textquotedbl}})^*\; \mathit{guard} \mid \\
     \mathit{guard}
     & \Coloneq & \mathit{pat}\; \text{\texttt{\textquotedbl <-\textquotedbl}}\; \mathit{infixexp} \\
     & \mid & \text{\texttt{\textquotedbl let\textquotedbl}}\; \mathit{decls} \\
@@ -590,8 +590,12 @@
     & \mid & \text{\texttt{\textquotedbl do\textquotedbl}}\; \mathit{dostmts} \\
     & \mid & \mathit{fexp} \\
     \mathit{fexp}
-    & \Coloneq & \mathit{fexp}^?\; \mathit{aexp} \\
+    & \Coloneq & \mathit{aexp}+ \\
     \mathit{aexp}
+    & \Coloneq & \mid & \mathit{qcon}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
+    & \mid & \mathit{aexp2}\; (\mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc})^* \\
+    & \mid & \mathit{qvar} \\
+    \mathit{aexp2}
     & \Coloneq & \mathit{literal} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; (\mathit{exp}\; \text{\texttt{\textquotedbl,\textquotedbl}})^+\; \mathit{exp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
@@ -600,9 +604,6 @@
     & \mid & \text{\texttt{\textquotedbl[\textquotedbl}}\; \mathit{exp}\; \text{\texttt{\textquotedbl|\textquotedbl}}\; (\mathit{qual}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{qual}\; \text{\texttt{\textquotedbl]\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; \mathit{infixexp}\; \mathit{qop}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
     & \mid & \text{\texttt{\textquotedbl(\textquotedbl}}\; ! (\text{\texttt{\textquotedbl-\textquotedbl}}\; \mathit{infixexp})\; \mathit{qop}\; \mathit{infixexp}\; \text{\texttt{\textquotedbl)\textquotedbl}} \\
-    & \mid & \mathit{qcon}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
-    & \mid & !(\mathit{qcon}\; \text{\texttt{\textquotedbl\{\textquotedbl}})\; \mathit{aexp}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
-    & \mid & \mathit{qvar} \\
     & \mid & \mathit{gcon}
   \end{array}
 \end{align*}
