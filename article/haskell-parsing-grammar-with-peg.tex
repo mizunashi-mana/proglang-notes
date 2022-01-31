@@ -590,9 +590,9 @@
     & \mid & \text{\texttt{\textquotedbl do\textquotedbl}}\; \mathit{dostmts} \\
     & \mid & \mathit{fexp} \\
     \mathit{fexp}
-    & \Coloneq & \mathit{aexp}+ \\
+    & \Coloneq & \mathit{aexp}^+ \\
     \mathit{aexp}
-    & \Coloneq & \mid & \mathit{qcon}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
+    & \Coloneq & \mathit{qcon}\; \mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc} \\
     & \mid & \mathit{aexp2}\; (\mathit{expbo}\; ((\mathit{fbind}\; \text{\texttt{\textquotedbl,\textquotedbl}})^*\; \mathit{fbind})^?\; \mathit{expbc})^* \\
     & \mid & \mathit{qvar} \\
     \mathit{aexp2}
@@ -710,6 +710,7 @@
     & \Coloneq & [0:l] &\text{\texttt{\textquotedbl\}\textquotedbl}} &[l] \\
     \mathit{impbo}
     & \Coloneq & [m:l] &\{ n\} &[n:m:l \mid n > m] \\
+    & \Coloneq & [m:l] &\{ n\} &[(n + 1):m:l \mid n \leq m] \\
     & \mid & [\epsilon] &\{ n\} &[n:\epsilon \mid n > 0] \\
     \mathit{impbc}
     & \Coloneq & [m:l] &\epsilon &[l \mid m > 0] \\
