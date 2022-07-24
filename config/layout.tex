@@ -3,12 +3,10 @@
 
 \usepackage{unicode-math}
 \setmainfont{STIX Two Text}
-\setmathfont{STIX Two Math}
-
-% some math fonts not support bold
-\DeclareFontShape{TU}{STIXTwoMath(1)}{b}{n}{<->ssub*STIXTwoMath(1)/m/n}{}
-\DeclareFontShape{TU}{STIXTwoMath(2)}{b}{n}{<->ssub*STIXTwoMath(2)/m/n}{}
-\DeclareFontShape{TU}{STIXTwoMath(3)}{b}{n}{<->ssub*STIXTwoMath(3)/m/n}{}
+\setmathfont{STIX Two Math}[
+    BoldFont=STIXTwoText-Bold,
+    BoldItalicFont=STIXTwoText-BoldItalic
+]
 
 \usepackage[margin=5em,includefoot]{geometry}
 
