@@ -1,0 +1,218 @@
+\section{Hindley/Milner Type System}
+
+\cite{Lee:1998}
+
+\subsection{Language}
+
+$X = \{x,y,z,\ldots\}$，$\mathcal{A} = \{\alpha, \beta, \ldots\}$
+
+$E$
+\begin{align*}
+  \begin{array}{rcll}
+    e
+    & \Coloneq & \text{\texttt{()}} \\
+    & \mid & x \\
+    & \mid & \lambda x\ldotp e \\
+    & \mid & e\; e \\
+    & \mid & \mathbf{let}\;x = e\;\mathbf{in}\;e \\
+    & \mid & \mathbf{fix}\;f\;\lambda x\ldotp e
+  \end{array}
+\end{align*}
+
+$T$
+\begin{align*}
+  \begin{array}{rcll}
+    \tau
+    & \Coloneq & \mathbf{unit} \\
+    & \mid & \alpha \\
+    & \mid & \tau \to \tau
+  \end{array}
+\end{align*}
+
+$\Sigma$
+\begin{align*}
+  \begin{array}{rcll}
+    \sigma
+    & \Coloneq & \forall \vec{\alpha}\ldotp \sigma
+  \end{array}
+\end{align*}
+
+$\Gamma = \mathcal{A} \xrightarrow{\mathrm{fin}} \Sigma$
+
+\subsection{Type System}
+
+\begin{align*}
+  \forall \vec{\alpha}\ldotp \tau_1 \succ \tau_2 &\iff \exists S\ldotp S(\tau_1) = \tau_2 \land \mathrm{dom}(S) \\
+  \mathrm{Gen}(\Gamma, \tau) &= \forall \vec{\alpha}\ldotp \tau &(\vec{\alpha} = \mathit{ftv}(\tau) \backslash \mathit{ftv}(\Gamma))
+\end{align*}
+
+\begin{gather*}
+  \infer{\Gamma \vdash \text{\texttt{()}}: \mathbf{unit}}{}
+  \\
+  \infer{\Gamma \vdash x: \tau}{
+    \Gamma(x) \succ \tau
+  }
+  \\
+  \infer{\Gamma \vdash \lambda x\ldotp e: \tau_1 \to \tau_2}{
+    \Gamma + x:\tau_1\vdash e: \tau_2
+  }
+  \\
+  \infer{\Gamma \vdash e_1\; e_2: \tau}{
+    \Gamma \vdash e_1: \tau_2 \to \tau
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{let}\; x = e_1\; \mathbf{in}\; e_2: \tau}{
+    \Gamma \vdash e_1: \tau_1
+    &
+    \Gamma + x: \mathrm{Gen}(\Gamma, \tau_1) \vdash e_2: \tau
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{fix}\;f\;\lambda x\ldotp e: \tau}{
+    \Gamma + f: \tau \vdash \lambda x\ldotp e: \tau
+  }
+\end{gather*}
+
+TODO: 停止するかが怪しいのでチェック．\cite{Grabmuller:2006}にはこの定義で書いてある
+\begin{gather*}
+  \infer{\mathcal{U}(\alpha, \alpha) = \emptyset}{}
+  \\
+  \infer{\mathcal{U}(\alpha_1, \alpha_2) = \{\alpha_1 \mapsto \beta, \alpha_2 \mapsto \beta\}}{
+    \alpha_1 \neq \alpha_2
+    &
+    \text{fresh $\beta$}
+  }
+  \\
+  \infer{\mathcal{U}(\mathbf{unit}, \mathbf{unit}) = \emptyset}{}
+  \\
+  \infer{\mathcal{U}(\alpha, \mathbf{unit}) = \{\alpha \mapsto \mathbf{unit}\}}{}
+  \\
+  \infer{\mathcal{U}(\mathbf{unit}, \alpha) = \{\alpha \mapsto \mathbf{unit}\}}{}
+  \\
+  \infer{\mathcal{U}(\alpha, \tau_1 \to \tau_2) = \{\alpha \mapsto \tau_1 \to \tau_2\}}{}
+  \\
+  \infer{\mathcal{U}(\tau_1 \to \tau_2, \alpha) = \{\alpha \mapsto \tau_1 \to \tau_2\}}{}
+  \\
+  \infer{\mathcal{U}(\tau_1 \to \tau_2, \tau'_1 \to \tau'_2) = S_2S_1}{
+    \mathcal{U}(\tau_1, \tau'_1) = S_1
+    &
+    \mathcal{U}(S_1(\tau_2), S_1(\tau'_2)) = S_2
+  }
+\end{gather*}
+
+\begin{theorem}
+  $\mathcal{U}(\tau_1, \tau_2) = S$ ならば，$S(\tau_1) = S(\tau_2)$．
+\end{theorem}
+
+\section{Algorithm W}
+
+\begin{theorem}
+  以下は同値
+  \begin{itemize}
+    \item $\mathcal{U}(\tau_1, \tau_2) = S$ を満たす $S$ が存在する．
+    \item $S(\tau_1) = S(\tau_2)$ を満たす $S$ が存在する．
+  \end{itemize}
+\end{theorem}
+
+\begin{gather*}
+  \infer{\mathcal{W}(\Gamma, \text{\texttt{()}}) = (\emptyset, \mathbf{unit})}{}
+  \\
+  \infer{\mathcal{W}(\Gamma, x) = (\emptyset, [\vec{\alpha} \assign \vec{\beta}]\tau)}{
+    \Gamma(x) = \forall\vec{\alpha}\ldotp \tau
+    &
+    \text{fresh $\vec{\beta}$}
+  }
+  \\
+  \infer{\mathcal{W}(\Gamma, \lambda x\ldotp e) = (S_1, S_1(\beta) \to \tau_1)}{
+    \text{fresh $\beta$}
+    &
+    \mathcal{W}(\Gamma + x:\beta, e) = (S_1, \tau_1)
+  }
+  \\
+  \infer{\mathcal{W}(\Gamma, e_1\; e_2) = (S_3S_2S_1, S_3(\beta))}{
+    \mathcal{W}(\Gamma, e_1) = (S_1, \tau_1)
+    &
+    \mathcal{W}(S_1(\Gamma), e_2) = (S_2, \tau_2)
+    &
+    \text{fresh $\beta$}
+    &
+    \mathcal{U}(S_2(\tau), \tau_2 \to \beta) = S_3
+  }
+  \\
+  \infer{\mathcal{W}(\Gamma, \mathbf{let}\;x = e_1\;\mathbf{in}\;e_2) = (S_2S_1, \tau_2)}{
+    \mathcal{W}(\Gamma, e_1) = (S_1, \tau_1)
+    &
+    \Gamma_1 = S_1(\Gamma)
+    &
+    \mathcal{W}(\Gamma_1 + x:\mathrm{Gen}(\Gamma_1, \tau_1), e_2) = (S_2, \tau_2)
+  }
+  \\
+  \infer{\mathcal{W}(\Gamma, \mathbf{fix}\;f\;\lambda x\ldotp e) = (S_2S_1, S_2(\tau_1))}{
+    \text{fresh $\beta$}
+    &
+    \mathcal{W}(\Gamma + f:\beta, \lambda x\ldotp e) = (S_1, \tau_1)
+    &
+    \mathcal{U}(S_1(\beta), \tau_1) = S_2
+  }
+\end{gather*}
+
+\begin{theorem}
+  以下は同値
+  \begin{itemize}
+    \item $\mathcal{W}(\Gamma_0, e) = (S, \tau_0)$，$S(\Gamma_0) = \Gamma$，$S(\tau_0) = \tau$ を満たす $S$，$\Gamma_0$，$\tau_0$ が存在する．
+    \item $\Gamma \vdash e: \tau$．
+  \end{itemize}
+\end{theorem}
+
+\section{Algorithm M}
+
+\begin{gather*}
+  \infer{\mathcal{M}(\Gamma, \text{\texttt{()}}, \rho) = S}{
+    \mathcal{U}(\rho, \mathbf{unit}) = S
+  }
+  \\
+  \infer{\mathcal{M}(\Gamma, x, \rho) = S}{
+    \mathcal{U}(\rho, [\vec{\beta} \assign \vec{\alpha}]\tau) = S
+    &
+    \Gamma(x) = \forall \vec{\alpha}\ldotp \tau
+    &
+    \text{fresh $\vec{\beta}$}
+  }
+  \\
+  \infer{\mathcal{M}(\Gamma, \lambda x\ldotp e, \rho) = S_2S_1}{
+    \mathcal{U}(\rho, \beta_1 \to \beta_2) = S_1
+    &
+    \text{fresh $\beta_1, \beta_2$}
+    &
+    \mathcal{M}(S_1(\Gamma) + x:S_1(\beta_1), e, S_1(\beta_2)) = S_2
+  }
+  \\
+  \infer{\mathcal{M}(\Gamma, e_1\;e_2, \rho) = S_2S_1}{
+    \mathcal{M}(\Gamma, e_1, \beta \to \rho) = S_1
+    &
+    \text{fresh $\beta$}
+    &
+    \mathcal{M}(S_1(\Gamma), e_2, S_1(\beta)) = S_2
+  }
+  \\
+  \infer{\mathcal{M}(\Gamma, \mathbf{let}\;x = e_1\;\mathbf{in}\;e_2, \rho) = S_2S_1}{
+    \mathcal{M}(\Gamma, e_1, \beta) = S_1
+    &
+    \text{fresh $\beta$}
+    &
+    \mathcal{M}(S_1(\Gamma) + x:\mathrm{Gen}(\Gamma, S_1(\beta)), e_2, S_1(\rho)) = S_2
+  }
+  \\
+  \infer{\mathcal{M}(\Gamma, \mathbf{fix}\;f\;\lambda x\ldotp e, \rho) = S}{
+    \mathcal{M}(\Gamma + f:\rho, \lambda x\ldotp e, \rho) = S
+  }
+\end{gather*}
+
+\begin{theorem}
+  以下は同値
+  \begin{itemize}
+    \item $\mathcal{M}(\Gamma_0, e, \rho) = S$，$S(\Gamma_0) = \Gamma$，$S(\rho) = \tau$ を満たす $S$，$\Gamma_0$，$\rho$ が存在する．
+    \item $\Gamma \vdash e: \tau$．
+  \end{itemize}
+\end{theorem}

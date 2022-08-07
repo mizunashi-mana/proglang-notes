@@ -14,9 +14,9 @@ or using `docker-compose`
 
 ### Dependencies
 
-* Pipenv
+* Poetry
 * Tlmgr
-* pLaTeX
+* LuaTeX
 * LatexMk
 * findutils (for clean task)
 * git supports (optional: See https://git-scm.com/)
