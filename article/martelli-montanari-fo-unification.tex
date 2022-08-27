@@ -1,0 +1,22 @@
+\section{Martelli-Montanari Algorithm}
+\label{section:martelli-montanari-fo-unification}
+
+\cite{Martelli:1982}
+
+\begin{gather*}
+  \infer{\mathcal{U}(x, x) = \emptyset}{}
+  \\
+  \infer{\mathcal{U}(x_1, x_2) = \{x_1 \mapsto x_2\}}{
+    x_1 \neq x_2
+  }
+  \\
+  \infer{\mathcal{U}(f(a_1, \ldots, a_n), f(b_1, \ldots, b_n)) = \bigcup_{1 \leq i \leq n} \mathcal{U}(a_i, b_i)}{}
+  \\
+  \infer{\mathcal{U}(x, f(a_1, \ldots, a_n)) = \{x \mapsto f(a_1, \ldots, a_n)\}}{
+    x \not\in \mathrm{fv}(f(a_1, \ldots, a_n))
+  }
+  \\
+  \infer{\mathcal{U}(f(a_1, \ldots, a_n), x) = \{x \mapsto f(a_1, \ldots, a_n)\}}{
+    x \not\in \mathrm{fv}(f(a_1, \ldots, a_n))
+  }
+\end{gather*}
