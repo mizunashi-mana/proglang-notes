@@ -79,7 +79,7 @@ $\Gamma = \mathcal{A} \xrightarrow{\mathrm{fin}} \Sigma$
   $\mathcal{U}(\tau_1, \tau_2) = S$ ならば，$S(\tau_1) = S(\tau_2)$．
 \end{theorem}
 
-\section{Algorithm W}
+\subsection{Algorithm W}
 
 \begin{theorem}
   以下は同値
@@ -139,7 +139,7 @@ $\Gamma = \mathcal{A} \xrightarrow{\mathrm{fin}} \Sigma$
   \end{itemize}
 \end{theorem}
 
-\section{Algorithm M}
+\subsection{Algorithm M}
 
 \begin{gather*}
   \infer{\mathcal{M}(\Gamma, \text{\texttt{()}}, \rho) = S}{
@@ -190,3 +190,44 @@ $\Gamma = \mathcal{A} \xrightarrow{\mathrm{fin}} \Sigma$
     \item $\Gamma \vdash e: \tau$．
   \end{itemize}
 \end{theorem}
+
+\subsection{Alternative Type System}
+
+\begin{gather*}
+  \infer{\Gamma \vdash \text{\texttt{()}}: \mathbf{unit}}{}
+  \\
+  \infer{\Gamma \vdash x: \sigma}{
+    \Gamma(x) = \sigma
+  }
+  \\
+  \infer{\Gamma \vdash \lambda x\ldotp e: \tau_1 \to \tau_2}{
+    \Gamma + x:\tau_1\vdash e: \tau_2
+  }
+  \\
+  \infer{\Gamma \vdash e_1\; e_2: \tau}{
+    \Gamma \vdash e_1: \tau_2 \to \tau
+    &
+    \Gamma \vdash e_2: \tau_2
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{let}\; x = e_1\; \mathbf{in}\; e_2: \tau}{
+    \Gamma \vdash e_1: \sigma_1
+    &
+    \Gamma + x: \sigma_1 \vdash e_2: \tau
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{fix}\;f\;\lambda x\ldotp e: \tau}{
+    \Gamma + f: \tau \vdash \lambda x\ldotp e: \tau
+  }
+  \\
+  \infer{\Gamma \vdash e: \forall \vec{\alpha}\ldotp \tau}{
+    \Gamma \vdash e: \tau
+    &
+    \vec{\alpha} \not\in \mathrm{ftv}(\tau)
+  }
+  \\
+  \infer{\Gamma \vdash e: [\vec{\alpha} \assign \vec{\tau'}]\tau}{
+    \Gamma \vdash e: \forall \vec{\alpha}\ldotp \tau
+  }
+\end{gather*}
+

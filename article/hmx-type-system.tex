@@ -1,3 +1,18 @@
-\section{HM(X): HM Type System with Constraints}
+\section{WIP: HM(X): HM Type System with Constraint System}
 
-\cite{Eekelen:2004}
+\cite{Odersky:1999}\cite{Eekelen:2004}
+
+\subsection{Constraint System}
+
+\begin{definition}[単純制約システム (simple constraint system)]
+  単純制約システムとは，以下の組 $(\Omega, \Vdash)$ のこと．
+  \begin{itemize}
+    \item 非空のアルファベット $\Omega$．
+    \item 関係 $({\Vdash}) \subseteq \Power(\Omega) \times \Omega$ で，以下を満たすもの．
+    \begin{itemize}
+      \item 任意の $C \in \Power(\Omega)$，$P \in C$ について，$C \Vdash P$．
+      \item 任意の $C, D \in \Power(\Omega)$，$Q \in \Omega$ について，$(\forall P \in D\ldotp C \Vdash P)$ かつ $D \Vdash Q$ ならば $C \Vdash Q$．
+    \end{itemize}
+  \end{itemize}
+  この時，$C \in \Power(\Omega)$ を\emph{制約\emphp{constraint}}と呼ぶ．また，$({\Vdash}) \subseteq (\Power(\Omega))^2$ への拡張を，$C \Vdash D \defrel{\iff} \forall P \in D\ldotp C \Vdash P$ と定義する．$C \Vdash D$ かつ $D \Vdash C$ の時，$C \dashVdash D$ と表記する．
+\end{definition}
