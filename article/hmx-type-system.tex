@@ -14,5 +14,89 @@
       \item 任意の $C, D \in \Power(\Omega)$，$Q \in \Omega$ について，$(\forall P \in D\ldotp C \Vdash P)$ かつ $D \Vdash Q$ ならば $C \Vdash Q$．
     \end{itemize}
   \end{itemize}
-  この時，$C \in \Power(\Omega)$ を\emph{制約\emphp{constraint}}と呼ぶ．また，$({\Vdash}) \subseteq (\Power(\Omega))^2$ への拡張を，$C \Vdash D \defrel{\iff} \forall P \in D\ldotp C \Vdash P$ と定義する．$C \Vdash D$ かつ $D \Vdash C$ の時，$C \dashVdash D$ と表記する．
+  この時，$C \in \Power(\Omega)$ を\emph{制約\emphp{constraint}}と呼ぶ．また，$({\Vdash}) \subseteq (\Power(\Omega))^2$ への拡張を，$C \Vdash D \defrel{\iff} \forall P \in D\ldotp C \Vdash P$ と定義する．$C \Vdash D$ かつ $D \Vdash C$ の時，$C \dashVdash D$ と表記する．さらに，$C \land D = C \cup D$ と表記する．
 \end{definition}
+
+\begin{proposition}
+  単純制約システム $(\Omega, \Vdash)$ は，以下を admissible にする．
+  \begin{gather*}
+    \infer{C \Vdash C}{}
+    \\
+    \infer{C_1 \Vdash C_3}{
+      C_1 \Vdash C_2
+      &
+      C_2 \Vdash C_3
+    }
+    \\
+    \infer{C \land C' \Vdash D}{
+      C \Vdash D
+    }
+  \end{gather*}
+\end{proposition}
+\begin{proof}
+  \begin{align*}
+    C \Vdash C &\iff \forall P \in C\ldotp C \Vdash P \\
+    C_1 \Vdash C_2 \land C_2 \Vdash C_3
+    &\implies \forall Q \in C_3\ldotp C_1 \Vdash C_2 \land C_2 \Vdash Q \\
+    &\implies \forall Q \in C_3\ldotp (\forall P \in C_2\ldotp C_1 \Vdash P) \land C_2 \Vdash Q \\
+    &\implies \forall Q \in C_3\ldotp C_1 \Vdash Q &(\because \text{単純制約システムの公理}) \\
+    &\implies C_1 \Vdash C_3 \\
+    \forall P \in C \land C'\ldotp C \in P &\implies C \land C' \Vdash C \\
+    C \Vdash D &\implies C \land C' \Vdash C \land C \Vdash D \implies C \land C' \Vdash D
+  \end{align*}
+  より明らか．
+\end{proof}
+
+\begin{definition}[Cylindric 制約システム (cylindric constraint system)]
+  Cylindric 制約システムとは，以下の組 $(\Omega, \Vdash, \mathcal{A}, \exists)$ のこと．
+  \begin{itemize}
+    \item 単純制約システム $(\Omega, \Vdash)$．
+    \item 変数の無限集合 $\mathcal{A}$．
+    \item 関数の族 $\{\exists \alpha\}_{\alpha \in \mathcal{A}} \in \prod_{\alpha \in \mathcal{A}} \Power(\Omega) \to \Power(\Omega)$ で以下を満たすもの．
+    \begin{itemize}
+      \item 任意の $C \in \Power(\Omega)$，$\alpha \in \mathcal{A}$ について，$C \Vdash \exists \alpha\ldotp C$．
+      \item 任意の $C, D \in \Power(\Omega)$，$\alpha \in \mathcal{A}$ について，$C \Vdash D$ ならば，$\exists \alpha\ldotp C \Vdash \exists \alpha\ldotp D$．
+      \item 任意の $C, D \in \Power(\Omega)$，$\alpha \in \mathcal{A}$ について，$\exists \alpha\ldotp (C \land \exists \alpha\ldotp C) \dashVdash (\exists \alpha\ldotp C) \land (\exists \alpha\ldotp D)$．
+      \item 任意の $C \in \Power(\Omega)$，$\alpha, \beta \in \mathcal{A}$ について，$\exists \alpha\ldotp \exists \beta\ldotp C \dashVdash \exists \beta\ldotp \exists \alpha\ldotp C$．
+    \end{itemize}
+    ただし，$\exists \alpha\ldotp C = (\exists \alpha)(C)$ である．
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[自由変数]
+  Cylindric 制約システム $(\Omega, \Vdash, \mathcal{A}, \exists)$，制約 $C \in \Power(\Omega)$ について，自由変数の集合を $\mathrm{fv}(C) = \{\alpha \mid \exists \alpha\ldotp C \not\dashVdash C\}$ とおく．
+\end{definition}
+
+\begin{definition}[充足可能 (satisfiable)]
+  Cylindric 制約システム $(\Omega, \Vdash, \mathcal{A}, \exists)$，制約 $C \in \Power(\Omega)$ について，$\Vdash \exists \mathrm{fv}(C)\ldotp C$ の時，$C$ は充足可能であるという．
+\end{definition}
+
+\begin{lemma}
+  Cylindric 制約システム $(\Omega, \Vdash, \mathcal{A}, \exists)$，制約 $C \in \Power(\Omega)$ について，以下は同値．
+  \begin{itemize}
+    \item $C$ は充足可能．
+    \item $\exists \alpha\ldotp C$ は充足可能．
+  \end{itemize}
+\end{lemma}
+
+\begin{definition}[項制約システム (term constraint system)]
+  項制約システムとは，
+  \begin{itemize}
+    \item 項代数 $(\Sigma, X)$．
+    \item 述語のランク付きアルファベット $P$．
+    \item Cylindric 制約システム $(\Omega, \Vdash, X, \exists)$，ただし，$\Omega = \{p(\tau_1, \ldots, \tau_n)\mid p^{(n)} \in P, \tau_1, \ldots, \tau_n \in \semanticf{(\Sigma, X)}\}$．
+  \end{itemize}
+  の組 $(\Sigma, P, \Omega, \Vdash, X, \exists)$ で，以下を満たすもの．
+  \begin{itemize}
+    \item 任意の $\alpha \in X$ について，$\Vdash \alpha = \alpha$．
+    \item 任意の $\alpha_1, \alpha_2 \in X$ について，$(\alpha_1 = \alpha_2) \Vdash (\alpha_2 = \alpha_1)$．
+    \item 任意の $\alpha_1, \alpha_2, \alpha_3 \in X$ について，$(\alpha_1 = \alpha_2) \land (\alpha_2 = \alpha_3) \Vdash (\alpha_1 = \alpha_3)$．
+    \item 任意の $\alpha_1, \alpha_2 \in X$，$C \in \Power(\Omega)$ について，$(\alpha_1 = \alpha_2) \land \exists \alpha_1\ldotp (C \land (\alpha_1 = \alpha_2)) \Vdash C$．
+    \item 任意のコンテキスト $T[] \in \mathcal{C}(\mathcal{T})$，$\tau_1, \tau_2 \in \semanticf{(\Sigma, X)}$ について，$(\tau_1 = \tau_2) \Vdash (T[\tau_1] = T[\tau_2])$．
+    \item 任意の $P \in \Omega$，$\tau \in \semanticf{(\Sigma, X)}$，$\alpha \in X$，$\alpha \not\in \mathit{fv}(\tau)$ について，$P[\alpha \assign \tau] \dashVdash \exists \alpha\ldotp (P \land (\alpha = \tau))$．
+  \end{itemize}
+\end{definition}
+
+\begin{lemma}[Renaming]
+  項制約システム $(\Sigma, P, \Omega, \Vdash, X, \exists)$，$C \in \Power(\Omega)$，$\alpha_1, \alpha_2 \in X$ について，$\alpha_2$ が $C$ に出現しない時，$\exists \alpha_1\ldotp C \dashVdash \exists \alpha_2\ldotp C[\alpha_1 \assign \alpha_2]$．
+\end{lemma}

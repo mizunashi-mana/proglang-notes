@@ -24,10 +24,10 @@
   \item 集合 $A$ について，$a \in A$ を $a: A$ と表記する．
   \item \emph{自然数\emphp{natural number}}の集合を $\Natural = \{0, 1, \ldots\}$ と表記する．また，$n$ 以上の自然数の集合を $\Natural_{\geq n} = \{n, n + 1, \ldots\}$ と表記する．
   \item 自然数 $n \in \Natural$ について，$\{1, \ldots, n\}$ を $[n]$ と表記する．
-  \item 集合 $A$ の\emph{冪集合}を $\Power(A) = \{X \mid X \subseteq A\}$，有限冪集合を $\PowerFin(A) = \{X \in \Power(X) \mid \text{$X$ は有限集合}\}$ と表記する．
+  \item 集合 $A$ の\emph{冪集合\emphp{power set}}を $\Power(A) = \{X \mid X \subseteq A\}$，有限冪集合を $\PowerFin(A) = \{X \in \Power(X) \mid \text{$X$ は有限集合}\}$ と表記する．
   \item 集合 $A_1, \ldots, A_n$ の\emph{直積\emphp{cartesian product}}を $A_1 \times \cdots \times A_n = \{(a_1, \ldots, a_n) \mid a_1 \in A_1, \ldots, a_n \in A_n\}$ と表記する．集合 $A$ の $n$ 直積を $A^n = \underbrace{A \times \cdots \times A}_{\text{$n$項}}$ と表記する．特に，$A^0 = \{\epsilon\}$ である．
   \item 集合 $A_1, \ldots, A_n$ の\emph{直和\emphp{disjoin union}}を $A_1 \uplus \cdots \uplus A_n = (A_1 \times \{1\}) \cup \cdots (A_n \times \{n\})$ と表記する．なお，文脈から明らかな場合，直和の添字を省略し，$a \in A_i$ に対して，$a \in A_1 \uplus \cdots \uplus A_n$ と表記する．
-  \item 集合 $A$ の $B$ との\emph{差集合}を $A \rcomplement B = \{a \in A \mid a \not\in B\}$ と表記する．
+  \item 集合 $A$ の $B$ との\emph{差集合\emphp{relative complement}}を $A \rcomplement B = \{a \in A \mid a \not\in B\}$ と表記する．
 \end{itemize}
 
 集合 $\Sigma$ について，$\bigcup_{n \in \Natural} \Sigma^n$ を $\Sigma^*$ と表記する．この時，$\alpha \in \Sigma^*$ を $\Sigma$ による\emph{列\emphp{sequence}}と呼ぶ．列について，以下の表記を用いる．
@@ -68,3 +68,68 @@
     \forall i_1, i_2 \in I, i_1 \neq i_2\ldotp A_{i_1} \cap A_{i_2} = \emptyset
   \end{align*}
 \end{itemize}
+
+\section{基本的な定義}
+
+\begin{definition}[ランク付きアルファベット (ranked alphabet)]
+  ランク付きアルファベットとは，以下の組 $(\Sigma, \mathrm{rank})$ のこと．
+  \begin{itemize}
+    \item 集合 $\Sigma$．
+    \item 関数 $\mathrm{rank}: \Sigma \to \mathbb{N}$．
+  \end{itemize}
+  $\mathrm{rank}$ が文脈から明らかな時，単に $\Sigma$ をランク付きアルファベットと呼ぶ．$f \in \Sigma$ について，$\mathrm{rank}(f) = n$ の時，$f$ は $n$-変数であるという．これを明示して，$f^{(n)}$ と表記することもある．
+\end{definition}
+
+\begin{definition}[項代数 (term algebra)]
+  項代数 $\mathcal{T}$ とは，以下の組 $(\Sigma, X)$ のこと．
+  \begin{itemize}
+    \item ランク付きアルファベット $\Sigma$．
+    \item 変数の集合 $X$．
+  \end{itemize}
+  この時，$\semanticf{\mathcal{T}}$ を以下を満たす最小の集合として定義する．
+  \begin{itemize}
+    \item $X \subseteq \semanticf{\mathcal{T}}$．
+    \item $\tau_1, \ldots, \tau_n \in \semanticf{\mathcal{T}}$，$f^{(n)} \in \Sigma$ について，$f(\tau_1, \ldots, \tau_n) \in \semanticf{\mathcal{T}}$．
+  \end{itemize}
+  この時，$\tau \in \semanticf{\mathcal{T}}$ を $\mathcal{T}$ の項と呼ぶ．
+\end{definition}
+
+\begin{definition}[パス (path)]
+  項代数 $\mathcal{T} = (\Sigma, X)$ について，$\mathrm{paths}: \semanticf{\mathcal{T}} \to \Power(\mathrm{N}^*)$ を以下のように定義する．
+  \begin{itemize}
+    \item $x \in X$ について，$\mathrm{paths}(x) = \{\epsilon\}$．
+    \item $f^{(n)} \in \Sigma$，$f^{(n)}(\tau_1, \ldots, \tau_n) \in \semanticf{\mathcal{T}}$ について，$\mathrm{paths}(f^{(n)}(\tau_1, \ldots, \tau_n)) = \{\epsilon\} \cup \bigcup_{i \in [n]} \{i\pi \in \mathrm{paths}(\tau_i)\}$．
+  \end{itemize}
+  この時，$\pi \in \mathrm{paths}(\tau)$ を $\tau$ のパスと呼ぶ．
+\end{definition}
+
+\begin{definition}[部分項 (subterm)]
+  項代数 $\mathcal{T} = (\Sigma, X)$，項 $\tau \in \semanticf{\mathcal{T}}$ について，$\mathrm{subterm}_\tau: \mathrm{paths}(\tau) \to \semanticf{\mathcal{T}}$ を以下のように定義する．
+  \begin{itemize}
+    \item $\mathrm{subterm}_\tau(\epsilon) = \tau$．
+    \item $\mathrm{subterm}_{f^{(n)}(\tau_1, \ldots, \tau_i, \ldots, \tau_n)}(i\pi) = \mathrm{subterm}_{\tau_i}(\pi)$．
+  \end{itemize}
+  この時，$\pi \in \mathrm{paths}(\tau)$ について，$\mathrm{subterm}_\tau(\pi)$ を $\tau$ の $\pi$ での部分木と呼ぶ．
+\end{definition}
+
+\begin{definition}[置換 (substitution)]
+  項代数 $\mathcal{T} = (\Sigma, X)$ について，$\sigma \subseteq \semanticf{\mathcal{T}} \times \semanticf{\mathcal{T}}$ が置換とは，以下を満たすことを言う．
+  \begin{itemize}
+    \item 任意の $x \in \dom(\sigma)$ について，$(x, y_1), (x, y_2) \in \sigma$ ならば $y_1 = y_2$．
+    \item 任意の $x_1, x_2 \in \dom(\sigma)$ について，$\mathrm{subterm}_{x_1}(\pi) = x_2$ となる $\pi \in \mathrm{paths}(x_1)$ は存在しない．
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[出現 (occurence)]
+  項代数 $\mathcal{T} = (\Sigma, X)$，項 $\tau \in \semanticf{\mathcal{T}}$ について，$\mathrm{occ}_\tau: \semanticf{\mathcal{T}} \to \Power(\mathrm{paths}(\tau))$ を以下のように定義する．
+  \begin{align*}
+    \mathrm{occ}_\tau(\eta) = \{\pi \in \mathrm{paths}(\tau) \mid \mathrm{subterm}_\tau(\pi) = \eta\}
+  \end{align*}
+  この時，$\pi \in \mathrm{occ}_\tau(\eta)$ を，$\eta$ の $\tau$ での出現と呼ぶ．
+\end{definition}
+
+\begin{definition}[コンテキスト (context)]
+  項代数 $\mathcal{T} = (\Sigma, X)$ について，コンテキストとは，$T[] \in \semanticf{(\Sigma, X \uplus \{[]\})}$ で $[]$ の出現が一意であるもののことを言う．この時，$\mathcal{T}$ のコンテキストの集合を $\mathcal{C}(\mathcal{T})$ と書く．
+
+  この時，$\tau \in \semanticf{\mathcal{T}}$ について，$T[\tau] \in \semanticf{\mathcal{T}}$ を $T[\tau] = (T[])[[] \assign \tau]$ で定義する．
+\end{definition}
