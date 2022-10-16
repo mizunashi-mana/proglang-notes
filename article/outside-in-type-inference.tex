@@ -1,0 +1,210 @@
+\section{OutsideIn(X): Modular Type Inference with Local Assumptions}
+
+\cite{Vytiniotis:2011}
+
+\subsection{Syntax}
+
+\begin{align*}
+  \begin{array}{rcl}
+    P
+    &\Coloneq &\epsilon \\
+    &\mid &f = e, P \\
+    &\mid &f: \sigma = e, P \\
+    \nu &= x \mid K \\
+    e
+    &\Coloneq &\nu \\
+    &\mid &\lambda x\ldotp e \\
+    &\mid &e_1\; e_2 \\
+    &\mid &\mathbf{case}(e, \overrightarrow{K\overrightarrow{x} \mapsto e}) \\
+    &\mid &\mathbf{let}(x: \sigma = e_1, e_2) \\
+    &\mid &\mathbf{let}(x = e_1, e_2) \\
+    \sigma
+    &\Coloneq &\forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau \\
+    Q
+    &\Coloneq &\epsilon \\
+    &\mid &Q_1 \land Q_2 \\
+    &\mid &\tau_1 \simeq \tau_2 \\
+    &\mid &D \overrightarrow{\tau} \\
+    \tau
+    &\Coloneq &\alpha \\
+    &\mid &\tau_1 \to \tau_2 \\
+    &\mid &T \overrightarrow{\tau} \\
+    &\mid &F \overrightarrow{\tau} \\
+    \Gamma
+    &\Coloneq &\epsilon \\
+    &\mid &\nu: \sigma, \Gamma \\
+    \mathcal{Q}
+    &\Coloneq &Q \\
+    &\mid &\mathcal{Q} \land \mathcal{Q} \\
+    &\mid &\forall \overrightarrow{\alpha}\ldotp Q \Rightarrow D \overrightarrow{\tau} \\
+    &\mid &\forall \overrightarrow{\alpha}\ldotp F \overrightarrow{\tau_1} \simeq \tau_2
+  \end{array}
+\end{align*}
+
+\subsection{Entailment}
+
+Concrete:
+
+\begin{gather*}
+  \infer{\mathcal{Q} \Vdash Q_1 \land Q_2}{
+    \mathcal{Q} \Vdash Q_1
+    &
+    \mathcal{Q} \Vdash Q_2
+  }
+  \\
+  \infer{\mathcal{Q} \Vdash \tau \simeq \tau}{}
+  \hspace{1em}
+  \infer{\mathcal{Q} \Vdash \tau_1 \simeq \tau_2}{
+    \mathcal{Q} \Vdash \tau_2 \simeq \tau_1
+  }
+  \hspace{1em}
+  \infer{\mathcal{Q} \Vdash \tau_1 \simeq \tau_3}{
+    \mathcal{Q} \Vdash \tau_1 \simeq \tau_2
+    &
+    \mathcal{Q} \Vdash \tau_2 \simeq \tau_3
+  }
+  \\
+  \infer{\mathcal{Q} \Vdash \bigwedge \overrightarrow{\tau_1 \simeq \tau_2}}{
+    \mathcal{Q} \Vdash T\overrightarrow{\tau_1} \simeq T\overrightarrow{\tau_2}
+  }
+  \hspace{1em}
+  \infer{\mathcal{Q} \Vdash T\overrightarrow{\tau_1} \simeq T\overrightarrow{\tau_2}}{
+    \mathcal{Q} \Vdash \bigwedge \overrightarrow{\tau_1 \simeq \tau_2}
+  }
+  \hspace{1em}
+  \infer{\mathcal{Q} \Vdash F\overrightarrow{\tau_1} \simeq F\overrightarrow{\tau_2}}{
+    \mathcal{Q} \Vdash \bigwedge \overrightarrow{\tau_1 \simeq \tau_2}
+  }
+  \\
+  \infer{\mathcal{Q} \Vdash Q_2[\overrightarrow{\alpha \assign \tau}]}{
+    (\forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow Q_2) \in \mathcal{Q}
+    &
+    \mathcal{Q} \Vdash Q_1[\overrightarrow{\alpha \assign \tau}]
+  }
+  \\
+  \infer{\mathcal{Q} \Vdash D \overrightarrow{\tau_2}}{
+    \mathcal{Q} \Vdash D \overrightarrow{\tau_1}
+    &
+    \mathcal{Q} \Vdash \bigwedge \overrightarrow{\tau_1 \simeq \tau_2}
+  }
+\end{gather*}
+
+\begin{itemize}
+  \item projection って必要ないん？
+\end{itemize}
+
+Requirements:
+
+\begin{gather*}
+  \infer{\mathcal{Q} \land Q \Vdash Q}{}
+  \hspace{1em}
+  \infer{\mathcal{Q} \land Q_1 \Vdash Q_3}{
+    \mathcal{Q} \land Q_1 \Vdash Q_2
+    &
+    \mathcal{Q} \land Q_2 \Vdash Q_3
+  }
+  \hspace{1em}
+  \infer{\mathcal{Q} \Vdash Q[\alpha \assign \tau]}{
+    \mathcal{Q} \Vdash Q
+  }
+  \\
+  \infer{\mathcal{Q} \Vdash \tau \simeq \tau}{}
+  \hspace{1em}
+  \infer{\mathcal{Q} \Vdash \tau_1 \simeq \tau_2}{
+    Q \Vdash \tau_2 \simeq \tau_1
+  }
+  \hspace{1em}
+  \infer{\mathcal{Q} \Vdash \tau_1 \simeq \tau_3}{
+    \mathcal{Q} \Vdash \tau_1 \simeq \tau_2
+    &
+    \mathcal{Q} \Vdash \tau_2 \simeq \tau_3
+  }
+  \\
+  \infer{\mathcal{Q} \Vdash Q_1 \land Q_2}{
+    \mathcal{Q} \Vdash Q_1
+    &
+    \mathcal{Q} \Vdash Q_2
+  }
+  \\
+  \infer{\mathcal{Q} \Vdash \tau[\alpha \assign \tau_1] \simeq \tau[\alpha \assign \tau_2]}{
+    \mathcal{Q} \Vdash \tau_1 \simeq \tau_2
+  }
+\end{gather*}
+
+\subsection{Type System}
+
+\begin{gather*}
+  \infer{Q; \Gamma \vdash x: \tau_1[\overrightarrow{\alpha \assign \tau_2}]}{
+    (\nu: \forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow \tau_1) \in \Gamma
+    &
+    Q \Vdash Q_1[\overrightarrow{\alpha \assign \tau_2}]
+  }
+  \\
+  \infer{Q; \Gamma \vdash e: \tau_2}{
+    Q; \Gamma \vdash e: \tau_1
+    &
+    Q \Vdash \tau_1 \simeq \tau_2
+  }
+  \\
+  \infer{Q; \Gamma \vdash \lambda x\ldotp e: \tau_1 \to \tau_2}{
+    Q; \Gamma, x: \tau_1 \vdash e: \tau_2
+  }
+  \\
+  \infer{Q; \Gamma \vdash e_1\; e_2: \tau_2}{
+    Q; \Gamma \vdash e_1: \tau_1 \to \tau_2
+    &
+    Q; \Gamma \vdash e_2: \tau_1
+  }
+  \\
+  \infer{Q; \Gamma \vdash \mathbf{let}(x = e_1, e_2): \tau_2}{
+    Q; \Gamma \vdash e_1: \tau_1
+    &
+    Q; \Gamma, x: \tau_1 \vdash e_2: \tau_2
+  }
+  \\
+  \infer{Q; \Gamma \vdash \mathbf{let}(x: \forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow \tau_1 = e_1, e_2): \tau_2}{
+    Q \land Q_1; \Gamma \vdash e_1: \tau_1
+    &
+    \overrightarrow{\alpha} \land (\mathit{ftv}(Q) \cup \mathit{ftv}(\Gamma)) = \emptyset
+    &
+    Q; \Gamma, x: \forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow \tau_1 \vdash e_2: \tau_2
+  }
+  \\
+  \infer{Q; \Gamma \vdash \mathbf{case}(e, \overrightarrow{K_i \overrightarrow{x_i} \mapsto e_i}): \tau_2}{
+    \begin{array}{c}
+      Q; \Gamma \vdash e: T \overrightarrow{\tau_1}
+      \\
+      \bigwedge_i (K_i: \forall \overrightarrow{\alpha}\overrightarrow{\beta}\ldotp Q_i \Rightarrow \overrightarrow{\nu_i} \to T \overrightarrow{\alpha}) \in \Gamma
+      \\
+      \overrightarrow{\beta} \land (\mathit{ftv}(Q) \cup \mathit{ftv}(\Gamma) \cup \overrightarrow{\mathit{ftv}(\tau_1)} \cup \mathit{ftv}(\tau_2)) = \emptyset
+      \\
+      \bigwedge_i Q \land Q_i[\overrightarrow{\alpha \assign \tau}]; \Gamma, \overrightarrow{x_i: \nu_i[\overrightarrow{\alpha \assign \tau}]} \vdash e_i: \tau_2
+    \end{array}
+  }
+\end{gather*}
+
+\begin{gather*}
+  \infer{\mathcal{Q}; \Gamma \vdash \epsilon}{
+    (\mathit{ftv}(\Gamma) \cup \mathit{ftv}(\mathcal{Q})) = \emptyset
+  }
+  \\
+  \infer{\mathcal{Q}; \Gamma \vdash f = e, P}{
+    \mathcal{Q} \land Q_1 \Vdash Q_2
+    &
+    Q_1; \Gamma \vdash e: \tau
+    &
+    \overrightarrow{\alpha} = \mathit{ftv}(Q) \cup \mathit{ftv}(\tau)
+    &
+    \mathcal{Q}; \Gamma, (f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau) \vdash P
+  }
+  \\
+  \infer{\mathcal{Q}; \Gamma \vdash f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau = e, P}{
+    \mathcal{Q} \land Q_1 \Vdash Q_2
+    &
+    Q_1; \Gamma \vdash e: \tau
+    &
+    \overrightarrow{\alpha} = \mathit{ftv}(Q) \cup \mathit{ftv}(\tau)
+    &
+    \mathcal{Q}; \Gamma, (f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau) \vdash P
+  }
+\end{gather*}
