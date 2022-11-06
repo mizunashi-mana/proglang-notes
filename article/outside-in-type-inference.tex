@@ -4,13 +4,22 @@
 
 \subsection{Syntax}
 
+\begin{description}
+  \item[$x, y, z, f, g, h$] 変数
+  \item[$\alpha, \beta, \gamma$] 型変数
+  \item[$K$] コンストラクタ
+  \item[$T$] 型コンストラクタ
+  \item[$D$] 制約コンストラクタ
+  \item[$F$] 型関数
+\end{description}
+
 \begin{align*}
   \begin{array}{rcl}
     P
     &\Coloneq &\epsilon \\
     &\mid &f = e, P \\
     &\mid &f: \sigma = e, P \\
-    \nu &= x \mid K \\
+    \nu &\Coloneq &x \mid K \\
     e
     &\Coloneq &\nu \\
     &\mid &\lambda x\ldotp e \\
@@ -20,12 +29,18 @@
     &\mid &\mathbf{let}(x = e_1, e_2) \\
     \sigma
     &\Coloneq &\forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau \\
+    P
+    &\Coloneq &\tau_1 \simeq \tau_2 \\
+    &\mid &D \overrightarrow{\tau} \\
     Q
     &\Coloneq &\epsilon \\
     &\mid &Q_1 \land Q_2 \\
-    &\mid &\tau_1 \simeq \tau_2 \\
-    &\mid &D \overrightarrow{\tau} \\
-    \tau
+    &\mid &P \\
+    \mathcal{T}
+    &\Coloneq &\alpha \\
+    &\mid &\to \\
+    &\mid &T \\
+    \tau, \upsilon
     &\Coloneq &\alpha \\
     &\mid &\tau_1 \to \tau_2 \\
     &\mid &T \overrightarrow{\tau} \\
@@ -134,7 +149,7 @@ Requirements:
 \subsection{Type System}
 
 \begin{gather*}
-  \infer{Q; \Gamma \vdash x: \tau_1[\overrightarrow{\alpha \assign \tau_2}]}{
+  \infer{Q; \Gamma \vdash \nu: \tau_1[\overrightarrow{\alpha \assign \tau_2}]}{
     (\nu: \forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow \tau_1) \in \Gamma
     &
     Q \Vdash Q_1[\overrightarrow{\alpha \assign \tau_2}]
@@ -174,11 +189,11 @@ Requirements:
     \begin{array}{c}
       Q; \Gamma \vdash e: T \overrightarrow{\tau_1}
       \\
-      \bigwedge_i (K_i: \forall \overrightarrow{\alpha}\overrightarrow{\beta}\ldotp Q_i \Rightarrow \overrightarrow{\nu_i} \to T \overrightarrow{\alpha}) \in \Gamma
+      \bigwedge_i (K_i: \forall \overrightarrow{\alpha_i}\overrightarrow{\beta}\ldotp Q_i \Rightarrow \overrightarrow{\upsilon_i} \to T \overrightarrow{\alpha_i}) \in \Gamma
       \\
       \overrightarrow{\beta} \land (\mathit{ftv}(Q) \cup \mathit{ftv}(\Gamma) \cup \overrightarrow{\mathit{ftv}(\tau_1)} \cup \mathit{ftv}(\tau_2)) = \emptyset
       \\
-      \bigwedge_i Q \land Q_i[\overrightarrow{\alpha \assign \tau}]; \Gamma, \overrightarrow{x_i: \nu_i[\overrightarrow{\alpha \assign \tau}]} \vdash e_i: \tau_2
+      \bigwedge_i Q \land Q_i[\overrightarrow{\alpha_i \assign \tau}]; \Gamma, \overrightarrow{x_i: \upsilon_i[\overrightarrow{\alpha_i \assign \tau}]} \vdash e_i: \tau_2
     \end{array}
   }
 \end{gather*}
@@ -191,20 +206,217 @@ Requirements:
   \infer{\mathcal{Q}; \Gamma \vdash f = e, P}{
     \mathcal{Q} \land Q_1 \Vdash Q_2
     &
-    Q_1; \Gamma \vdash e: \tau
+    Q_2; \Gamma \vdash e: \tau
     &
-    \overrightarrow{\alpha} = \mathit{ftv}(Q) \cup \mathit{ftv}(\tau)
+    \overrightarrow{\alpha} = \mathit{ftv}(Q_1) \cup \mathit{ftv}(\tau)
     &
-    \mathcal{Q}; \Gamma, (f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau) \vdash P
+    \mathcal{Q}; \Gamma, (f: \forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow \tau) \vdash P
   }
   \\
-  \infer{\mathcal{Q}; \Gamma \vdash f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau = e, P}{
+  \infer{\mathcal{Q}; \Gamma \vdash f: \forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow \tau = e, P}{
     \mathcal{Q} \land Q_1 \Vdash Q_2
     &
-    Q_1; \Gamma \vdash e: \tau
+    Q_2; \Gamma \vdash e: \tau
     &
-    \overrightarrow{\alpha} = \mathit{ftv}(Q) \cup \mathit{ftv}(\tau)
+    \overrightarrow{\alpha} = \mathit{ftv}(Q_1) \cup \mathit{ftv}(\tau)
     &
-    \mathcal{Q}; \Gamma, (f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau) \vdash P
+    \mathcal{Q}; \Gamma, (f: \forall \overrightarrow{\alpha}\ldotp Q_1 \Rightarrow \tau) \vdash P
   }
+\end{gather*}
+
+\subsection{Type Inference}
+
+\begin{align*}
+  \begin{array}{rcl}
+    C
+    &\Coloneq &Q \\
+    &\mid &C_1 \land C_2 \\
+    &\mid &\exists \overrightarrow{\alpha}\ldotp (Q \supset C)
+  \end{array}
+\end{align*}
+
+\begin{gather*}
+  \infer{\Gamma \vrhd \nu \elab Q[\overrightarrow{\alpha \assign \beta}] \Rightarrow \tau[\overrightarrow{\alpha \assign \beta}]}{
+    \symfresh \overrightarrow{\beta}
+    &
+    (\nu: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau) \in \Gamma
+  }
+  \\
+  \infer{\Gamma \vrhd \lambda x\ldotp e \elab C \Rightarrow \beta \to \tau}{
+    \symfresh \beta
+    &
+    \Gamma,x:\beta \vrhd e \elab C \Rightarrow \tau
+  }
+  \\
+  \infer{\Gamma \vrhd e_1\; e_2 \elab C_1 \land C_2 \land (\tau_1 \simeq (\tau_2 \to \beta)) \Rightarrow \beta}{
+    \Gamma \vrhd e_1 \elab C_1 \Rightarrow \tau_1
+    &
+    \Gamma \vrhd e_2 \elab C_2 \Rightarrow \tau_2
+    &
+    \symfresh \beta
+  }
+  \\
+  \infer{\Gamma \vrhd \mathbf{let}(x = e_1, e_2) \elab C_1 \land C_2 \Rightarrow \tau_2}{
+    \Gamma \vrhd e_1 \elab C_1 \Rightarrow \tau_1
+    &
+    \Gamma, x: \tau_1 \vrhd e_2 \elab C_2 \Rightarrow \tau_2
+  }
+  \\
+  \infer{\Gamma \vrhd \mathbf{let}(x: \forall \overrightarrow{\alpha_1}\ldotp Q_1 \Rightarrow \tau_1 = e_1, e_2) \elab (\exists \overrightarrow{\beta_1}\ldotp Q_1 \supset C_1' \land \tau_1 \simeq \tau_1') \land C_2 \Rightarrow \tau_2}{
+    \begin{array}{c}
+      \Gamma \vrhd e_1 \elab C_1' \Rightarrow \tau_1' \\
+      \overrightarrow{\beta_1} = (\mathrm{ftv}(\tau_1') \cup \mathrm{ftv}(C_1')) \backslash \mathrm{ftv}(\Gamma) \\
+      \Gamma, x: \forall \overrightarrow{\alpha_1}\ldotp Q_1 \Rightarrow \tau_1 \vrhd e_2 \elab C_2 \Rightarrow \tau_2
+    \end{array}
+  }
+  \\
+  \infer{\Gamma \vrhd \mathbf{case}(e, \overrightarrow{K_i \overrightarrow{x_i} \mapsto e_i}) \elab C \land (\tau \simeq T \overrightarrow{\gamma}) \land (\bigwedge_i \exists \delta_i\ldotp Q_i[\overrightarrow{\alpha \assign \gamma}] \supset C_i \land \tau_i \simeq \beta) \Rightarrow \beta}{
+    \begin{array}{c}
+      \Gamma \vrhd e \elab C \Rightarrow \tau \\
+      \symfresh \beta, \overrightarrow{\gamma} \\
+      \bigwedge_i \symfresh \overrightarrow{\beta_i} \\
+      \bigwedge_i (K_i: \forall \overrightarrow{\alpha_i}\overrightarrow{\beta_i}\ldotp Q_i \Rightarrow \overrightarrow{\upsilon_i} \to T \overrightarrow{\alpha_i}) \in \Gamma \\
+      \bigwedge_i \Gamma, (\overrightarrow{x_i: \upsilon_i[\alpha_i \assign \gamma]}) \vrhd e_i \elab C_i \Rightarrow \tau_i \\
+      \bigwedge_i \delta_i = (\mathrm{ftv}(\tau_i) \cup \mathrm{ftv}(C_i)) \backslash (\mathrm{ftv}(\Gamma) \cup \bigcup \overrightarrow{\mathrm{ftv}(\gamma)})
+    \end{array}
+  }
+\end{gather*}
+
+制約解決 $\mathcal{Q}; Q; \overrightarrow{\alpha} \vdash C_1 \overset{\mathrm{solv}}{\elab} Q_2 \mid \theta$ については，後述する．
+
+\begin{gather*}
+  \infer{\mathcal{Q}; \Gamma \vrhd \epsilon \elab \top}{}
+  \\
+  \infer{\mathcal{Q}; \Gamma \vrhd f = e, P \elab \top}{
+    \begin{array}{c}
+      \Gamma \vrhd e \elab C \Rightarrow \tau \\
+      \mathcal{Q}; \epsilon; \mathrm{ftv}(\tau) \cup \mathrm{ftv}(C) \vdash C \overset{solv}{\elab} Q \mid \theta \\
+      \overrightarrow{\alpha} = \mathrm{ftv}(\theta\tau) \cup \mathrm{ftv}(Q) \\
+      \symfresh \overrightarrow{\beta} \\
+      \mathcal{Q}; \Gamma, f: \forall \overrightarrow{\beta}\ldotp (Q \Rightarrow \theta\tau)[\overrightarrow{\alpha \assign \beta}] \vrhd P \elab \top
+    \end{array}
+  }
+  \\
+  \infer{\mathcal{Q}; \Gamma \vrhd f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau = e, P \elab \top}{
+    \begin{array}{c}
+      \Gamma \vrhd e \elab C' \Rightarrow \tau' \\
+      \mathcal{Q}; Q; \mathrm{ftv}(\tau') \cup \mathrm{ftv}(C') \vdash C' \land (\tau \simeq \tau') \overset{solv}{\elab} \epsilon \mid \theta \\
+      \mathcal{Q}; \Gamma, f: \forall \overrightarrow{\alpha}\ldotp Q \Rightarrow \tau \vrhd P \elab \top
+    \end{array}
+  }
+\end{gather*}
+
+\subsection{Constraint Solving}
+
+\begin{gather*}
+  \infer{\mathrm{split}(Q) = \langle Q, \emptyset\rangle}{}
+  \\
+  \infer{\mathrm{split}(C_1 \land C_2) = \langle Q_1 \land Q_2, I_1 \cup I_2\rangle}{
+    \mathrm{split}(C_1) = \langle Q_1, I_1\rangle
+    &
+    \mathrm{split}(C_2) = \langle Q_2, I_2\rangle
+  }
+  \\
+  \infer{\mathrm{split}(\exists \overrightarrow{\alpha}\ldotp Q \supset C) = \langle \epsilon, \{\exists \overrightarrow{\alpha}\ldotp Q \supset C\}\rangle}{}
+\end{gather*}
+
+\begin{gather*}
+  \infer{\mathcal{Q}; Q; \overrightarrow{\alpha} \vdash C_1 \overset{\mathrm{solv}}{\elab} Q_2 \mid \theta}{
+    \begin{array}{c}
+      \mathrm{split}(C_1) = \langle Q_1, I_1\rangle \\
+      \mathcal{Q}; Q; \overrightarrow{\alpha} \vdash Q_1 \overset{\mathrm{simpl}}{\elab} Q_2 \mid \theta \\
+      \bigwedge_{(\exists \overrightarrow{\alpha'}\ldotp Q' \supset C') \in \theta I_1} \mathcal{Q}; Q \land Q_2 \land Q'; \overrightarrow{\alpha'} \vdash C' \overset{\mathrm{solv}}{\elab} \epsilon \mid \theta'
+    \end{array}
+  }
+\end{gather*}
+
+Simplification:
+
+\begin{gather*}
+  \infer{\mathcal{Q} \vdash \langle \overrightarrow{\alpha_1}, \theta_1, W_\mathrm{g} \uplus \{P_1\}, W_\mathrm{w}\rangle \to \langle \overrightarrow{\alpha_1}\overrightarrow{\alpha_2}, \theta_1 \cup \theta_2, W_\mathrm{g} \cup W_2, W_\mathrm{w}\rangle}{
+    \mathrm{canon}_\mathrm{g}(P_1) = \langle\overrightarrow{\alpha_2}, \theta_2, W_2\rangle
+    &
+    \dom(\theta_1) \cap \dom(\theta_2) = \emptyset
+  }
+  \\
+  \infer{\mathcal{Q} \vdash \langle \overrightarrow{\alpha_1}, \theta_1, W_\mathrm{g}, W_\mathrm{w} \uplus \{P_1\}\rangle \to \langle \overrightarrow{\alpha_1}\overrightarrow{\alpha_2}, \theta_1 \cup \theta_2, W_\mathrm{g}, W_\mathrm{w} \cup W_2\rangle}{
+    \mathrm{canon}_\mathrm{w}(P_1) = \langle\overrightarrow{\alpha_2}, \theta_2, W_2\rangle
+    &
+    \dom(\theta_1) \cap \dom(\theta_2) = \emptyset
+  }
+  \\
+  \infer{\mathcal{Q} \vdash \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g} \uplus \{P_1, P_2\}, W_\mathrm{w}\rangle \to \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g} \cup W_3, W_\mathrm{w}\rangle}{
+    \mathrm{interact}_\mathrm{g}(P_1, P_2) = W_3
+  }
+  \\
+  \infer{\mathcal{Q} \vdash \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g}, W_\mathrm{w} \uplus \{P_1, P_2\}\rangle \to \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g}, W_\mathrm{w} \cup W_3\rangle}{
+    \mathrm{interact}_\mathrm{w}(P_1, P_2) = W_3
+  }
+  \\
+  \infer{\mathcal{Q} \vdash \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g} \uplus \{P\}, W_\mathrm{w} \uplus \{P_1\}\rangle \to \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g} \uplus \{P\}, W_\mathrm{w} \cup W_2\rangle}{
+    \mathrm{simplify}(P, P_1) = W_2
+  }
+  \\
+  \infer{\mathcal{Q} \vdash \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g} \uplus \{P_1\}, W_\mathrm{w}\rangle \to \langle \overrightarrow{\alpha}, \theta, W_\mathrm{g} \cup W_2, W_\mathrm{w}\rangle}{
+    \mathrm{topreact}_\mathrm{g}(\mathcal{Q}, P_1) = \langle\epsilon, W_2\rangle
+  }
+  \\
+  \infer{\mathcal{Q} \vdash \langle \overrightarrow{\alpha_1}, \theta, W_\mathrm{g}, W_\mathrm{w} \uplus \{P_1\}\rangle \to \langle \overrightarrow{\alpha_1}\overrightarrow{\alpha_2}, \theta, W_\mathrm{g}, W_\mathrm{w} \cup W_2\rangle}{
+    \mathrm{topreact}_\mathrm{w}(\mathcal{Q}, P_1) = \langle\overrightarrow{\alpha_2}, W_2\rangle
+  }
+\end{gather*}
+
+\begin{gather*}
+  \infer{\mathrm{extract}(\beta_1 \simeq \tau_2, \overrightarrow{\alpha}) = \langle \epsilon, \{\beta_1 \mapsto \tau_2\}\rangle}{
+    \beta_1 \in \overrightarrow{\alpha}
+    &
+    \beta_1 \not\in \mathrm{ftv}(\tau_2)
+  }
+  \\
+  \infer{\mathrm{extract}(\tau_1 \simeq \beta_2, \overrightarrow{\alpha}) = \langle \epsilon, \{\beta_2 \mapsto \tau_1\}\rangle}{
+    \beta_2 \in \overrightarrow{\alpha}
+    &
+    \beta_2 \not\in \mathrm{ftv}(\tau_1)
+  }
+  \\
+  \infer{\mathrm{extract}(\tau_1 \simeq \tau_2, \overrightarrow{\alpha}) = \langle \tau_1 \simeq \tau_2, \emptyset\rangle}{
+    (\tau_1 \not\in \overrightarrow{\alpha} \lor \tau_1 \in \mathrm{ftv}(\tau_2))
+    &
+    (\tau_2 \not\in \overrightarrow{\alpha} \lor \tau_2 \in \mathrm{ftv}(\tau_1))
+  }
+  \\
+  \infer{\mathrm{extract}(D \overrightarrow{\tau}, \overrightarrow{\alpha}) = \langle D \overrightarrow{\tau}, \emptyset\rangle}{}
+\end{gather*}
+
+\begin{gather*}
+  \infer{\mathrm{flat}(\epsilon) = \emptyset}{}
+  \\
+  \infer{\mathrm{flat}(Q_1 \land Q_2) = W_1 \cup W_2}{
+    \mathrm{flat}(Q_1) = W_1
+    &
+    \mathrm{flat}(Q_2) = W_2
+  }
+  \\
+  \infer{\mathrm{flat}(\tau_1 \simeq \tau_2) = \{\tau_1 \simeq \tau_2\}}{}
+  \\
+  \infer{\mathrm{flat}(D \overrightarrow{\tau}) = \{D \overrightarrow{\tau}\}}{}
+\end{gather*}
+
+\begin{gather*}
+  \infer{\mathcal{Q}; Q; \overrightarrow{\alpha} \vdash Q_1 \overset{\mathrm{simpl}}{\elab} \theta \bigwedge W_2 \mid \theta}{
+    \begin{array}{c}
+      \mathcal{Q} \vdash \langle \overrightarrow{\alpha}, \emptyset, \mathrm{flat}(Q), \mathrm{flat}(Q_1)\rangle \to^* \langle \overrightarrow{\alpha'}, \theta', W', W_2'\rangle \not\to \\
+      W_2 = \bigcup \{W \mid P_2' \in W_2', \mathrm{extract}(\theta' P_2', \overrightarrow{\alpha'}) = \langle W, R\rangle\} \\
+      R_2 = \bigcup \{R \mid P_2' \in W_2', \mathrm{extract}(\theta' P_2', \overrightarrow{\alpha'}) = \langle W, R\rangle\} \\
+      \theta = \{\beta \mapsto \tau \mid \beta \in \dom(R_2), \forall \beta \mapsto \tau' \in R_2\ldotp \tau = \theta \tau'\}
+    \end{array}
+  }
+\end{gather*}
+
+Canonicalization:
+
+\begin{gather*}
+  \infer{\mathrm{canon}_l(\mathcal{T} \overrightarrow{\tau_1} \simeq \mathcal{T} \overrightarrow{\tau_2}) = \langle \epsilon, \emptyset, \{\tau_1 \simeq \tau_2 \in \overrightarrow{\tau_1 \simeq \tau_2} \mid \tau_1 \neq \tau_2\}\rangle}{}
+  \\
+  \infer{\mathrm{canon}_l(F \overrightarrow{\tau} \simeq F \overrightarrow{\tau}) = \langle\epsilon, \emptyset, \emptyset\rangle}{}
 \end{gather*}
