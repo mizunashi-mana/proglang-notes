@@ -255,4 +255,81 @@
 
 \subsection{自由構成}
 
-TODO
+構文:
+\begin{align*}
+  \begin{array}{rcl}
+    T
+    &\Coloneq &{\to} \mid \cdots \\
+    D
+    &\Coloneq &{\simeq} \mid {\succeq} \mid \cdots \\
+    Q
+    &\Coloneq &\epsilon \\
+    &\mid &Q_1 \land Q_2 \\
+    &\mid &D \vec{\tau} \\
+    \tau
+    &\Coloneq &\alpha \\
+    &\mid &T \vec{\tau} \\
+    C
+    &\Coloneq &Q \\
+    &\mid &C_1 \land C_2 \\
+    &\mid &\forall \vec{\alpha}\ldotp Q \Rightarrow Q \\
+    \sigma
+    &\Coloneq &\forall \vec{\alpha}\ldotp Q \Rightarrow \tau \\
+    e
+    &\Coloneq &x \\
+    &\mid &\lambda x\ldotp e \\
+    &\mid &e_1\; e_2 \\
+    &\mid &\mathbf{let}\; x = e_1\; \mathbf{in}\; e_2
+  \end{array}
+\end{align*}
+
+制約推論:
+\begin{gather*}
+  \infer{Q \in Q}{}
+  \hspace{1em}
+  \infer{(\forall \vec{\alpha}\ldotp Q \Rightarrow Q) \in (\forall \vec{\alpha}\ldotp Q \Rightarrow Q)}{}
+  \hspace{1em}
+  \infer{C_1 \land C_2 \in C}{
+    C_1 \in C
+    &
+    C_2 \in C
+  }
+  \hspace{1em}
+  \infer{C \in C_1 \land C_2}{
+    C \in C_1
+  }
+  \hspace{1em}
+  \infer{C \in C_1 \land C_2}{
+    C \in C_2
+  }
+  \\
+  \infer{C \Vdash Q}{Q \in C}
+  \hspace{1em}
+  \infer{C \Vdash Q_1 \land Q_2}{C \Vdash Q_1 & C \Vdash Q_2}
+  \\
+  \infer{C \Vdash \tau \simeq \tau}{}
+  \hspace{1em}
+  \infer{C \Vdash \tau_1 \simeq \tau_2}{C \Vdash \tau_2 \simeq \tau_1}
+  \hspace{1em}
+  \infer{C \Vdash \tau_1 \simeq \tau_3}{C \Vdash \tau_1 \simeq \tau_2 & C \Vdash \tau_2 \simeq \tau_3}
+  \\
+  \infer{C \Vdash \tau_1 \precsim \tau_2}{
+    C \Vdash \tau_1 \simeq \tau_2
+  }
+  \\
+  \infer{C \Vdash T \vec{\tau_1} \simeq T \vec{\tau_2}}{\overrightarrow{C \Vdash \tau_1 \simeq \tau_2}}
+  \hspace{1em}
+  \infer{C \Vdash \tau_1 \simeq \tau_2}{C \Vdash T \vec{\tau_1} \simeq T \vec{\tau_2}}
+  \\
+  \infer{C \Vdash Q_2[\overrightarrow{\alpha \assign \tau}]}{
+    (\forall \vec{\alpha}\ldotp Q_1 \Rightarrow Q_2) \in C
+    &
+    C \Vdash Q_1[\overrightarrow{\alpha \assign \tau}]
+  }
+  \hspace{1em}
+  \infer{C \Vdash D \vec{\tau_2}}{
+    C \Vdash D \vec{\tau_1}
+    &
+    \overrightarrow{C \Vdash \tau_1 \simeq \tau_2}
+  }
+\end{gather*}
