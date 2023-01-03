@@ -209,7 +209,7 @@
 \end{definition}
 
 \begin{definition}[制約付き Algorithm W]
-  項制約システム $(\Sigma, P, \Omega, \Vdash, X, \exists)$ について，$\mathit{norm}$ を制約 $C \in \Power(\Omega)$，置換 $\psi$ において $\mathit{norm}(C, \phi) = (D, \phi)$ が $(C, \psi)$ の正規形になる関数とする．また，$\mathit{gen}$ を制約 $C \in \Power(\Omega)$，環境 $\Gamma$，型スキーム $\sigma$，変数列 $\vec{\alpha} = (\mathit{fv}(\sigma) \cup \mathit{fv}(C)) \backslash \mathit{fv}(\Gamma)$，$C \dashVdash C' \land D$，$\mathit{fv}(D) \land \vec{\alpha} = \emptyset$ を満たす制約 $C', D \in \Power(\Omega)$ について，
+  項制約システム $(\Sigma, P, \Omega, \Vdash, X, \exists)$ について，$\mathit{norm}$ を制約 $C \in \Power(\Omega)$，置換 $\psi$ において $\mathit{norm}(C, \psi) = (D, \phi)$ が $(C, \psi)$ の正規形になる関数とする．また，$\mathit{gen}$ を制約 $C \in \Power(\Omega)$，環境 $\Gamma$，型スキーム $\sigma$，変数列 $\vec{\alpha} = (\mathit{fv}(\sigma) \cup \mathit{fv}(C)) \backslash \mathit{fv}(\Gamma)$，$C \dashVdash C' \land D$，$\mathit{fv}(D) \land \vec{\alpha} = \emptyset$ を満たす制約 $C', D \in \Power(\Omega)$ について，
   \begin{align*}
     \mathit{gen}(C, \Gamma, \sigma) = (D \land \exists \vec{\alpha}\ldotp C', \forall \vec{\alpha}\ldotp C' \Rightarrow \sigma)
   \end{align*}
