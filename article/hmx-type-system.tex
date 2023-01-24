@@ -1,6 +1,6 @@
 \section{HM(X): HM Type System with Constraint System}
 
-\cite{Odersky:1999}\cite{Eekelen:2004}
+\cite{Odersky:1999}
 
 \subsection{制約システム}
 
@@ -266,13 +266,11 @@
     &\Coloneq &\epsilon \\
     &\mid &Q_1 \land Q_2 \\
     &\mid &D \vec{\tau} \\
+    C
+    &\Coloneq &Q \\
     \tau
     &\Coloneq &\alpha \\
     &\mid &T \vec{\tau} \\
-    C
-    &\Coloneq &Q \\
-    &\mid &C_1 \land C_2 \\
-    &\mid &\forall \vec{\alpha}\ldotp Q \Rightarrow Q \\
     \sigma
     &\Coloneq &\forall \vec{\alpha}\ldotp Q \Rightarrow \tau \\
     e
@@ -285,25 +283,17 @@
 
 制約推論:
 \begin{gather*}
-  \infer{Q \in Q}{}
+  \infer{(D \vec{\tau}) \in (D \vec{\tau})}{}
   \hspace{1em}
-  \infer{(\forall \vec{\alpha}\ldotp Q \Rightarrow Q) \in (\forall \vec{\alpha}\ldotp Q \Rightarrow Q)}{}
-  \hspace{1em}
-  \infer{C_1 \land C_2 \in C}{
-    C_1 \in C
-    &
-    C_2 \in C
+  \infer{(D \vec{\tau}) \in C_1 \land C_2}{
+    (D \vec{\tau}) \in C_1
   }
   \hspace{1em}
-  \infer{C \in C_1 \land C_2}{
-    C \in C_1
-  }
-  \hspace{1em}
-  \infer{C \in C_1 \land C_2}{
-    C \in C_2
+  \infer{(D \vec{\tau}) \in C_1 \land C_2}{
+    (D \vec{\tau}) \in C_2
   }
   \\
-  \infer{C \Vdash Q}{Q \in C}
+  \infer{C \Vdash D \vec{\tau}}{(D \vec{\tau}) \in C}
   \hspace{1em}
   \infer{C \Vdash Q_1 \land Q_2}{C \Vdash Q_1 & C \Vdash Q_2}
   \\
@@ -321,15 +311,161 @@
   \hspace{1em}
   \infer{C \Vdash \tau_1 \simeq \tau_2}{C \Vdash T \vec{\tau_1} \simeq T \vec{\tau_2}}
   \\
-  \infer{C \Vdash Q_2[\overrightarrow{\alpha \assign \tau}]}{
-    (\forall \vec{\alpha}\ldotp Q_1 \Rightarrow Q_2) \in C
-    &
-    C \Vdash Q_1[\overrightarrow{\alpha \assign \tau}]
-  }
-  \hspace{1em}
   \infer{C \Vdash D \vec{\tau_2}}{
     C \Vdash D \vec{\tau_1}
     &
     \overrightarrow{C \Vdash \tau_1 \simeq \tau_2}
   }
 \end{gather*}
+
+制約解決:
+\begin{gather*}
+  \infer{
+    \mathrm{solv}(C, Q_1) = \theta_3 \theta_2
+  }{
+    \begin{array}{c}
+      C \vdash \mathrm{flat}(Q_1) \to^* W_2 \mathrel{\not\to} \\
+      \theta_2 = [\alpha_2 \assign \theta_2\tau_2 \mid (\alpha_2 \simeq \tau_2) \in W_2]
+      \hspace{1em}
+      Q_2 = \bigwedge \{D \vec{\tau} \mid (D \vec{\tau}) \in W_2\}
+      \\
+      \vec{\alpha_3} = \mathit{ftv}(Q_2)
+      \hspace{1em}
+      \theta_3 = [\overrightarrow{\alpha_3 \assign \tau_3}]
+      \hspace{1em}
+      C \Vdash \theta_3 \theta_2 Q_2
+    \end{array}
+  }
+\end{gather*}
+
+\begin{gather*}
+  \infer{
+    \mathrm{flat}(\epsilon) = \emptyset
+  }{}
+  \\
+  \infer{
+    \mathrm{flat}(Q_1 \land Q_2) = W_1 \cup W_2
+  }{
+    \mathrm{flat}(Q_1) = W_1
+    &
+    \mathrm{flat}(Q_2) = W_2
+  }
+  \\
+  \infer{
+    \mathrm{flat}(D \vec{\tau}) = \{D \vec{\tau}\}
+  }{}
+\end{gather*}
+
+\begin{gather*}
+  \infer{
+    \alpha \prec \beta
+  }{
+    \alpha \leq \beta (\text{lexicographically})
+  }
+  \\
+  \infer{
+    \alpha \prec T \vec{\tau}
+  }{}
+\end{gather*}
+
+\begin{gather*}
+  \infer{
+    \alpha \sim \tau
+  }{
+    \alpha \prec \tau
+    &
+    \alpha \not\in \mathit{ftv}(\tau)
+  }
+\end{gather*}
+
+\begin{gather*}
+  \infer{
+    C \vdash W \to W \backslash \{Q\}
+  }{
+    Q = (\tau \simeq \tau) \in W
+  }
+  \\
+  \infer{
+    C \vdash W \to (W \backslash \{Q\}) \cup \overrightarrow{\tau_1 \simeq \tau_2}
+  }{
+    Q = (T \vec{\tau_1} \simeq T \vec{\tau_2}) \in W
+  }
+  \\
+  \infer{
+    C \vdash W \to \bot
+  }{
+    (T \vec{\tau_1} \simeq S \vec{\tau_2}) \in W
+    &
+    T \neq S
+  }
+  \\
+  \infer{
+    C \vdash W \to \bot
+  }{
+    (\beta \simeq \tau) \in W
+    &
+    \beta \in \mathit{ftv}(\tau)
+  }
+  \\
+  \infer{
+    C \vdash W \to (W \backslash \{Q\}) \cup \{\tau_2 \simeq \tau_1\}
+  }{
+    Q = (\tau_1 \simeq \tau_2) \in W
+    &
+    \tau_2 \prec \tau_1
+  }
+  \\
+  \infer{
+    C \vdash W \to (W \backslash \{\beta \simeq \tau_2\}) \cup \{\tau_1 \simeq \tau_2\}
+  }{
+    \{\beta \simeq \tau_1, \beta \simeq \tau_2\} \subseteq W
+    &
+    \tau_1 \neq \tau_2
+    &
+    \beta \sim \tau_1
+    &
+    \beta \sim \tau_2
+  }
+  \\
+  \infer{
+    C \vdash W \to (W \backslash \{\beta_2 \simeq \tau_2\}) \cup \{\beta_2 \simeq \tau_2[\beta_1 \assign \tau_1]\}
+  }{
+    \{\beta_1 \simeq \tau_1, \beta_2 \simeq \tau_2\} \subseteq W
+    &
+    \beta_1 \in \mathit{ftv}(\tau_2)
+    &
+    \beta_1 \sim \tau_1
+    &
+    \beta_2 \sim \tau_2
+  }
+  \\
+  \infer{
+    C \vdash W \to (W \backslash \{D \vec{\tau_2}\}) \cup \{(D \vec{\tau_2})[\beta_1 \assign \tau_1]\}
+  }{
+    \{\beta_1 \simeq \tau_1, D \vec{\tau_2}\} \subseteq W
+    &
+    \beta_1 \in \mathit{ftv}(\vec{\tau_2})
+    &
+    \beta_1 \sim \tau_1
+  }
+  \\
+  \infer{
+    C \vdash W \to W \backslash \{Q\}
+  }{
+    Q = D \vec{\tau} \in W
+    &
+    D \vec{\tau} \in C
+  }
+\end{gather*}
+
+\begin{lemma}
+  $C \vdash \mathrm{flat}(Q_1) \to^* W_2 \mathrel{\not\to}$ の時，$W_3 = \{\tau_1 \simeq \tau_2 \mid \tau_1 \simeq \tau_2 \mid W_2\}$，$W_4 = W_2 \backslash W_3$ とすると，以下が成り立つ:
+  \begin{itemize}
+    \item $\tau_1 \simeq \tau_2 \in W_3$ について，$\tau_1 = \alpha$．
+    \item $\alpha_1 \simeq \tau_2 \in W_3$ について，$\alpha_1 \not\in \mathit{ftv}(\tau_2)$．
+    \item $\alpha_1 \simeq \tau_2 \in W_3$ について，$\tau_2 = \alpha_2$ ならば，$\alpha_1 \lneq \alpha_2$．
+    \item $\alpha \simeq \tau_1, \alpha \simeq \tau_2 \in W_3$ について，$\tau_1 = \tau_2$．
+    \item $Q \in W_2$，$\alpha \in \mathit{ftv}(Q)$ について，$\alpha \simeq \tau \in W_3$ となる $\tau$ は存在しない．
+    \item $D \vec{\tau} \in W_4$ について，$D \vec{\tau} \not\in C$．
+  \end{itemize}
+\end{lemma}
