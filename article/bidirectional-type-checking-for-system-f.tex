@@ -1,0 +1,130 @@
+\section{Bidirectional Type Checking for System-F}
+
+\cite{Dunfield:2013}\cite{Jones:2007}
+
+\subsection{Language}
+
+Syntax:
+\begin{align*}
+  \begin{array}{lrcl}
+    \text{Type Variables} &\alpha&\Coloneq &\cdots \\
+    \text{Variables} &x&\Coloneq &\cdots \\
+    \text{Mono Types}
+    &\tau &\Coloneq &\alpha \\
+    &&\mid &\tau_1 \to \tau_2 \\
+    \text{Types}
+    &\sigma &\Coloneq &\alpha \\
+    &&\mid &\sigma_1 \to \sigma_2 \\
+    &&\mid &\forall \alpha\ldotp \sigma \\
+    \text{Terms}
+    &e &\Coloneq &x \\
+    &&\mid &\lambda x\ldotp e \\
+    &&\mid &\lambda x: \sigma\ldotp e \\
+    &&\mid &e_1\; e_2 \\
+    &&\mid &e: \sigma \\
+    \text{Contexts}
+    &\Gamma &\Coloneq &\epsilon \\
+    &&\mid &\Gamma_1 + \Gamma_2 \\
+    &&\mid &x: \sigma \\
+    &&\mid &\alpha
+  \end{array}
+\end{align*}
+
+Context Member:
+\begin{gather*}
+  \infer{
+    x: \sigma \in x:\sigma
+  }{}
+  \hspace{1em}
+  \infer{
+    x: \sigma \in \Gamma_1 + \Gamma_2
+  }{
+    x: \sigma \in \Gamma_1
+  }
+  \hspace{1em}
+  \infer{
+    x: \sigma \in \Gamma_1 + \Gamma_2
+  }{
+    x: \sigma \in \Gamma_2
+  }
+  \\
+  \infer{
+    \alpha \in \alpha
+  }{}
+  \hspace{1em}
+  \infer{
+    \alpha \in \Gamma_1 + \Gamma_2
+  }{
+    \alpha \in \Gamma_1
+  }
+  \hspace{1em}
+  \infer{
+    \alpha \in \Gamma_1 + \Gamma_2
+  }{
+    \alpha \in \Gamma_2
+  }
+\end{gather*}
+
+Type Validity:
+\begin{gather*}
+  \infer{
+    \Gamma \vdash \alpha
+  }{
+    \alpha \in \Gamma
+  }
+  \\
+  \infer{
+    \Gamma \vdash \sigma_1 \to \sigma_2
+  }{
+    \Gamma \vdash \sigma_1
+    &
+    \Gamma \vdash \sigma_2
+  }
+  \\
+  \infer{
+    \Gamma \vdash \forall \alpha\ldotp \sigma
+  }{
+    \Gamma, \alpha \vdash \sigma
+  }
+\end{gather*}
+
+Term Typing:
+\begin{gather*}
+  \infer[\text{Var}]{
+    \Gamma \vdash x: \sigma
+  }{
+    x:\sigma \in \Gamma
+  }
+  \\
+  \infer[\text{Abs}]{
+    \Gamma \vdash \lambda x\ldotp e: \sigma_1 \to \sigma_2
+  }{
+    \Gamma, x: \sigma_1\vdash e: \sigma_2
+  }
+  \\
+  \infer[\text{App}]{
+    \Gamma \vdash e_1\; e_2: \sigma
+  }{
+    \Gamma \vdash e_1: \sigma_2 \to \sigma
+    &
+    \Gamma \vdash e_2: \sigma_2
+  }
+  \\
+  \infer[\text{Gen}]{
+    \Gamma \vdash e: \forall \alpha\ldotp \sigma
+  }{
+    \Gamma, \alpha \vdash e: \sigma
+  }
+  \\
+  \infer[\text{Inst}]{
+    \Gamma \vdash e: \sigma[\alpha \assign \tau]
+  }{
+    \Gamma \vdash e: \forall \alpha\ldotp \sigma
+    &
+    \Gamma \vdash \tau
+  }
+\end{gather*}
+
+\subsection{Bidirectional Typing}
+
+
