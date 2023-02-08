@@ -74,6 +74,8 @@ or using `docker-compose`
 * Eisenberg, R. A., & Peyton Jones, S. (2017). Levity polymorphism. Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation - PLDI 2017, 525–539. https://doi.org/10.1145/3062341.3062357
 * Jana Danfield and Neelakantan R. Krishnaswami. Complete and easy bidirectional typechecking for higher- rank polymorphism. pages 429–442. ACM, 9 2013. https://dl.acm.org/doi/10.1145/2500365.2500582
 * Simon Peyton Jones, Dimitrios Vytiniotis, Stephanie Weirich, and Mark Shields. Practical type inference for arbitrary-rank types. Journal of Functional Programming, 17:1–82, 1 2007. https://doi.org/10.1017/S0956796806006034
+* Jana Dunfield and Neel Krishnaswami. 2022. Bidirectional Typing. ACM Comput. Surv. 54, 5 (June 2022), 1–38. DOI:https://doi.org/10.1145/3450952
+
 
 ### Static Memory Management and Regions
 
