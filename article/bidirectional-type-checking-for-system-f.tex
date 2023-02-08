@@ -88,7 +88,7 @@ Type Validity:
   }
 \end{gather*}
 
-Term Typing:
+Term Typing (predicative):
 \begin{gather*}
   \infer[\text{Var}]{
     \Gamma \vdash x: \sigma
@@ -98,6 +98,12 @@ Term Typing:
   \\
   \infer[\text{Abs}]{
     \Gamma \vdash \lambda x\ldotp e: \sigma_1 \to \sigma_2
+  }{
+    \Gamma, x: \sigma_1\vdash e: \sigma_2
+  }
+  \\
+  \infer[\text{AnnAbs}]{
+    \Gamma \vdash \lambda x: \sigma_1\ldotp e: \sigma_1 \to \sigma_2
   }{
     \Gamma, x: \sigma_1\vdash e: \sigma_2
   }
@@ -127,4 +133,116 @@ Term Typing:
 
 \subsection{Bidirectional Typing}
 
+Subtyping:
+\begin{gather*}
+  \infer[\text{Var}]{
+    \alpha \leq \alpha
+  }{
+    \alpha \in \Gamma
+  }
+  \\
+  \infer[\text{Arrow}]{
+    \Gamma \vdash \sigma_1 \to \sigma_2 \leq \sigma'_1 \to \sigma'_2
+  }{
+    \Gamma \vdash \sigma'_1 \leq \sigma_1
+    &
+    \Gamma \vdash \sigma_2 \leq \sigma'_2
+  }
+  \\
+  \infer[\text{Spec}]{
+    \Gamma \vdash \forall \alpha\ldotp \sigma_1 \leq \sigma_2
+  }{
+    \Gamma \vdash \tau
+    &
+    \Gamma \vdash \sigma_1[\alpha \assign \tau] \leq \sigma_2
+  }
+  \\
+  \infer[\text{Skol}]{
+    \Gamma \vdash \sigma_1 \leq \forall \alpha\ldotp \sigma_2
+  }{
+    \Gamma, \beta \vdash \sigma_1 \leq \sigma_2
+  }
+\end{gather*}
 
+Bidirectional Typing:
+\begin{gather*}
+  \infer[\text{Var}]{
+    \Gamma \vdash x \Rightarrow \sigma
+  }{
+    x: \sigma \in \Gamma
+  }
+  \\
+  \infer[\text{Extend}]{
+    \Gamma \vdash e \Leftarrow \sigma_2
+  }{
+    \Gamma \vdash e \Rightarrow \sigma_1
+    &
+    \sigma_1 \leq \sigma_2
+  }
+  \\
+  \infer[\text{Ann}]{
+    \Gamma \vdash (e: \sigma) \Rightarrow \sigma
+  }{
+    \Gamma \vdash \sigma
+    &
+    \Gamma \vdash e \Leftarrow \sigma
+  }
+  \\
+  \infer[\text{TyAbs}]{
+    \Gamma \vdash e \Leftarrow \forall \alpha\ldotp \sigma
+  }{
+    \Gamma, \alpha \vdash e \Leftarrow \sigma
+  }
+  \\
+  \infer[\text{TyApp}]{
+    \Gamma \vdash \forall \alpha\ldotp \sigma_1 \Rightarrow e \Rightarrow \sigma_2
+  }{
+    \Gamma \vdash \tau
+    &
+    \Gamma \vdash \sigma_1[\alpha \assign \tau] \Rightarrow e \Rightarrow \sigma_2
+  }
+  \\
+  \infer[\text{AbsI}]{
+    \Gamma \vdash \lambda x\ldotp e \Leftarrow \sigma_1 \to \sigma_2
+  }{
+    \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2
+  }
+  \hspace{1em}
+  \infer[\text{Abs}]{
+    \Gamma \vdash \lambda x\ldotp e \Rightarrow \tau_1 \to \tau_2
+  }{
+    \Gamma \vdash \tau_1 \to \tau_2
+    &
+    \Gamma, x: \tau_1 \vdash e \Leftarrow \tau_2
+  }
+  \\
+  \infer[\text{AnnAbsI}]{
+    \Gamma \vdash \lambda x: \sigma_1\ldotp e \Leftarrow \sigma_1 \to \sigma_2
+  }{
+    \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2
+  }
+  \hspace{1em}
+  \infer[\text{AnnAbs}]{
+    \Gamma \vdash \lambda x: \sigma_1\ldotp e \Rightarrow \sigma_1 \to \tau_2
+  }{
+    \Gamma \vdash \sigma_1 \to \tau_2
+    &
+    \Gamma, x: \sigma_1 \vdash e \Leftarrow \tau_2
+  }
+  \\
+  \infer[\text{AppI}]{
+    \Gamma \vdash \sigma_1 \to \sigma_2 \Rightarrow e \Rightarrow \sigma_2
+  }{
+    \Gamma \vdash e \Leftarrow \sigma_1
+  }
+  \hspace{1em}
+  \infer[\text{App}]{
+    \Gamma \vdash e_1\; e_2 \Rightarrow \sigma
+  }{
+    \Gamma \vdash e_1 \Rightarrow \sigma_1
+    &
+    \Gamma \vdash \sigma_1 \Rightarrow e_2 \Rightarrow \sigma
+  }
+\end{gather*}
+
+\subsection{Algorithmic Type Inference}
