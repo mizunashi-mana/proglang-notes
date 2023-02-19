@@ -133,37 +133,6 @@ Term Typing (predicative):
 
 \subsection{Bidirectional Typing}
 
-Subtyping:
-\begin{gather*}
-  \infer[\text{Var}]{
-    \alpha \leq \alpha
-  }{
-    \alpha \in \Gamma
-  }
-  \\
-  \infer[\text{Arrow}]{
-    \Gamma \vdash \sigma_1 \to \sigma_2 \leq \sigma'_1 \to \sigma'_2
-  }{
-    \Gamma \vdash \sigma'_1 \leq \sigma_1
-    &
-    \Gamma \vdash \sigma_2 \leq \sigma'_2
-  }
-  \\
-  \infer[\text{Spec}]{
-    \Gamma \vdash \forall \alpha\ldotp \sigma_1 \leq \sigma_2
-  }{
-    \Gamma \vdash \tau
-    &
-    \Gamma \vdash \sigma_1[\alpha \assign \tau] \leq \sigma_2
-  }
-  \\
-  \infer[\text{Skol}]{
-    \Gamma \vdash \sigma_1 \leq \forall \alpha\ldotp \sigma_2
-  }{
-    \Gamma, \beta \vdash \sigma_1 \leq \sigma_2
-  }
-\end{gather*}
-
 Bidirectional Typing:
 \begin{gather*}
   \infer[\text{Var}]{
@@ -245,4 +214,189 @@ Bidirectional Typing:
   }
 \end{gather*}
 
+Subtyping:
+\begin{gather*}
+  \infer[\text{Var}]{
+    \alpha \leq \alpha
+  }{
+    \alpha \in \Gamma
+  }
+  \\
+  \infer[\text{Arrow}]{
+    \Gamma \vdash \sigma_1 \to \sigma_2 \leq \sigma'_1 \to \sigma'_2
+  }{
+    \Gamma \vdash \sigma'_1 \leq \sigma_1
+    &
+    \Gamma \vdash \sigma_2 \leq \sigma'_2
+  }
+  \\
+  \infer[\text{Spec}]{
+    \Gamma \vdash \forall \alpha\ldotp \sigma_1 \leq \sigma_2
+  }{
+    \Gamma \vdash \tau
+    &
+    \Gamma \vdash \sigma_1[\alpha \assign \tau] \leq \sigma_2
+  }
+  \\
+  \infer[\text{Skol}]{
+    \Gamma \vdash \sigma_1 \leq \forall \alpha\ldotp \sigma_2
+  }{
+    \Gamma, \beta \vdash \sigma_1 \leq \sigma_2
+  }
+\end{gather*}
+
 \subsection{Algorithmic Type Inference}
+
+Algorithmic context:
+\begin{align*}
+  \begin{array}{rcl}
+    \Gamma &\Coloneq &\epsilon \\
+    &\mid &\Gamma, \alpha \\
+    &\mid &\Gamma, x: \sigma \\
+    &\mid &\Gamma, \hat{\alpha} \\
+    &\mid &\Gamma, \hat{\alpha} = \tau \\
+    &\mid &\Gamma, \alpha \mapsto \hat{\alpha}
+  \end{array}
+\end{align*}
+
+Substitution:
+\begin{gather*}
+  \infer{[\Gamma]\alpha = \alpha}{}
+  \\
+  \infer{[\Gamma]\hat{\alpha} = \tau}{
+    \hat{\alpha} = \tau \in \Gamma
+  }
+  \\
+  \infer{[\Gamma](\sigma_1 \to \sigma_2) = \sigma_1' \to \sigma_2'}{
+    [\Gamma](\sigma_1) = \sigma_1'
+    &
+    [\Gamma](\sigma_2) = \sigma_2'
+  }
+  \\
+  \infer{[\Gamma](\forall \alpha\ldotp \sigma) = \forall \alpha\ldotp \sigma'}{
+    [\Gamma]\sigma = \sigma'
+  }
+\end{gather*}
+
+Bidirectional typing:
+\begin{gather*}
+  \infer[\text{Sub}]{\Gamma \vdash e \Leftarrow \sigma_2 \mid \Delta}{
+    \Gamma \vdash e \Rightarrow \sigma_1 \mid \Theta
+    &
+    \Theta \vdash [\Theta]\sigma_1 \leq [\Theta]\sigma_2 \mid \Delta
+  }
+  \\
+  \infer[\text{Var}]{\Gamma \vdash x \Rightarrow \sigma \mid \Gamma}{
+    x: \sigma \in \Gamma
+  }
+  \\
+  \infer[\text{Ann}]{\Gamma \vdash e: \sigma \Rightarrow \sigma \mid \Delta}{
+    \Gamma \vdash \sigma
+    &
+    \Gamma \vdash e \Leftarrow \sigma \mid \Delta
+  }
+  \\
+  \infer[\text{TyAbs}]{\Gamma \vdash e \Leftarrow \forall \alpha\ldotp \sigma \mid \Delta}{
+    \Gamma,\alpha \vdash e \Leftarrow \sigma \mid \Delta, \alpha, \Theta
+  }
+  \\
+  \infer[\text{TyApp}]{\Gamma \vdash \forall \alpha\ldotp \sigma_1 \Rightarrow e \Rightarrow \sigma_2 \mid \Delta}{
+    \Gamma,\hat{\alpha} \vdash \sigma_1[\alpha \assign \hat{\alpha}] \Rightarrow e \Rightarrow \sigma_2 \mid \Delta
+  }
+  \\
+  \infer[\text{AbsI}]{\Gamma \vdash \lambda x\ldotp e \Leftarrow \sigma_1 \to \sigma_2 \mid \Delta}{
+    \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2 \mid \Delta, x: \sigma_1, \Theta
+  }
+  \\
+  \infer[\text{Abs}]{\Gamma \vdash \lambda x\ldotp e \Rightarrow \hat{\alpha_1} \to \hat{\alpha_2} \mid \Delta}{
+    \Gamma, \hat{\alpha_1}, \hat{\alpha_2}, x: \hat{\alpha_1} \vdash e \Leftarrow \hat{\alpha_2} \mid \Delta, x: \hat{\alpha_1}, \Theta
+  }
+  \\
+  \infer[\text{AppU}]{\Gamma_1, \hat{\alpha_1}, \Gamma_2 \vdash \hat{\alpha_1} \Rightarrow e \Rightarrow \hat{\alpha_3} \mid \Delta}{
+    \Gamma_1, \hat{\alpha_3}, \hat{\alpha_2}, \hat{\alpha_1} = \hat{\alpha_2} \to \hat{\alpha_3} \vdash e \Leftarrow \hat{\alpha_2} \mid \Delta
+  }
+  \\
+  \infer[\text{AppI}]{\Gamma \vdash \sigma_1 \to \sigma_2 \Rightarrow e \Rightarrow \sigma_2 \mid \Delta}{
+    \Gamma \vdash e \Leftarrow \sigma_1 \mid \Delta
+  }
+  \\
+  \infer[\text{App}]{\Gamma \vdash e_1\; e_2 \Rightarrow \sigma_2 \mid \Delta}{
+    \Gamma \vdash e_1 \Rightarrow \sigma_1 \mid \Theta
+    &
+    \Theta \vdash [\Theta]\sigma_1 \Rightarrow e_2 \Rightarrow \sigma_2 \mid \Delta
+  }
+\end{gather*}
+
+Subtyping:
+\begin{gather*}
+  \infer{\Gamma \vdash \alpha \leq \alpha \mid \Gamma}{
+    \alpha \in \Gamma
+  }
+  \\
+  \infer{\Gamma \vdash \hat{\alpha} \leq \hat{\alpha} \mid \Gamma}{
+    \hat{\alpha} \in \Gamma
+  }
+  \\
+  \infer{\Gamma \vdash \sigma_1 \to \sigma_2 \leq \sigma_1' \to \sigma_2' \mid \Delta}{
+    \Gamma \vdash \sigma_1 \leq \sigma_1' \mid \Theta
+    &
+    \Theta \vdash [\Theta]\sigma_2 \leq [\Theta]\sigma_2' \mid \Delta
+  }
+  \\
+  \infer{\Gamma \vdash \forall \alpha\ldotp \sigma_1 \leq \sigma_2 \mid \Delta}{
+    \Gamma, \alpha \mapsto \hat{\alpha}, \hat{\alpha} \vdash \sigma_1[\alpha \assign \hat{\alpha}] \leq \sigma_2 \mid \Delta, \alpha \mapsto \hat{\alpha}, \Theta
+  }
+  \\
+  \infer{\Gamma \vdash \sigma_1 \leq \forall \alpha\ldotp \sigma_2 \mid \Delta}{
+    \Gamma, \alpha \vdash \sigma_1 \leq \sigma_2 \mid \Delta, \alpha, \Theta
+  }
+  \\
+  \infer{\Gamma \vdash \hat{\alpha_1} \leq \sigma_2 \mid \Delta}{
+    \hat{\alpha_1} \not\in \mathit{ftv}(\sigma_2)
+    &
+    \hat{\alpha_1} \in \Gamma
+    &
+    \Gamma \vdash \hat{\alpha_1} \simeq \sigma_2 \mid \Delta
+  }
+  \\
+  \infer{\Gamma \vdash \sigma_1 \leq \hat{\alpha_2} \mid \Delta}{
+    \hat{\alpha_2} \not\in \mathit{ftv}(\sigma_1)
+    &
+    \hat{\alpha_2} \in \Gamma
+    &
+    \Gamma \vdash \sigma_1 \simeq \hat{\alpha_2} \mid \Delta
+  }
+\end{gather*}
+
+Instantiation:
+\begin{gather*}
+  \infer{\Gamma_1, \hat{\alpha}, \Gamma_2 \vdash \hat{\alpha} \simeq \tau \mid \Gamma_1, \hat{\alpha} = \tau, \Gamma_2}{
+    \Gamma_1 \vdash \tau
+  }
+  \\
+  \infer{\Gamma_1, \hat{\alpha}, \Gamma_2 \vdash \tau \simeq \hat{\alpha} \mid \Gamma_1, \hat{\alpha} = \tau, \Gamma_2}{
+    \Gamma_1 \vdash \tau
+  }
+  \\
+  \infer{\Gamma_1, \hat{\alpha_1}, \Gamma_2, \hat{\alpha_2}, \Gamma_3 \vdash \hat{\alpha_1} \simeq \hat{\alpha_2} \mid \Gamma_1, \hat{\alpha_1}, \Gamma_2, \hat{\alpha_2} = \hat{\alpha_1}, \Gamma_3}{}
+  \\
+  \infer{\Gamma_1, \hat{\alpha_1}, \Gamma_2 \vdash \hat{\alpha_1} \simeq \sigma_2 \to \sigma_3 \mid \Delta}{
+    \Gamma_1, \hat{\alpha_3}, \hat{\alpha_2}, \hat{\alpha_1} = \hat{\alpha_2} \to \hat{\alpha_3}, \Gamma_2 \vdash \sigma_2 \simeq \hat{\alpha_2} \mid \Theta
+    &
+    \Theta \vdash \hat{\alpha_3} \simeq [\Theta]\sigma_3 \mid \Delta
+  }
+  \\
+  \infer{\Gamma_1, \hat{\alpha_1}, \Gamma_2 \vdash \sigma_2 \to \sigma_3 \simeq \hat{\alpha_1} \mid \Delta}{
+    \Gamma_1, \hat{\alpha_3}, \hat{\alpha_2}, \hat{\alpha_1} = \hat{\alpha_2} \to \hat{\alpha_3}, \Gamma_2 \vdash \hat{\alpha_2} \simeq \sigma_2 \mid \Theta
+    &
+    \Theta \vdash [\Theta]\sigma_3 \simeq \hat{\alpha_3} \mid \Delta
+  }
+  \\
+  \infer{\Gamma_1, \hat{\alpha_1}, \Gamma_2 \vdash \hat{\alpha_1} \simeq \forall \alpha_2\ldotp \sigma_2 \mid \Delta}{
+    \Gamma_1, \hat{\alpha_1}, \Gamma_2, \alpha_2 \vdash \hat{\alpha_1} \simeq \sigma_2 \mid \Delta, \alpha_2, \Theta
+  }
+  \\
+  \infer{\Gamma_1, \hat{\alpha_2}, \Gamma_2 \vdash \forall \alpha_1\ldotp \sigma_1 \simeq \hat{\alpha_2} \mid \Delta}{
+    \Gamma_1, \hat{\alpha_2}, \Gamma_2, \alpha_1 \mapsto \hat{\alpha_1}, \hat{\alpha_1} \vdash \sigma_1[\alpha_1 \assign \hat{\alpha_1}] \simeq \hat{\alpha_2} \mid \Delta, \alpha_1 \mapsto \hat{\alpha_1}, \Theta
+  }
+\end{gather*}
