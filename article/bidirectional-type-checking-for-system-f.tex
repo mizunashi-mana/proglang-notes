@@ -135,18 +135,18 @@ Term Typing (predicative):
 
 Bidirectional Typing:
 \begin{gather*}
-  \infer[\text{Var}]{
-    \Gamma \vdash x \Rightarrow \sigma
-  }{
-    x: \sigma \in \Gamma
-  }
-  \\
-  \infer[\text{Extend}]{
+  \infer[\text{Sub}]{
     \Gamma \vdash e \Leftarrow \sigma_2
   }{
     \Gamma \vdash e \Rightarrow \sigma_1
     &
     \sigma_1 \leq \sigma_2
+  }
+  \\
+  \infer[\text{Var}]{
+    \Gamma \vdash x \Rightarrow \sigma
+  }{
+    x: \sigma \in \Gamma
   }
   \\
   \infer[\text{Ann}]{
@@ -163,20 +163,12 @@ Bidirectional Typing:
     \Gamma, \alpha \vdash e \Leftarrow \sigma
   }
   \\
-  \infer[\text{TyApp}]{
-    \Gamma \vdash \forall \alpha\ldotp \sigma_1 \Rightarrow e \Rightarrow \sigma_2
-  }{
-    \Gamma \vdash \tau
-    &
-    \Gamma \vdash \sigma_1[\alpha \assign \tau] \Rightarrow e \Rightarrow \sigma_2
-  }
-  \\
   \infer[\text{AbsI}]{
     \Gamma \vdash \lambda x\ldotp e \Leftarrow \sigma_1 \to \sigma_2
   }{
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2
   }
-  \hspace{1em}
+  \\
   \infer[\text{Abs}]{
     \Gamma \vdash \lambda x\ldotp e \Rightarrow \tau_1 \to \tau_2
   }{
@@ -190,7 +182,7 @@ Bidirectional Typing:
   }{
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2
   }
-  \hspace{1em}
+  \\
   \infer[\text{AnnAbs}]{
     \Gamma \vdash \lambda x: \sigma_1\ldotp e \Rightarrow \sigma_1 \to \tau_2
   }{
@@ -199,18 +191,14 @@ Bidirectional Typing:
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \tau_2
   }
   \\
-  \infer[\text{AppI}]{
-    \Gamma \vdash \sigma_1 \to \sigma_2 \Rightarrow e \Rightarrow \sigma_2
-  }{
-    \Gamma \vdash e \Leftarrow \sigma_1
-  }
-  \hspace{1em}
   \infer[\text{App}]{
     \Gamma \vdash e_1\; e_2 \Rightarrow \sigma
   }{
     \Gamma \vdash e_1 \Rightarrow \sigma_1
     &
-    \Gamma \vdash \sigma_1 \Rightarrow e_2 \Rightarrow \sigma
+    \Gamma \vdash \sigma_1 \preceq \sigma_2 \to \sigma
+    &
+    \Gamma \vdash e_2 \Leftarrow \sigma_2
   }
 \end{gather*}
 
@@ -243,6 +231,25 @@ Subtyping:
   }{
     \Gamma, \beta \vdash \sigma_1 \leq \sigma_2
   }
+\end{gather*}
+
+Subsumption:
+\begin{gather*}
+  \infer[\text{Refl}]{
+    \Gamma \vdash \sigma \preceq \sigma
+  }{}
+  \\
+  \infer[\text{Spec}]{
+    \Gamma \vdash \forall \alpha_1\ldotp \sigma_1 \preceq \sigma_2
+  }{
+    \Gamma \vdash \tau_1
+    &
+    \Gamma \vdash \sigma_1[\alpha_1 \assign \tau_1] \preceq \sigma_2
+  }
+  \\
+  \infer[\text{WeakSpec}]{
+    \Gamma \vdash \forall \alpha\ldotp \tau \to \sigma \preceq \tau \to \forall \alpha\ldotp\sigma
+  }{}
 \end{gather*}
 
 \subsection{Algorithmic Type Inference}
@@ -300,10 +307,6 @@ Bidirectional typing:
     \Gamma,\alpha \vdash e \Leftarrow \sigma \mid \Delta, \alpha, \Theta
   }
   \\
-  \infer[\text{TyApp}]{\Gamma \vdash \forall \alpha\ldotp \sigma_1 \Rightarrow e \Rightarrow \sigma_2 \mid \Delta}{
-    \Gamma,\hat{\alpha} \vdash \sigma_1[\alpha \assign \hat{\alpha}] \Rightarrow e \Rightarrow \sigma_2 \mid \Delta
-  }
-  \\
   \infer[\text{AbsI}]{\Gamma \vdash \lambda x\ldotp e \Leftarrow \sigma_1 \to \sigma_2 \mid \Delta}{
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2 \mid \Delta, x: \sigma_1, \Theta
   }
@@ -312,18 +315,20 @@ Bidirectional typing:
     \Gamma, \hat{\alpha_1}, \hat{\alpha_2}, x: \hat{\alpha_1} \vdash e \Leftarrow \hat{\alpha_2} \mid \Delta, x: \hat{\alpha_1}, \Theta
   }
   \\
-  \infer[\text{AppU}]{\Gamma_1, \hat{\alpha_1}, \Gamma_2 \vdash \hat{\alpha_1} \Rightarrow e \Rightarrow \hat{\alpha_3} \mid \Delta}{
-    \Gamma_1, \hat{\alpha_3}, \hat{\alpha_2}, \hat{\alpha_1} = \hat{\alpha_2} \to \hat{\alpha_3} \vdash e \Leftarrow \hat{\alpha_2} \mid \Delta
+  \infer[\text{AnnAbsI}]{\Gamma \vdash \lambda x: \sigma_1\ldotp e \Leftarrow \sigma_1 \to \sigma_2 \mid \Delta}{
+    \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2 \mid \Delta, x: \sigma_1, \Theta
   }
   \\
-  \infer[\text{AppI}]{\Gamma \vdash \sigma_1 \to \sigma_2 \Rightarrow e \Rightarrow \sigma_2 \mid \Delta}{
-    \Gamma \vdash e \Leftarrow \sigma_1 \mid \Delta
+  \infer[\text{AnnAbs}]{\Gamma \vdash \lambda x: \sigma_1\ldotp e \Rightarrow \sigma_1 \to \hat{\alpha_2} \mid \Delta}{
+    \Gamma, \hat{\alpha_2}, x: \sigma_1 \vdash e \Leftarrow \hat{\alpha_2} \mid \Delta, x: \sigma_1, \Theta
   }
   \\
-  \infer[\text{App}]{\Gamma \vdash e_1\; e_2 \Rightarrow \sigma_2 \mid \Delta}{
-    \Gamma \vdash e_1 \Rightarrow \sigma_1 \mid \Theta
+  \infer[\text{App}]{\Gamma \vdash e_1\; e_2 \Rightarrow \sigma \mid \Delta}{
+    \Gamma \vdash e_1 \Rightarrow \sigma_1 \mid \Theta_1
     &
-    \Theta \vdash [\Theta]\sigma_1 \Rightarrow e_2 \Rightarrow \sigma_2 \mid \Delta
+    \Theta_1 \vdash [\Theta_1]\sigma_1 \preceq \sigma_2 \to \sigma \mid \Theta_2
+    &
+    \Theta_2 \vdash e_2 \Leftarrow [\Theta_2]\sigma_2 \mid \Delta
   }
 \end{gather*}
 
@@ -398,5 +403,22 @@ Instantiation:
   \\
   \infer{\Gamma_1, \hat{\alpha_2}, \Gamma_2 \vdash \forall \alpha_1\ldotp \sigma_1 \simeq \hat{\alpha_2} \mid \Delta}{
     \Gamma_1, \hat{\alpha_2}, \Gamma_2, \alpha_1 \mapsto \hat{\alpha_1}, \hat{\alpha_1} \vdash \sigma_1[\alpha_1 \assign \hat{\alpha_1}] \simeq \hat{\alpha_2} \mid \Delta, \alpha_1 \mapsto \hat{\alpha_1}, \Theta
+  }
+\end{gather*}
+
+Subsumption:
+\begin{gather*}
+  \infer{\Gamma \vdash \hat{\alpha_1} \preceq \hat{\alpha_2} \to \hat{\alpha_3} \mid \Gamma, \hat{\alpha_2}, \hat{\alpha_3}, \hat{\alpha_1} = \hat{\alpha_2} \to \hat{\alpha_3}}{}
+  \\
+  \infer{\Gamma \vdash \sigma_1 \to \sigma_2 \preceq \sigma_1 \to \sigma_2 \mid \Gamma}{}
+  \\
+  \infer{\Gamma \vdash \forall \alpha\ldotp \tau_1 \to \sigma_2 \preceq \tau \to \forall \alpha\ldotp \tau_1 \mid \Gamma}{
+    \alpha \not\in \mathit{ftv}(\tau_1)
+  }
+  \\
+  \infer{\Gamma \vdash \forall \alpha_1\ldotp \sigma_1 \preceq \sigma_2 \mid \Delta}{
+    \alpha_1 \in \mathit{ftv}(\sigma_1)
+    &
+    \Gamma, \hat{\alpha_1} \vdash \sigma_1[\alpha_1 \assign \hat{\alpha_1}] \preceq \sigma_2 \mid \Delta
   }
 \end{gather*}
