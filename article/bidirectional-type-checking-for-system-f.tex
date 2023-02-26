@@ -140,7 +140,7 @@ Bidirectional Typing:
   }{
     \Gamma \vdash e \Rightarrow \sigma_1
     &
-    \sigma_1 \leq \sigma_2
+    \Gamma \vdash \sigma_1 \leq \sigma_2
   }
   \\
   \infer[\text{Var}]{
@@ -152,8 +152,6 @@ Bidirectional Typing:
   \infer[\text{Ann}]{
     \Gamma \vdash (e: \sigma) \Rightarrow \sigma
   }{
-    \Gamma \vdash \sigma
-    &
     \Gamma \vdash e \Leftarrow \sigma
   }
   \\
@@ -163,30 +161,30 @@ Bidirectional Typing:
     \Gamma, \alpha \vdash e \Leftarrow \sigma
   }
   \\
-  \infer[\text{AbsI}]{
+  \infer[\text{Abs}]{
     \Gamma \vdash \lambda x\ldotp e \Leftarrow \sigma_1 \to \sigma_2
   }{
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2
   }
   \\
-  \infer[\text{Abs}]{
+  \infer[\text{AbsSyn}]{
     \Gamma \vdash \lambda x\ldotp e \Rightarrow \tau_1 \to \tau_2
   }{
-    \Gamma \vdash \tau_1 \to \tau_2
+    \Gamma \vdash \tau_1
     &
     \Gamma, x: \tau_1 \vdash e \Leftarrow \tau_2
   }
   \\
-  \infer[\text{AnnAbsI}]{
+  \infer[\text{AnnAbs}]{
     \Gamma \vdash \lambda x: \sigma_1\ldotp e \Leftarrow \sigma_1 \to \sigma_2
   }{
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2
   }
   \\
-  \infer[\text{AnnAbs}]{
+  \infer[\text{AnnAbsSyn}]{
     \Gamma \vdash \lambda x: \sigma_1\ldotp e \Rightarrow \sigma_1 \to \tau_2
   }{
-    \Gamma \vdash \sigma_1 \to \tau_2
+    \Gamma \vdash \sigma_1
     &
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \tau_2
   }
@@ -205,7 +203,7 @@ Bidirectional Typing:
 Subtyping:
 \begin{gather*}
   \infer[\text{Var}]{
-    \alpha \leq \alpha
+    \Gamma \vdash \alpha \leq \alpha
   }{
     \alpha \in \Gamma
   }
@@ -249,7 +247,9 @@ Subsumption:
   \\
   \infer[\text{WeakSpec}]{
     \Gamma \vdash \forall \alpha\ldotp \tau \to \sigma \preceq \tau \to \forall \alpha\ldotp\sigma
-  }{}
+  }{
+    \alpha \not\in \mathit{ftv}(\tau)
+  }
 \end{gather*}
 
 \subsection{Algorithmic Type Inference}
@@ -298,8 +298,6 @@ Bidirectional typing:
   }
   \\
   \infer[\text{Ann}]{\Gamma \vdash e: \sigma \Rightarrow \sigma \mid \Delta}{
-    \Gamma \vdash \sigma
-    &
     \Gamma \vdash e \Leftarrow \sigma \mid \Delta
   }
   \\
@@ -307,19 +305,19 @@ Bidirectional typing:
     \Gamma,\alpha \vdash e \Leftarrow \sigma \mid \Delta, \alpha, \Theta
   }
   \\
-  \infer[\text{AbsI}]{\Gamma \vdash \lambda x\ldotp e \Leftarrow \sigma_1 \to \sigma_2 \mid \Delta}{
+  \infer[\text{Abs}]{\Gamma \vdash \lambda x\ldotp e \Leftarrow \sigma_1 \to \sigma_2 \mid \Delta}{
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2 \mid \Delta, x: \sigma_1, \Theta
   }
   \\
-  \infer[\text{Abs}]{\Gamma \vdash \lambda x\ldotp e \Rightarrow \hat{\alpha_1} \to \hat{\alpha_2} \mid \Delta}{
+  \infer[\text{AbsSyn}]{\Gamma \vdash \lambda x\ldotp e \Rightarrow \hat{\alpha_1} \to \hat{\alpha_2} \mid \Delta}{
     \Gamma, \hat{\alpha_1}, \hat{\alpha_2}, x: \hat{\alpha_1} \vdash e \Leftarrow \hat{\alpha_2} \mid \Delta, x: \hat{\alpha_1}, \Theta
   }
   \\
-  \infer[\text{AnnAbsI}]{\Gamma \vdash \lambda x: \sigma_1\ldotp e \Leftarrow \sigma_1 \to \sigma_2 \mid \Delta}{
+  \infer[\text{AnnAbs}]{\Gamma \vdash \lambda x: \sigma_1\ldotp e \Leftarrow \sigma_1 \to \sigma_2 \mid \Delta}{
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \sigma_2 \mid \Delta, x: \sigma_1, \Theta
   }
   \\
-  \infer[\text{AnnAbs}]{\Gamma \vdash \lambda x: \sigma_1\ldotp e \Rightarrow \sigma_1 \to \hat{\alpha_2} \mid \Delta}{
+  \infer[\text{AnnAbsSyn}]{\Gamma \vdash \lambda x: \sigma_1\ldotp e \Rightarrow \sigma_1 \to \hat{\alpha_2} \mid \Delta}{
     \Gamma, \hat{\alpha_2}, x: \sigma_1 \vdash e \Leftarrow \hat{\alpha_2} \mid \Delta, x: \sigma_1, \Theta
   }
   \\
