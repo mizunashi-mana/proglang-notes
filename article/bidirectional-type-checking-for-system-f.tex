@@ -99,12 +99,16 @@ Term Typing (predicative):
   \infer[\text{Abs}]{
     \Gamma \vdash \lambda x\ldotp e: \sigma_1 \to \sigma_2
   }{
+    \Gamma \vdash \sigma_1
+    &
     \Gamma, x: \sigma_1\vdash e: \sigma_2
   }
   \\
   \infer[\text{AnnAbs}]{
     \Gamma \vdash \lambda x: \sigma_1\ldotp e: \sigma_1 \to \sigma_2
   }{
+    \Gamma \vdash \sigma_1
+    &
     \Gamma, x: \sigma_1\vdash e: \sigma_2
   }
   \\
@@ -152,6 +156,8 @@ Bidirectional Typing:
   \infer[\text{Ann}]{
     \Gamma \vdash (e: \sigma) \Rightarrow \sigma
   }{
+    \Gamma \vdash \sigma
+    &
     \Gamma \vdash e \Leftarrow \sigma
   }
   \\
@@ -170,7 +176,7 @@ Bidirectional Typing:
   \infer[\text{AbsSyn}]{
     \Gamma \vdash \lambda x\ldotp e \Rightarrow \tau_1 \to \tau_2
   }{
-    \Gamma \vdash \tau_1
+    \Gamma \vdash \tau_1 \to \tau_2
     &
     \Gamma, x: \tau_1 \vdash e \Leftarrow \tau_2
   }
@@ -184,7 +190,7 @@ Bidirectional Typing:
   \infer[\text{AnnAbsSyn}]{
     \Gamma \vdash \lambda x: \sigma_1\ldotp e \Rightarrow \sigma_1 \to \tau_2
   }{
-    \Gamma \vdash \sigma_1
+    \Gamma \vdash \sigma_1 \to \tau_2
     &
     \Gamma, x: \sigma_1 \vdash e \Leftarrow \tau_2
   }
@@ -217,17 +223,17 @@ Subtyping:
   }
   \\
   \infer[\text{Spec}]{
-    \Gamma \vdash \forall \alpha\ldotp \sigma_1 \leq \sigma_2
+    \Gamma \vdash \forall \alpha_1\ldotp \sigma_1 \leq \sigma_2
   }{
-    \Gamma \vdash \tau
+    \Gamma \vdash \tau_1
     &
-    \Gamma \vdash \sigma_1[\alpha \assign \tau] \leq \sigma_2
+    \Gamma \vdash \sigma_1[\alpha_1 \assign \tau_1] \leq \sigma_2
   }
   \\
   \infer[\text{Skol}]{
-    \Gamma \vdash \sigma_1 \leq \forall \alpha\ldotp \sigma_2
+    \Gamma \vdash \sigma_1 \leq \forall \alpha_2\ldotp \sigma_2
   }{
-    \Gamma, \beta \vdash \sigma_1 \leq \sigma_2
+    \Gamma, \alpha_2 \vdash \sigma_1 \leq \sigma_2
   }
 \end{gather*}
 
@@ -246,9 +252,9 @@ Subsumption:
   }
   \\
   \infer[\text{WeakSpec}]{
-    \Gamma \vdash \forall \alpha\ldotp \tau \to \sigma \preceq \tau \to \forall \alpha\ldotp\sigma
+    \Gamma \vdash \forall \alpha\ldotp \sigma_1 \to \sigma_2 \preceq \sigma_1 \to \forall \alpha\ldotp\sigma_2
   }{
-    \alpha \not\in \mathit{ftv}(\tau)
+    \alpha \not\in \mathit{ftv}(\sigma_1)
   }
 \end{gather*}
 
@@ -410,12 +416,12 @@ Subsumption:
   \\
   \infer{\Gamma \vdash \sigma_1 \to \sigma_2 \preceq \sigma_1 \to \sigma_2 \mid \Gamma}{}
   \\
-  \infer{\Gamma \vdash \forall \alpha\ldotp \tau_1 \to \sigma_2 \preceq \tau \to \forall \alpha\ldotp \tau_1 \mid \Gamma}{
-    \alpha \not\in \mathit{ftv}(\tau_1)
+  \infer{\Gamma \vdash \forall \alpha\ldotp \sigma_1 \to \sigma_2 \preceq \sigma_1 \to \forall \alpha\ldotp \sigma_2 \mid \Gamma}{
+    \alpha \not\in \mathit{ftv}(\sigma_1)
   }
   \\
   \infer{\Gamma \vdash \forall \alpha_1\ldotp \sigma_1 \preceq \sigma_2 \mid \Delta}{
-    \alpha_1 \in \mathit{ftv}(\sigma_1)
+    \not\exists \sigma'_1 \to \sigma'_2 = \sigma_1\ldotp \alpha_1 \not\in \mathit{ftv}(\sigma'_1)
     &
     \Gamma, \hat{\alpha_1} \vdash \sigma_1[\alpha_1 \assign \hat{\alpha_1}] \preceq \sigma_2 \mid \Delta
   }
