@@ -86,6 +86,7 @@ or using `docker-compose`
 * Ueno, K., Ohori, A., & Otomo, T. (2011). An efficient non-moving garbage collector for functional languages. Proceeding of the 16th ACM SIGPLAN International Conference on Functional Programming - ICFP ’11, 196. https://doi.org/10.1145/2034773.2034802
 * Ueno, K., & Ohori, A. (2016). A fully concurrent garbage collector for functional programs on multicore processors. Proceedings of the 21st ACM SIGPLAN International Conference on Functional Programming, 51(9), 421–433. https://doi.org/10.1145/2951913.2951944
 * Gamari, B., & Dietz, L. (2020). Alligator collector: a latency-optimized garbage collector for functional programming languages. Proceedings of the 2020 ACM SIGPLAN International Symposium on Memory Management, 87–99. https://doi.org/10.1145/3381898.3397214
+* Rick Hudson. 2018. Getting to Go: The Journey of Go’s Garbage Collector. The Go Blog. Retrieved from https://go.dev/blog/ismmkeynote
 
 ### I/O Management and Concurrency
 
