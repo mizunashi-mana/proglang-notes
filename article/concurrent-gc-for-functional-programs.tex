@@ -1,0 +1,21 @@
+\section{Concurrent Garbage Collector for Functional Programs}
+
+\cite{Ueno:2011}\cite{Ueno:2016}\cite{Gamari:2020}
+
+\subsection{Heap Structure}
+
+Heap $\mathcal{H} = (\mathcal{F}, (H_c, H_{c + 1}, \ldots, H_{c + n}), \mathcal{M})$
+\begin{description}
+  \item[$\mathcal{F} \in \mathrm{Seg}^*$] A pool of free segments.
+  \item[$H_i \in \mathrm{Seg}_i^* \times \mathrm{Seg}_i \times \mathrm{Seg}_i^*$] A sub-heap to allocate $2^i$-bytes blocks.
+  \item[$\mathcal{M}$] A special sub-heap for large objects.
+\end{description}
+
+Segment $S_i = (\mathcal{B}_i, P, \mathcal{C})$
+\begin{description}
+  \item[$\mathcal{B}_i$] Allocation blocks of the same size.
+  \item[$P$] A pointer to the next block.
+  \item[$\mathcal{C}$] A bitmap represented object liveness.
+\end{description}
+
+\subsection{Allocation and GC}

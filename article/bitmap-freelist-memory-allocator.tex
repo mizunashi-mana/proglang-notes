@@ -1,0 +1,97 @@
+\section{Memory Allocator with BitMap Free List}
+
+\cite{Ueno:2011}\cite{Ueno:2016}
+
+\subsection{Heap Structure}
+
+\begin{definition}[セグメント (segment)]
+  セグメントとは、以下による組 $S = (M, L)$ のことである:
+  \begin{description}
+    \item[$M$] ビットマップ。
+    \item[$L$] ブロック配列。
+  \end{description}
+  セグメントのクラスを $\mathrm{Seg}$ と表記する。
+\end{definition}
+
+サブヒープは、$N_c$ 個のクラスによるヒープ分割領域であり、それぞれのクラス $i$ はブロックサイズ $\mathrm{sizeOfClass}(i)$ を持ち、$\forall i_1 < i_2\ldotp \mathrm{sizeOfClass}(i_1) < \mathrm{sizeOfClass}(i_2)$ を満たす。
+\begin{definition}[サブヒープ (sub-heap)]
+  クラス $i$ のサブヒープとは、以下による組 $V_i = (R)$ のことである:
+  \begin{description}
+    \item[$R \in \mathbb{N}^*$] 空きセグメント番号の列。$\mathrm{seg}(V_i) = R$ と表記する。
+  \end{description}
+\end{definition}
+
+\begin{definition}[ヒープ (heap)]
+  ヒープとは、以下による組 $H = (A, \{V_i\}_{i \in [N_c]}, F)$ のことである:
+  \begin{description}
+    \item[$A \in \mathrm{Seg}^*$] セグメントの列。
+    \item[$\{V_i\}_{i \in [N_c]}$] サブヒープの族。$\mathrm{subheap}_i(H) = V_i$ と表記する。
+    \item[$F \in \mathrm{Seg}^*$] 空きセグメントの列。$\mathrm{free}(H) = F$ と表記する。
+  \end{description}
+\end{definition}
+
+\subsection{Initialize}
+
+\begin{center}
+  \begin{tabular}{|p{0.9\textwidth}|}
+    \hline
+    \begin{algorithmic}
+      \Ensure{$H$}
+      \For{$i \in [N_c]$}
+        \State{$V_i \assign (\mathrm{sizeOfClass(i)}, \epsilon)$}
+      \EndFor
+      \State{$H \assign (\{V_i\}_{i \in [N_c]}, \epsilon)$}
+    \end{algorithmic}
+    \\\hline
+  \end{tabular}
+\end{center}
+
+\subsection{Allocation}
+
+\begin{center}
+  \begin{tabular}{|p{0.9\textwidth}|}
+    \hline
+    \begin{algorithmic}
+      \Require{$H, s$}
+      \Ensure{$H, b$}
+      \State{$i = \mathrm{classOfSize}(s)$}
+      \If{$i = -1$}
+        \State{$b \assign \mathrm{allocFreeSize}(s)$}
+      \Else
+        \State{$V_i \assign \mathrm{subheap}_i(H)$}
+        \If{$|\mathrm{seg}(V_i)| > 0$}
+          \State{$S \assign \mathrm{seg}(V_i)(0)$}
+        \ElsIf{$|\mathrm{free}(H)| > 0$}
+          \State{$S \assign \mathrm{free}(H)(0)$}
+        \Else
+          \State{$a$}
+        \EndIf
+        \State{$\mathrm{return}\; 2$}
+      \EndIf
+    \end{algorithmic}
+    \\\hline
+  \end{tabular}
+\end{center}
+
+\begin{definition}
+  \begin{align*}
+    \mathrm{classOfSize}(s) &= \left\{\begin{array}{ll}
+      -1 &(\forall i \in [N_c]\ldotp \mathrm{sizeOfClass}(i) < s) \\
+      \max\{i \in [N_c] \mid s \leq \mathrm{sizeOfClass}(i)\} &(\text{otherwise})
+    \end{array}\right.
+  \end{align*}
+\end{definition}
+
+\subsection{Free}
+
+\begin{center}
+  \begin{tabular}{|p{0.9\textwidth}|}
+    \hline
+    \begin{algorithmic}
+      \Require{$H, b$}
+      \Ensure{$H$}
+      \State{$\mathrm{return}\; 1$}
+    \end{algorithmic}
+    \\\hline
+  \end{tabular}
+\end{center}
