@@ -4,30 +4,36 @@
 
 \subsection{Heap Structure}
 
+\begin{definition}[ビット (bit)]
+  ビットとは、$B \in \{\top, \bot\}$ のこと。ビットの集合を $\mathcal{B} = \{\top, \bot\}$ と表記する。
+\end{definition}
+
+セグメントクラスは $N_c$ 個あり、それぞれのクラス $i \in [N_c]$ はブロックサイズ $\mathrm{sizeOfClass}(i)$ を持ち、$\forall i_1 < i_2\ldotp \mathrm{sizeOfClass}(i_1) < \mathrm{sizeOfClass}(i_2)$ を満たす。また、クラスそれぞれでセグメントが持つブロック数 $\mathrm{blockCountOfClass}(i)$ が決まっている。
 \begin{definition}[セグメント (segment)]
-  セグメントとは、以下による組 $S = (M, L)$ のことである:
-  \begin{description}
-    \item[$M$] ビットマップ。
-    \item[$L$] ブロック配列。
-  \end{description}
+  セグメントとは、以下による組 $S = (i, M, L)$ のことである:
+  \begin{itemize}
+    \item セグメントクラス $i \in [N_c]$。$\mathrm{subheapClass}(S) = i$ と表記する。
+    \item ビットマップ $M \in \mathcal{B}^{\mathrm{blockCountOfClass}(i)}$。$\mathrm{bitmap}(S) = M$ と表記する。
+    \item ブロック配列 $L \in \mathrm{Blk}^{\mathrm{blockCountOfClass}(i)}$。$\mathrm{block}(S) = L$ と表記する。
+  \end{itemize}
   セグメントのクラスを $\mathrm{Seg}$ と表記する。
 \end{definition}
 
-サブヒープは、$N_c$ 個のクラスによるヒープ分割領域であり、それぞれのクラス $i$ はブロックサイズ $\mathrm{sizeOfClass}(i)$ を持ち、$\forall i_1 < i_2\ldotp \mathrm{sizeOfClass}(i_1) < \mathrm{sizeOfClass}(i_2)$ を満たす。
+サブヒープは、$N_c$ 個のクラスによるヒープ分割領域である。
 \begin{definition}[サブヒープ (sub-heap)]
   クラス $i$ のサブヒープとは、以下による組 $V_i = (R)$ のことである:
-  \begin{description}
-    \item[$R \in \mathbb{N}^*$] 空きセグメント番号の列。$\mathrm{seg}(V_i) = R$ と表記する。
-  \end{description}
+  \begin{itemize}
+    \item 空きセグメント番号の列 $R \in \mathbb{N}^*$。$\mathrm{free}(V_i) = R$ と表記する。
+  \end{itemize}
 \end{definition}
 
 \begin{definition}[ヒープ (heap)]
   ヒープとは、以下による組 $H = (A, \{V_i\}_{i \in [N_c]}, F)$ のことである:
-  \begin{description}
-    \item[$A \in \mathrm{Seg}^*$] セグメントの列。
-    \item[$\{V_i\}_{i \in [N_c]}$] サブヒープの族。$\mathrm{subheap}_i(H) = V_i$ と表記する。
-    \item[$F \in \mathrm{Seg}^*$] 空きセグメントの列。$\mathrm{free}(H) = F$ と表記する。
-  \end{description}
+  \begin{itemize}
+    \item セグメントの列 $A \in \mathrm{Seg}_\bot^*$。$\mathrm{segments}(H) = A$ と表記する。
+    \item サブヒープの族 $\{V_i\}_{i \in [N_c]}$。$\mathrm{subheap}_i(H) = V_i$ と表記する。
+    \item 空きセグメントの列 $F \in \mathbb{N}^*$。$\mathrm{free}(H) = F$ と表記する。
+  \end{itemize}
 \end{definition}
 
 \subsection{Initialize}
@@ -35,7 +41,7 @@
 \begin{center}
   \begin{tabular}{|p{0.9\textwidth}|}
     \hline
-    \begin{algorithmic}
+    \begin{algorithmic}[1]
       \Ensure{$H$}
       \For{$i \in [N_c]$}
         \State{$V_i \assign (\mathrm{sizeOfClass(i)}, \epsilon)$}
@@ -51,22 +57,39 @@
 \begin{center}
   \begin{tabular}{|p{0.9\textwidth}|}
     \hline
-    \begin{algorithmic}
-      \Require{$H, s$}
-      \Ensure{$H, b$}
-      \State{$i = \mathrm{classOfSize}(s)$}
-      \If{$i = -1$}
-        \State{$b \assign \mathrm{allocFreeSize}(s)$}
+    \begin{algorithmic}[1]
+      \Require{$H, \mathit{size}$}
+      \Ensure{$H, \mathit{blk}$}
+      \State{$\mathit{cls} = \mathrm{classOfSize}(\mathit{size})$}
+      \If{$\mathit{cls} = -1$}
+        \State{$\mathit{blk} \assign (\mathrm{Free}, \mathrm{allocFreeSize}(\mathit{size}))$}
       \Else
-        \State{$V_i \assign \mathrm{subheap}_i(H)$}
-        \If{$|\mathrm{seg}(V_i)| > 0$}
-          \State{$S \assign \mathrm{seg}(V_i)(0)$}
+        \State{$V_\mathit{cls} \assign \mathrm{subheap}_{\mathit{cls}}(H)$}
+        \If{$|\mathrm{free}(V_{\mathit{cls}})| > 0$}
+          \State{$i_\mathrm{seg}\cdot F \assign \mathrm{free}(V_{\mathit{cls}})$}
+          \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
+          \State{$i_\mathrm{blk} \assign \mathrm{pick}(\{i \mid i \in [\mathrm{blockCountOfClass}(\mathit{cls})], \mathrm{bitmap}(\mathit{seg})(i) = \bot\})$}
+          \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \top$}
+          \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})]\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \top$}
+            \State{$\mathrm{free}(V_\mathit{cls}) \assign F$}
+          \EndIf
         \ElsIf{$|\mathrm{free}(H)| > 0$}
-          \State{$S \assign \mathrm{free}(H)(0)$}
+          \State{$i_\mathrm{seg}\cdot F \assign \mathrm{free}(H)$}
+          \State{$\mathrm{free}(H) \assign F$}
+          \State{$\mathrm{segments}(H)(i_\mathrm{seg}) \assign \mathrm{newSegment}(\mathit{cls})$}
+          \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
+          \State{$i_\mathrm{blk} \assign 1$}
+          \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \top$}
         \Else
-          \State{$a$}
+          \State{$\mathrm{segments}(H) \assign \mathrm{segments}(H) \cdot \bot$}
+          \State{$\mathrm{free}(V_\mathit{cls}) \assign |\mathrm{segments}(H)|$}
+          \State{$i_\mathrm{seg} \assign \mathrm{free}(V_\mathit{cls})(1)$}
+          \State{$\mathrm{segments}(H)(i_\mathrm{seg}) \assign \mathrm{newSegment}(\mathit{cls})$}
+          \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
+          \State{$i_\mathrm{blk} \assign 1$}
+          \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \top$}
         \EndIf
-        \State{$\mathrm{return}\; 2$}
+          \State{$\mathit{blk} \assign (\mathrm{Fixed}, i_\mathrm{seg}, i_\mathrm{blk})$}
       \EndIf
     \end{algorithmic}
     \\\hline
@@ -82,15 +105,35 @@
   \end{align*}
 \end{definition}
 
+\begin{definition}
+  \begin{align*}
+    \mathrm{newSegment}(i) = (i, \bot^{\mathrm{blockCountOfClass}(i)}, \mathrm{newBlock}(\mathrm{sizeOfClass(i)})^{\mathrm{blockCountOfClass}(i)})
+  \end{align*}
+\end{definition}
+
 \subsection{Free}
 
 \begin{center}
   \begin{tabular}{|p{0.9\textwidth}|}
     \hline
-    \begin{algorithmic}
-      \Require{$H, b$}
+    \begin{algorithmic}[1]
+      \Require{$H, \mathit{blk}$}
       \Ensure{$H$}
-      \State{$\mathrm{return}\; 1$}
+      \If{$\mathit{blk} = (\mathrm{Free}, \mathit{body})$}
+        \State{$\mathrm{freeFreeSize}(\mathit{blk})$}
+      \ElsIf{$\mathit{blk} = (\mathrm{Fixed}, i_\mathit{seg}, i_\mathit{blk})$}
+        \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
+        \State{$\mathit{cls} \assign \mathrm{subheapClass}(\mathit{seg})$}
+        \State{$V_\mathit{cls} \assign \mathrm{subheap}_{\mathit{cls}}(H)$}
+        \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})], i \neq i_\mathrm{blk}\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \top$}
+          \State{$\mathrm{free}(V_\mathit{cls}) \assign \mathrm{free}(V_\mathit{cls}) \cdot i_\mathrm{seg}$}
+        \EndIf
+        \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \bot$}
+        \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})]\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \bot$}
+          \State{$\mathrm{free}(V_\mathit{cls}) \assign \langle i\in \mathrm{free}(V_\mathit{cls})\mid i \neq i_\mathrm{seg}\rangle$}
+          \State{$\mathrm{free}(H) \assign \mathrm{free}(H)\cdot i_\mathrm{seg}$}
+        \EndIf
+      \EndIf
     \end{algorithmic}
     \\\hline
   \end{tabular}
