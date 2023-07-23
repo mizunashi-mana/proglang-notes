@@ -62,34 +62,34 @@
       \Ensure{$H, \mathit{blk}$}
       \State{$\mathit{cls} = \mathrm{classOfSize}(\mathit{size})$}
       \If{$\mathit{cls} = -1$}
-        \State{$\mathit{blk} \assign (\mathrm{Free}, \mathrm{allocFreeSize}(\mathit{size}))$}
+        \State{$\mathit{blk} \assign (\mathrm{FreeSize}, \mathrm{allocFreeSize}(\mathit{size}))$}
       \Else
         \State{$V_\mathit{cls} \assign \mathrm{subheap}_{\mathit{cls}}(H)$}
         \If{$|\mathrm{free}(V_{\mathit{cls}})| > 0$}
           \State{$i_\mathrm{seg}\cdot F \assign \mathrm{free}(V_{\mathit{cls}})$}
           \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
           \State{$i_\mathrm{blk} \assign \mathrm{pick}(\{i \mid i \in [\mathrm{blockCountOfClass}(\mathit{cls})], \mathrm{bitmap}(\mathit{seg})(i) = \bot\})$}
-          \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \top$}
-          \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})]\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \top$}
-            \State{$\mathrm{free}(V_\mathit{cls}) \assign F$}
-          \EndIf
         \ElsIf{$|\mathrm{free}(H)| > 0$}
           \State{$i_\mathrm{seg}\cdot F \assign \mathrm{free}(H)$}
           \State{$\mathrm{free}(H) \assign F$}
           \State{$\mathrm{segments}(H)(i_\mathrm{seg}) \assign \mathrm{newSegment}(\mathit{cls})$}
+          \State{$\mathrm{free}(V_\mathit{cls}) \assign i_\mathrm{seg}\cdot \mathrm{free}(V_{\mathit{cls}})$}
           \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
           \State{$i_\mathrm{blk} \assign 1$}
-          \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \top$}
         \Else
           \State{$\mathrm{segments}(H) \assign \mathrm{segments}(H) \cdot \bot$}
-          \State{$\mathrm{free}(V_\mathit{cls}) \assign |\mathrm{segments}(H)|$}
-          \State{$i_\mathrm{seg} \assign \mathrm{free}(V_\mathit{cls})(1)$}
+          \State{$i_\mathrm{seg} \assign |\mathrm{segments}(H)|$}
           \State{$\mathrm{segments}(H)(i_\mathrm{seg}) \assign \mathrm{newSegment}(\mathit{cls})$}
+          \State{$\mathrm{free}(V_\mathit{cls}) \assign i_\mathrm{seg} \cdot \mathrm{free}(V_{\mathit{cls}})$}
           \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
           \State{$i_\mathrm{blk} \assign 1$}
-          \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \top$}
         \EndIf
-          \State{$\mathit{blk} \assign (\mathrm{Fixed}, i_\mathrm{seg}, i_\mathrm{blk})$}
+        \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \top$}
+        \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})]\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \top$}
+          \State{$i_\mathrm{seg}\cdot F \assign \mathrm{free}(V_{\mathit{cls}})$}
+          \State{$\mathrm{free}(V_\mathit{cls}) \assign F$}
+        \EndIf
+        \State{$\mathit{blk} \assign (\mathrm{OnSubHeap}, i_\mathrm{seg}, i_\mathrm{blk})$}
       \EndIf
     \end{algorithmic}
     \\\hline
@@ -119,19 +119,19 @@
     \begin{algorithmic}[1]
       \Require{$H, \mathit{blk}$}
       \Ensure{$H$}
-      \If{$\mathit{blk} = (\mathrm{Free}, \mathit{body})$}
+      \If{$\mathit{blk} = (\mathrm{FreeSize}, \mathit{body})$}
         \State{$\mathrm{freeFreeSize}(\mathit{blk})$}
-      \ElsIf{$\mathit{blk} = (\mathrm{Fixed}, i_\mathit{seg}, i_\mathit{blk})$}
+      \ElsIf{$\mathit{blk} = (\mathrm{OnSubHeap}, i_\mathit{seg}, i_\mathit{blk})$}
         \State{$\mathit{seg} \assign \mathrm{segments}(H)(i_\mathrm{seg})$}
         \State{$\mathit{cls} \assign \mathrm{subheapClass}(\mathit{seg})$}
         \State{$V_\mathit{cls} \assign \mathrm{subheap}_{\mathit{cls}}(H)$}
         \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})], i \neq i_\mathrm{blk}\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \top$}
-          \State{$\mathrm{free}(V_\mathit{cls}) \assign \mathrm{free}(V_\mathit{cls}) \cdot i_\mathrm{seg}$}
+          \State{$\mathrm{free}(V_\mathit{cls}) \assign i_\mathrm{seg} \cdot \mathrm{free}(V_\mathit{cls})$}
         \EndIf
         \State{$\mathrm{bitmap}(\mathit{seg})(i_\mathrm{blk}) \assign \bot$}
         \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})]\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \bot$}
           \State{$\mathrm{free}(V_\mathit{cls}) \assign \langle i\in \mathrm{free}(V_\mathit{cls})\mid i \neq i_\mathrm{seg}\rangle$}
-          \State{$\mathrm{free}(H) \assign \mathrm{free}(H)\cdot i_\mathrm{seg}$}
+          \State{$\mathrm{free}(H) \assign i_\mathrm{seg} \cdot \mathrm{free}(H)$}
         \EndIf
       \EndIf
     \end{algorithmic}
