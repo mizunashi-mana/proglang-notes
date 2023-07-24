@@ -129,7 +129,7 @@
         \If{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})]\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \bot$}
           \State{$\mathrm{free}(V_\mathit{cls}) \assign \langle i\in \mathrm{free}(V_\mathit{cls})\mid i \neq i_\mathrm{seg}\rangle$}
           \State{$\mathrm{free}(H) \assign i_\mathrm{seg} \cdot \mathrm{free}(H)$}
-        \ElsIf{$\forall i \in [\mathrm{blockCountOfClass}(\mathit{cls})], i \neq i_\mathrm{blk}\ldotp \mathrm{bitmap}(\mathit{seg})(i) = \top$}
+        \ElsIf{$i_\mathrm{seg} \not\in \mathrm{free}(V_\mathit{cls})$}
           \State{$\mathrm{free}(V_\mathit{cls}) \assign i_\mathrm{seg} \cdot \mathrm{free}(V_\mathit{cls})$}
         \EndIf
       \EndIf
