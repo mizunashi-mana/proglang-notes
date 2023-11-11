@@ -46,7 +46,7 @@
   & \Coloneq & \mathit{expr} \\
   & \mid & \mathbf{let}(x = \mathit{expr}) \\
   & \mid & \mathbf{rec}(x = \mathit{expr}) \\
-  & \mid & \mathbf{letType}(f)(x_1; \cdots; x_n)(\mathit{type})
+  & \mid & \mathbf{letType}(f)(\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n)(\mathit{type})
   \end{array}
 \end{align*}
 
@@ -57,14 +57,18 @@
   \mathit{type}
   & \Coloneq & x &(\text{variable}) \\
   & \mid & n &(\text{integer}) \\
-  & \mid & (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) &(\text{tuple type}) \\
-  & \mid & (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) \rightarrow \mathit{type} &(\text{function type}) \\
+  & \mid & (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) &(\text{tuple type}) \\
+  & \mid & (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) &(\text{type tuple}) \\
+  & \mid & (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} &(\text{function type}) \\
   & \mid & \mathbf{block}(\mathit{typeBlockItem}_1; \cdots; \mathit{typeBlockItem}_n) &(\text{block}) \\
-  & \mid & \mathit{type}(\mathit{type}_1; \cdots; \mathit{type}_n) &(\text{application}) \\
+  & \mid & \mathit{type}(\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) &(\text{application}) \\
   & \mid & \mathit{type}: \mathit{type}_0 &(\text{type annotation}) \\
-  \mathit{typeTupleItem}
+  \mathit{typeTupleSigItem}
   & \Coloneq & x: \mathit{type} \\
   & \mid & \mathbf{prom}(x): \mathit{type} \\
+  \mathit{typeTupleItem}
+  & \Coloneq & x = \mathit{type} \\
+  & \mid & \mathbf{prom}(x) = \mathit{type} \\
   \mathit{typeBlockItem}
   & \Coloneq & \mathit{type} \\
   & \mid & \mathbf{let}(x = \mathit{type})
