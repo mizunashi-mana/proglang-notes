@@ -1,0 +1,74 @@
+\section{Strik Syntax and Layout}
+
+\subsection{Syntax}
+
+\subsubsection{Program}
+
+\begin{align*}
+  \begin{array}{rclr}
+    \mathit{program}
+    & \Coloneq & \mathbf{program}(\mathit{decl}_1; \cdots; \mathit{decl}_n) &(\text{program})
+  \end{array}
+\end{align*}
+
+\subsubsection{Declaration}
+
+\begin{align*}
+  \begin{array}{rclr}
+    \mathit{decl}
+    & \Coloneq & \mathbf{fun}(f)(x_1; \cdots; x_n)(\mathit{expr}) \\
+    & \mid & \mathbf{type}(f)(x_1; \cdots; x_n)(\mathit{type})
+  \end{array}
+\end{align*}
+
+\subsubsection{Expression}
+
+\begin{align*}
+  \begin{array}{rclr}
+  \mathit{expr}
+  & \Coloneq & x &(\text{variable}) \\
+  & \mid & n &(\text{integer}) \\
+  & \mid & (\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n) &(\text{tuple}) \\
+  & \mid & \mathbf{block}(\mathit{blockItem}_1; \cdots; \mathit{blockItem}_n) &(\text{block}) \\
+  & \mid & \lambda(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}) &(\text{abstraction}) \\
+  & \mid & \mathit{expr}(\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n) &(\text{application}) \\
+  & \mid & \mathbf{case}(\mathit{expr}_{1,1} \rightarrow \mathit{expr}_{1,2}; \cdots; \mathit{expr}_{n,1} \rightarrow \mathit{expr}_{n,2}) &(\text{branch}) \\
+  & \mid & \mathit{expr}: \mathit{type} &(\text{type annotation}) \\
+  \mathit{argItem}
+  & \Coloneq & x: \mathit{type} \\
+  & \mid & x \\
+  & \mid & \mathbf{prom}(x): \mathit{type} \\
+  & \mid & \mathbf{prom}(x) \\
+  \mathit{tupleItem}
+  & \Coloneq & x = \mathit{expr} \\
+  & \mid & \mathbf{prom}(x) = \mathit{type} \\
+  \mathit{blockItem}
+  & \Coloneq & \mathit{expr} \\
+  & \mid & \mathbf{let}(x = \mathit{expr}) \\
+  & \mid & \mathbf{rec}(x = \mathit{expr}) \\
+  & \mid & \mathbf{letType}(f)(x_1; \cdots; x_n)(\mathit{type})
+  \end{array}
+\end{align*}
+
+\subsubsection{Type}
+
+\begin{align*}
+  \begin{array}{rclr}
+  \mathit{type}
+  & \Coloneq & x &(\text{variable}) \\
+  & \mid & n &(\text{integer}) \\
+  & \mid & (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) &(\text{tuple type}) \\
+  & \mid & (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) \rightarrow \mathit{type} &(\text{function type}) \\
+  & \mid & \mathbf{block}(\mathit{typeBlockItem}_1; \cdots; \mathit{typeBlockItem}_n) &(\text{block}) \\
+  & \mid & \mathit{type}(\mathit{type}_1; \cdots; \mathit{type}_n) &(\text{application}) \\
+  & \mid & \mathit{type}: \mathit{type}_0 &(\text{type annotation}) \\
+  \mathit{typeTupleItem}
+  & \Coloneq & x: \mathit{type} \\
+  & \mid & \mathbf{prom}(x): \mathit{type} \\
+  \mathit{typeBlockItem}
+  & \Coloneq & \mathit{type} \\
+  & \mid & \mathbf{let}(x = \mathit{type})
+  \end{array}
+\end{align*}
+
+\subsection{Layout}

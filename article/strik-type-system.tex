@@ -1,0 +1,231 @@
+\section{Strik Type System}
+
+\subsection{Declarative}
+
+Environment:
+
+\begin{align*}
+  \begin{array}{rclr}
+    \Gamma
+    & \Coloneq & \epsilon &(\text{empty}) \\
+    & \mid & x: \mathit{type} &(\text{variable}) \\
+    & \mid & x(x_1; \cdots; x_n) = \mathit{type} &(\text{synonym}) \\
+    & \mid & \Gamma_1; \Gamma_2 &(\text{concatenation})
+  \end{array}
+\end{align*}
+
+Expression:
+
+$\fbox{$\Gamma \vdash \mathit{expr}: \mathit{type}$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash x: \mathit{type}}{
+    \Gamma(x) = \mathit{type}
+    &
+    \Gamma \vdash \mathit{type}: \mathbf{Type}
+  }
+  \\
+  \infer{\Gamma \vdash n: \mathbf{Int}}{
+    \Gamma \vdash \mathbf{Int}: \mathbf{Type}
+  }
+  \\
+  \infer{\Gamma \vdash (\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n): (\mathit{typeTupleItem}_1; \ldots; \mathit{typeTupleItem}_n)}{
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{tupleItem}_1: \mathit{typeTupleItem}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{tupleItem}_n: \mathit{typeTupleItem}_n \mid \Delta_n
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{block}(\mathit{blockItem}_1; \cdots; \mathit{blockItem}_n): \mathit{type}_n}{
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{blockItem}_1: \mathit{type}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{blockItem}_n: \mathit{type}_n \mid \Delta_n
+  }
+  \\
+  \infer{\Gamma \vdash \lambda(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}): (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) \rightarrow \mathit{type}}{
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{argItem}_1: \mathit{typeTupleItem}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{argItem}_n: \mathit{typeTupleItem}_n \mid \Delta_n
+    &
+    \Delta_n \vdash \mathit{expr}: \mathit{type}
+  }
+  \\
+  \infer{\Gamma \vdash \mathit{expr}(\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n): \mathit{type}}{
+    \begin{array}{cccc}
+    \multicolumn{4}{c}{\Gamma \vdash \mathit{expr}: (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) \rightarrow \mathit{type}}
+    \\
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{tupleItem}_1: \mathit{typeTupleItem}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{tupleItem}_n: \mathit{typeTupleItem}_n \mid \Delta_n
+    \end{array}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{case}(\mathit{expr}_{1,1} \rightarrow \mathit{expr}_{1,2}; \cdots; \mathit{expr}_{n,1} \rightarrow \mathit{expr}_{n,2}): \mathit{type}}{
+    \Gamma \vdash \mathit{expr}_{1, 1}: \mathbf{Bool}
+    &
+    \Gamma \vdash \mathit{expr}_{1, 2}: \mathit{type}
+    &
+    \cdots
+    &
+    \Gamma \vdash \mathit{expr}_{n, 1}: \mathbf{Bool}
+    &
+    \Gamma \vdash \mathit{expr}_{n, 2}: \mathit{type}
+  }
+  \\
+  \infer{\Gamma \vdash (\mathit{expr}: \mathit{type}): \mathit{type}}{
+    \Gamma \vdash \mathit{expr}: \mathit{type}
+  }
+  \\
+  \infer{\Gamma \vdash \mathit{expr}: \mathit{type}_2}{
+    \Gamma \vdash \mathit{expr}: \mathit{type}_1
+    &
+    \Gamma \vdash \mathit{type}_1 \sim \mathit{type}_2
+  }
+\end{gather*}
+
+Tuple:
+
+$\fbox{$\Gamma \vdash \mathit{tupleItem}: \mathit{typeTupleItem} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash x = \mathit{expr}: (x: \mathit{type}) \mid \Gamma}{
+    \Gamma \vdash \mathit{expr}: \mathit{type}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{prom}(x) = \mathit{type}: (\mathbf{prom}(x): \mathit{type}_0) \mid \Gamma; x: \mathit{type}; x() = \mathit{type}}{
+    \Gamma \vdash \mathit{type}: \mathit{type}_0
+  }
+\end{gather*}
+
+Block:
+
+$\fbox{$\Gamma \vdash \mathit{blockItem}: \mathit{type} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash \mathit{expr}: \mathit{type} \mid \Gamma}{
+    \Gamma \vdash \mathit{expr}: \mathit{type}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{let}(x = \mathit{expr}): () \mid \Gamma; x: \mathit{type}}{
+    \Gamma \vdash \mathit{expr}: \mathit{type}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{rec}(x = \mathit{expr}): () \mid \Gamma; x: \mathit{type}}{
+    \Gamma; x: \mathit{type} \vdash \mathit{expr}: \mathit{type}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{letType}(f)(x_1; \cdots; x_n)(\mathit{type}): () \mid \Gamma; f(x_1; \cdots; x_n) = \mathit{type}}{
+    \Gamma; x_1: \mathit{type}_1; \cdots; x_n: \mathit{type}_n \vdash \mathit{type}: \mathit{type}_0
+  }
+\end{gather*}
+
+Argument:
+
+$\fbox{$\Gamma \vdash \mathit{argItem}: \mathit{typeTupleItem} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash (x: \mathit{type}): (x: \mathit{type}) \mid \Gamma; x: \mathit{type}}{
+    \Gamma \vdash \mathit{type}: \mathbf{Type}
+  }
+  \\
+  \infer{\Gamma \vdash x: (x: \mathit{type}) \mid \Gamma; x: \mathit{type}}{
+    \Gamma \vdash \mathit{type}: \mathbf{Type}
+  }
+  \\
+  \infer{\Gamma \vdash (\mathbf{prom}(x): \mathit{type}): (\mathbf{prom}(x): \mathit{type}) \mid \Gamma; x: \mathit{type}}{
+    \Gamma \vdash \mathit{type}: \mathit{type}_0
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{prom}(x): (\mathbf{prom}(x): \mathit{type}) \mid \Gamma; x: \mathit{type}}{
+    \Gamma \vdash \mathit{type}: \mathit{type}_0
+  }
+\end{gather*}
+
+Type:
+
+$\fbox{$\Gamma \vdash \mathit{type}: \mathit{type}_0$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash x: \mathit{type}}{
+    \Gamma(x) = \mathit{type}
+    &
+    \Gamma \vdash \mathit{type}: \mathit{type}_0
+  }
+  \\
+  \infer{\Gamma \vdash n: \mathbf{Int}}{
+    \Gamma \vdash \mathbf{Int}: \mathbf{Type}
+  }
+  \\
+  \infer{\Gamma \vdash (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n): \mathbf{Type}}{
+    \Gamma \vdash \mathit{typeTupleItem}_1: \mathit{type}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{typeTupleItem}_n: \mathit{type}_n \mid \Delta_n
+  }
+  \\
+  \infer{\Gamma \vdash (\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) \rightarrow \mathit{type}: \mathbf{Type}}{
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{typeTupleItem}_1: \mathit{type}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{typeTupleItem}_n: \mathit{type}_n \mid \Delta_n
+    &
+    \Delta_n \vdash \mathit{type}: \mathbf{Type}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{block}(\mathit{typeBlockItem}_1; \cdots; \mathit{typeBlockItem}_n): \mathit{type}_n}{
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{typeBlockItem}_1: \mathit{type}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{typeBlockItem}_n: \mathit{type}_n \mid \Delta_n
+  }
+\end{gather*}
+
+Tuple Type:
+
+$\fbox{$\Gamma \vdash \mathit{typeTupleItem}: \mathit{type} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash (x: \mathit{type}): \mathit{type} \mid \Gamma}{
+    \Gamma \vdash \mathit{type}: \mathbf{Type}
+  }
+  \\
+  \infer{\Gamma \vdash (\mathbf{prom}(x): \mathit{type}): \mathit{type}_0 \mid \Gamma; x: \mathit{type}}{
+    \Gamma \vdash \mathit{type}: \mathit{type}_0
+  }
+\end{gather*}
+
+Type Block:
+
+$\fbox{$\Gamma \vdash \mathit{typeBlockItem}: \mathit{type} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash \mathit{type}: \mathit{type}_0 \mid \Gamma}{
+    \Gamma \vdash \mathit{type}: \mathit{type}_0
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{let}(x = \mathit{type}): () \mid \Gamma; x: \mathit{type}_0; x = \mathit{type}}{
+    \Gamma \vdash \mathit{type}: \mathit{type}_0
+  }
+\end{gather*}
