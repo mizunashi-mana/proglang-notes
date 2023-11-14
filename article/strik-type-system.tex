@@ -9,10 +9,66 @@ Environment:
     \Gamma
     & \Coloneq & \epsilon &(\text{empty}) \\
     & \mid & x: \mathit{type} &(\text{variable}) \\
-    & \mid & x(x_1; \cdots; x_n) = \mathit{type} &(\text{synonym}) \\
+    & \mid & x = \mathit{type} &(\text{synonym}) \\
     & \mid & \Gamma_1; \Gamma_2 &(\text{concatenation})
   \end{array}
 \end{align*}
+
+Program:
+
+$\fbox{$\Gamma \vdash \mathit{program} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash \mathbf{program}(\mathit{decl}_1; \cdots; \mathit{decl}_n) \mid \Delta_n}{
+    \begin{array}{c}
+      \mathit{decl}_1 \mid x_{1,1}, \ldots, x_{1,m_1}
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \mathit{decl}_n \mid x_{n,1}, \ldots, x_{n,m_n}
+      \\
+      \mathbf{fresh}(a_{1,1}, \ldots, a_{1, m_1}, \ldots, a_{n,1}, \ldots, a_{n, m_n})
+      \hspace{1em}
+      \Gamma_1 = \Gamma; x_{1,1}: a_{1,1}; \cdots; x_{1,m_1}: a_{1, m_1}; \cdots x_{n,1}: a_{n,1}; \cdots; x_{n,m_n}: a_{n,m_n}
+      \\
+      \Delta_0 = \Gamma_1
+      \hspace{1em}
+      \Delta_0 \vdash \mathit{decl}_1 \mid \Delta_1
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \Delta_{n - 1} \vdash \mathit{decl}_n \mid \Delta_n
+    \end{array}
+  }
+\end{gather*}
+
+Declaration:
+
+$\fbox{$\mathit{decl} \mid x_1, \ldots, x_n$}$
+
+\begin{gather*}
+  \infer{\mathbf{fun}(f)(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}) \mid f}{}
+\end{gather*}
+
+$\fbox{$\Gamma \vdash \mathit{decl} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma_1; f: a; \Gamma_2 \vdash \mathbf{fun}(f)(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}) \mid \Delta}{
+    \begin{array}{c}
+      \Delta_0 = \Gamma
+      \hspace{1em}
+      \Delta_0 \vdash \mathit{argItem}_1: \mathit{typeTupleSigItem}_1 \mid \Delta_1
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \Delta_{n - 1} \vdash \mathit{argItem}_n: \mathit{typeTupleSigItem}_n \mid \Delta_n
+      \\
+      \Delta_n \vdash \mathit{expr}: \mathit{type}
+      \hspace{1em}
+      \Delta = \Gamma_1; f: a; \Gamma_2; a = (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}
+    \end{array}
+  }
+\end{gather*}
 
 Expression:
 
@@ -62,18 +118,16 @@ $\fbox{$\Gamma \vdash \mathit{expr}: \mathit{type}$}$
   }
   \\
   \infer{\Gamma \vdash \mathit{expr}(\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n): \mathit{type}}{
-    \begin{array}{cccc}
-    \multicolumn{4}{c}{
+    \begin{array}{c}
       \Gamma \vdash \mathit{expr}: (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}
-    }
-    \\
-    \Delta_0 = \Gamma
-    &
-    \Delta_0 \vdash \mathit{tupleItem}_1: \mathit{typeTupleSigItem}_1 \mid \Delta_1
-    &
-    \cdots
-    &
-    \Delta_{n - 1} \vdash \mathit{tupleItem}_n: \mathit{typeTupleSigItem}_n \mid \Delta_n
+      \\
+      \Delta_0 = \Gamma
+      \hspace{1em}
+      \Delta_0 \vdash \mathit{tupleItem}_1: \mathit{typeTupleSigItem}_1 \mid \Delta_1
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \Delta_{n - 1} \vdash \mathit{tupleItem}_n: \mathit{typeTupleSigItem}_n \mid \Delta_n
     \end{array}
   }
   \\
@@ -96,7 +150,7 @@ $\fbox{$\Gamma \vdash \mathit{expr}: \mathit{type}$}$
   \infer{\Gamma \vdash \mathit{expr}: \mathit{type}_2}{
     \Gamma \vdash \mathit{expr}: \mathit{type}_1
     &
-    \Gamma \vdash \mathit{type}_1 \sim \mathit{type}_2
+    \Gamma \vdash \mathit{type}_1 \succeq \mathit{type}_2
   }
 \end{gather*}
 
@@ -109,7 +163,7 @@ $\fbox{$\Gamma \vdash \mathit{tupleItem}: \mathit{typeTupleSigItem} \mid \Delta$
     \Gamma \vdash \mathit{expr}: \mathit{type}
   }
   \\
-  \infer{\Gamma \vdash \mathbf{prom}(x) = \mathit{type}: (\mathbf{prom}(x): \mathit{type}_0) \mid \Gamma; x: \mathit{type}; x() = \mathit{type}}{
+  \infer{\Gamma \vdash \mathbf{prom}(x) = \mathit{type}: (\mathbf{prom}(x): \mathit{type}_0) \mid \Gamma; x: \mathit{type}; x = \mathit{type}}{
     \Gamma \vdash \mathit{type}: \mathit{type}_0
   }
 \end{gather*}
@@ -229,17 +283,15 @@ $\fbox{$\Gamma \vdash \mathit{type}: \mathit{type}_0$}$
   }
   \\
   \infer{\Gamma \vdash \mathit{type}(\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n): \mathit{type}_0}{
-    \begin{array}{cccc}
-      \multicolumn{4}{c}{
-        \Gamma \vdash \mathit{type}: (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}_0
-      }
+    \begin{array}{c}
+      \Gamma \vdash \mathit{type}: (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}_0
       \\
       \Delta_0 = \Gamma
-      &
+      \hspace{1em}
       \Delta_0 \vdash \mathit{typeTupleItem}_1: \mathit{typeTupleSigItem}_1 \mid \Delta_1
-      &
+      \hspace{1em}
       \cdots
-      &
+      \hspace{1em}
       \Delta_{n - 1} \vdash \mathit{typeTupleItem}_n: \mathit{typeTupleSigItem}_n \mid \Delta_n
     \end{array}
   }
@@ -251,7 +303,7 @@ $\fbox{$\Gamma \vdash \mathit{type}: \mathit{type}_0$}$
   \infer{\Gamma \vdash \mathit{type}: \mathit{type}_2}{
     \Gamma \vdash \mathit{type}: \mathit{type}_1
     &
-    \Gamma \vdash \mathit{type}_1 \sim \mathit{type}_2
+    \Gamma \vdash \mathit{type}_1 \succeq \mathit{type}_2
   }
 \end{gather*}
 
@@ -296,3 +348,19 @@ $\fbox{$\Gamma \vdash \mathit{typeBlockItem}: \mathit{type} \mid \Delta$}$
     \Gamma \vdash \mathit{type}: \mathit{type}_0
   }
 \end{gather*}
+
+Cast:
+
+\begin{gather*}
+  \infer{\Gamma \vdash \mathit{type}_1 \succeq \mathit{type}_2}{
+    \mathit{type}_1 = \mathit{type}_2
+  }
+  \\
+  \infer{\Gamma_1; x = \mathit{type}; \Gamma_2 \vdash \mathit{type}_1 \preceq \mathit{type}_2}{
+    \Gamma_1; x = \mathit{type}; \Gamma_2 \vdash \mathit{type}_1[x \assign \mathit{type}] \succeq \mathit{type}_2[x \assign \mathit{type}]
+  }
+\end{gather*}
+
+\subsection{Bidirectional}
+
+TODO
