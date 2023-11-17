@@ -2,7 +2,7 @@
 
 \subsection{Declarative}
 
-Environment:
+Context:
 
 \begin{align*}
   \begin{array}{rclr}
@@ -21,15 +21,15 @@ $\fbox{$\Gamma \vdash \mathit{program} \mid \Delta$}$
 \begin{gather*}
   \infer{\Gamma \vdash \mathbf{program}(\mathit{decl}_1; \cdots; \mathit{decl}_n) \mid \Delta_n}{
     \begin{array}{c}
-      \mathit{decl}_1 \mid x_{1,1}, \ldots, x_{1,m_1}
+      \mathit{decl}_1 \mid x_1
       \hspace{1em}
       \cdots
       \hspace{1em}
-      \mathit{decl}_n \mid x_{n,1}, \ldots, x_{n,m_n}
+      \mathit{decl}_n \mid x_n
       \\
-      \mathbf{fresh}(a_{1,1}, \ldots, a_{1, m_1}, \ldots, a_{n,1}, \ldots, a_{n, m_n})
+      \mathbf{fresh}(a_1, \ldots, a_n)
       \hspace{1em}
-      \Gamma_1 = \Gamma; x_{1,1}: a_{1,1}; \cdots; x_{1,m_1}: a_{1, m_1}; \cdots x_{n,1}: a_{n,1}; \cdots; x_{n,m_n}: a_{n,m_n}
+      \Gamma_1 = \Gamma; x_1: a_1; \cdots; x_n: a_n
       \\
       \Delta_0 = \Gamma_1
       \hspace{1em}
@@ -44,7 +44,7 @@ $\fbox{$\Gamma \vdash \mathit{program} \mid \Delta$}$
 
 Declaration:
 
-$\fbox{$\mathit{decl} \mid x_1, \ldots, x_n$}$
+$\fbox{$\mathit{decl} \mid x$}$
 
 \begin{gather*}
   \infer{\mathbf{fun}(f)(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}) \mid f}{}
@@ -352,11 +352,33 @@ Program:
 
 $\fbox{$\Gamma \vdash \mathit{program} \mid \Delta$}$
 
-TODO
+\begin{gather*}
+  \infer{\Gamma \vdash \mathbf{program}(\mathit{decl}_1; \cdots; \mathit{decl}_n) \mid \Delta_n}{
+    \begin{array}{c}
+      \mathit{decl}_1 \mid x_1
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \mathit{decl}_n \mid x_n
+      \\
+      \mathbf{fresh}(a_1, \ldots, a_n)
+      \hspace{1em}
+      \Gamma_1 = \Gamma; x_1: a_1; \cdots; x_n: a_n
+      \\
+      \Delta_0 = \Gamma_1
+      \hspace{1em}
+      \Delta_0 \vdash \mathit{decl}_1 \mid \Delta_1
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \Delta_{n - 1} \vdash \mathit{decl}_n \mid \Delta_n
+    \end{array}
+  }
+\end{gather*}
 
 Declaration:
 
-$\fbox{$\mathit{decl} \mid x_1, \ldots, x_n$}$
+$\fbox{$\mathit{decl} \mid x$}$
 
 \begin{gather*}
   \infer{\mathbf{fun}(f)(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}) \mid f}{}
@@ -364,7 +386,23 @@ $\fbox{$\mathit{decl} \mid x_1, \ldots, x_n$}$
 
 $\fbox{$\Gamma \vdash \mathit{decl} \mid \Delta$}$
 
-TODO
+\begin{gather*}
+  \infer{\Gamma_1; f: a; \Gamma_2 \vdash \mathbf{fun}(f)(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}) \mid \Delta}{
+    \begin{array}{c}
+      \Delta_0 = \Gamma
+      \hspace{1em}
+      \Delta_0 \vdash \mathit{argItem}_1 \Rightarrow \mathit{typeTupleSigItem}_1 \mid \Delta_1
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \Delta_{n - 1} \vdash \mathit{argItem}_n \Rightarrow \mathit{typeTupleSigItem}_n \mid \Delta_n
+      \\
+      \Delta_n \vdash \mathit{expr} \Leftarrow \mathit{type}
+      \hspace{1em}
+      \Delta = \Gamma_1; f: a; \Gamma_2; a = (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}
+    \end{array}
+  }
+\end{gather*}
 
 Expression:
 
@@ -508,5 +546,120 @@ $\fbox{$\Gamma \vdash \mathit{argItem} \Rightarrow \mathit{typeTupleSigItem} \mi
   \\
   \infer{\Gamma \vdash \mathbf{prom}(x) \Rightarrow (\mathbf{prom}(x): \mathit{type}) \mid \Gamma; x: \mathit{type}}{
     \Gamma \vdash \mathit{type} \Rightarrow \mathit{type}_0
+  }
+\end{gather*}
+
+\subsection{Algorithmic Bidirectional}
+
+Context:
+
+\begin{align*}
+  \begin{array}{rclr}
+    \Gamma
+    & \Coloneq & \epsilon &(\text{empty}) \\
+    & \mid & x: \mathit{type} &(\text{variable}) \\
+    & \mid & x = \mathit{type} &(\text{synonym}) \\
+    & \mid & \hat{x}: \mathit{type} &(\text{generated variable}) \\
+    & \mid & \hat{x} = \mathit{type} &(\text{equation}) \\
+    & \mid & \Gamma_1; \Gamma_2 &(\text{concatenation})
+  \end{array}
+\end{align*}
+
+Program:
+
+TODO
+
+Declaration:
+
+TODO
+
+Expression:
+
+$\fbox{$\Gamma \vdash \mathit{expr} \Rightarrow \mathit{type} \mid \Delta$}$
+$\fbox{$\Gamma \vdash \mathit{expr} \Leftarrow \mathit{type} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma_1; x: \mathit{type}; \Gamma_2 \vdash x \Rightarrow \mathit{type} \mid \Delta}{
+    \Gamma \vdash \mathit{type} \Leftarrow \mathbf{Type} \mid \Delta
+  }
+  \\
+  \infer{\Gamma \vdash n \Rightarrow \mathbf{Int} \mid \Delta}{
+    \Gamma \vdash \mathbf{Int} \Leftarrow \mathbf{Type} \mid \Delta
+  }
+  \\
+  \infer{\Gamma \vdash (\mathit{expr}: \mathit{type}) \Rightarrow \mathit{type} \mid \Delta}{
+    \Gamma \vdash \mathit{expr} \Leftarrow \mathit{type} \mid \Delta
+  }
+  \\
+  \infer{\Gamma \vdash \mathit{expr} \Leftarrow \mathit{type}_2 \mid \Delta}{
+    \Gamma \vdash \mathit{expr} \Rightarrow \mathit{type}_1 \mid \Delta_1
+    &
+    \Delta_1 \vdash \mathit{type}_1 \preceq \mathit{type}_2 \mid \Delta
+  }
+  \\
+  \infer{\Gamma \vdash (\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n) \Rightarrow (\mathit{typeTupleSigItem}_1; \ldots; \mathit{typeTupleSigItem}_n)}{
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{tupleItem}_1 \Rightarrow \mathit{typeTupleSigItem}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{tupleItem}_n \Rightarrow \mathit{typeTupleSigItem}_n \mid \Delta_n
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{block}(\mathit{blockItem}_1; \cdots; \mathit{blockItem}_n) \Rightarrow \mathit{type}_n}{
+    \Delta_0 = \Gamma
+    &
+    \Delta_0 \vdash \mathit{blockItem}_1 \Rightarrow \mathit{type}_1 \mid \Delta_1
+    &
+    \cdots
+    &
+    \Delta_{n - 1} \vdash \mathit{blockItem}_n \Rightarrow \mathit{type}_n \mid \Delta_n
+  }
+  \\
+  \infer{\Gamma \vdash \lambda(\mathit{argItem}_1; \cdots; \mathit{argItem}_n)(\mathit{expr}) \Rightarrow (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}}{
+    \begin{array}{c}
+      \Delta_0 = \Gamma
+      \\
+      \Delta_0 \vdash \mathit{argItem}_1 \Rightarrow \mathit{typeTupleSigItem}_1 \mid \Delta_1
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \Delta_{n - 1} \vdash \mathit{argItem}_n \Rightarrow \mathit{typeTupleSigItem}_n \mid \Delta_n
+      \\
+      \Delta_n \vdash \mathit{expr} \Leftarrow \mathit{type}
+    \end{array}
+  }
+  \\
+  \infer{\Gamma \vdash \mathit{expr}(\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n) \Rightarrow \mathit{type}}{
+    \begin{array}{c}
+      \Gamma \vdash \mathit{expr} \Rightarrow (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}
+      \\
+      \Gamma \vdash (\mathit{tupleItem}_1; \cdots; \mathit{tupleItem}_n) \Leftarrow (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n)
+    \end{array}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{case}(\mathit{expr}_{1,1} \rightarrow \mathit{expr}_{1,2}; \cdots; \mathit{expr}_{n,1} \rightarrow \mathit{expr}_{n,2}) \Rightarrow \mathit{type}}{
+    \begin{array}{c}
+      n > 0
+      \hspace{1em}
+      \Gamma \vdash \mathit{expr}_{1, 1} \Leftarrow \mathbf{Bool}
+      \hspace{1em}
+      \Gamma \vdash \mathit{expr}_{1, 2} \Rightarrow \mathit{type}
+      \\
+      \Gamma \vdash \mathit{expr}_{2, 1} \Leftarrow \mathbf{Bool}
+      \hspace{1em}
+      \Gamma \vdash \mathit{expr}_{2, 2} \Leftarrow \mathit{type}
+      \hspace{1em}
+      \cdots
+      \hspace{1em}
+      \Gamma \vdash \mathit{expr}_{n, 1} \Leftarrow \mathbf{Bool}
+      \hspace{1em}
+      \Gamma \vdash \mathit{expr}_{n, 2} \Leftarrow \mathit{type}
+    \end{array}
+  }
+  \\
+  \infer{\Gamma \vdash \mathbf{case}() \Rightarrow \mathit{type}}{
+    \Gamma \vdash \mathit{type} \Leftarrow \mathbf{Type}
   }
 \end{gather*}
