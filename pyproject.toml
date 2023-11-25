@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "read-papers-proglang"
+name = "proglang-notes"
 version = "0.1.0"
 description = ""
-authors = ["Mizunashi Mana <mizunashi-mana@noreply.git>"]
+authors = ["Mizunashi Mana <contact@mizunashi.work>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
