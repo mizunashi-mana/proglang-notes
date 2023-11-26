@@ -14,11 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      -
-        name: Login to GitHub Packages
-        uses: docker/login-action@v1
+      - name: Login to GitHub Packages
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -26,15 +25,15 @@ jobs:
 
       - name: Pull required images
         run: |
-          docker-compose pull
+          docker compose pull
 
       - name: Run build
         run: |
-          docker-compose build
+          docker compose build
 
       - name: Run test
         run: |
-          docker-compose run builder
+          docker compose run builder
 
   deploy:
     needs: test
@@ -43,11 +42,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      -
-        name: Login to GitHub Packages
-        uses: docker/login-action@v1
+      - name: Login to GitHub Packages
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -55,23 +53,21 @@ jobs:
 
       - name: Pull required images
         run: |
-          docker-compose pull
+          docker compose pull
 
       - name: Run build
         run: |
-          docker-compose build
+          docker compose build
 
       - name: Run test
         run: |
-          docker-compose run builder
+          docker compose run builder
 
-      -
-        name: Make public
+      - name: Make public
         run: |
             cp main.pdf public/
 
-      -
-        name: Deploy
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
