@@ -944,36 +944,18 @@ $\fbox{$\Gamma \vdash \mathit{type} \Leftarrow \mathit{type}_0 \mid \Delta$}$
     \Delta_{n - 1} \vdash \mathit{typeTupleItem}_n \Rightarrow \mathit{typeTupleSigItem}_n \mid \Delta_n
   }
   \\
-  \infer{\Gamma \vdash (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \Rightarrow \mathbf{Type}}{
-    \begin{array}{c}
-      \Delta_0 = \Gamma
-      \\
-      \Delta_0 \vdash \mathit{typeTupleSigItem}_1 \Rightarrow \mathit{type}_1 \mid \Delta_1
-      \hspace{1em}
-      \cdots
-      \hspace{1em}
-      \Delta_{n - 1} \vdash \mathit{typeTupleSigItem}_n \Rightarrow \mathit{type}_n \mid \Delta_n
-      \\
-      \Delta_n \vdash \mathit{type} \Leftarrow \mathbf{Type}
-    \end{array}
+  \infer{\Gamma \vdash (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \Rightarrow \mathbf{Type} \mid \Delta}{
+    \Gamma \vdash (\circ; \mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \mid \Delta
   }
   \\
-  \infer{\Gamma \vdash \mathbf{block}(\mathit{typeBlockItem}_1; \cdots; \mathit{typeBlockItem}_n) \Rightarrow \mathit{type}_n}{
-    \Delta_0 = \Gamma
-    &
-    \Delta_0 \vdash \mathit{typeBlockItem}_1 \Rightarrow \mathit{type}_1 \mid \Delta_1
-    &
-    \cdots
-    &
-    \Delta_{n - 1} \vdash \mathit{typeBlockItem}_n \Rightarrow \mathit{type}_n \mid \Delta_n
+  \infer{\Gamma \vdash \mathbf{block}(\mathit{typeBlockItem}_1; \cdots; \mathit{typeBlockItem}_n) \Rightarrow \mathit{type} \mid \Delta}{
+    \Gamma \vdash \mathbf{block}(\circ; \mathit{typeBlockItem}_1; \cdots; \mathit{typeBlockItem}_n); () \Rightarrow \mathit{type} \mid \Delta
   }
   \\
-  \infer{\Gamma \vdash \mathit{type}(\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) \Rightarrow \mathit{type}_0}{
+  \infer{\Gamma \vdash \mathit{type}(\mathit{typeTupleItem}_1; \cdots; \mathit{typeTupleItem}_n) \Rightarrow \mathit{type}_0 \mid \Delta_n}{
     \begin{array}{c}
-      \Gamma \vdash \mathit{type} \Rightarrow (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}_0
+      \Gamma \vdash \mathit{type} \Rightarrow (\mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type}_0 \mid \Delta_0
       \\
-      \Delta_0 = \Gamma
-      \hspace{1em}
       \Delta_0 \vdash \mathit{typeTupleItem}_1 \Leftarrow \mathit{typeTupleSigItem}_1 \mid \Delta_1
       \hspace{1em}
       \cdots
@@ -1085,16 +1067,44 @@ $\fbox{$\Gamma \vdash (\circ; \mathit{typeTupleItem}_1; \cdots; \mathit{typeTupl
 
 Type Block:
 
-$\fbox{$\Gamma \vdash \mathit{typeBlockItem} \Rightarrow \mathit{type} \mid \Delta$}$
-
-TODO
+$\fbox{$\Gamma \vdash \mathbf{block}(\circ; \mathit{typeBlockItem}_1; \cdots; \mathit{typeBlockItem}_n); \mathit{type}_0 \Rightarrow \mathit{type} \mid \Delta$}$
 
 \begin{gather*}
-  \infer{\Gamma \vdash \mathit{type} \Rightarrow \mathit{type}_0 \mid \Gamma}{
-    \Gamma \vdash \mathit{type} \Rightarrow \mathit{type}_0
+  \infer{\Gamma \vdash \mathbf{block}(\circ); \mathit{type} \Rightarrow \mathit{type} \mid \Gamma}{}
+  \\
+  \infer{\Gamma \vdash \mathbf{block}(\circ; \mathit{type}_1; \mathit{typeBlockItem}_2; \cdots; \mathit{typeBlockItem}_n); \mathit{type}_0 \Rightarrow \mathit{type} \mid \Delta}{
+    \Gamma \vdash \mathit{type}_1 \Rightarrow \mathit{type}_1' \mid \Delta_1
+    &
+    \Delta_1 \vdash \mathbf{block}(\circ; \mathit{typeBlockItem}_2; \cdots; \mathit{typeBlockItem}_n); \mathit{type}_1' \Rightarrow \mathit{type} \mid \Delta
   }
   \\
-  \infer{\Gamma \vdash \mathbf{let}(x = \mathit{type}) \Rightarrow () \mid \Gamma; x: \mathit{type}_0; x = \mathit{type}}{
-    \Gamma \vdash \mathit{type} \Rightarrow \mathit{type}_0
+  \infer{\Gamma \vdash \mathbf{block}(\circ; \mathbf{let}(x_1 = \mathit{type}_1); \mathit{typeBlockItem}_2; \cdots; \mathit{typeBlockItem}_n); \mathit{type}_0 \Rightarrow \mathit{type} \mid \Delta}{
+    \begin{array}{c}
+      \Gamma \vdash \mathit{type}_1 \Rightarrow \mathit{type}_1' \mid \Delta_1
+      \\
+      \Delta_1; x_1: \mathit{type}_1' \vdash \mathbf{block}(\circ; \mathit{typeBlockItem}_2; \cdots; \mathit{typeBlockItem}_n); () \Rightarrow \mathit{type} \mid \Delta; x_1: \mathit{type}_1'; x_1 = \mathit{type}_1; \Delta_2
+    \end{array}
+  }
+\end{gather*}
+
+Abstraction Type:
+
+$\fbox{$\Gamma \vdash (\circ; \mathit{typeTupleSigItem}_1; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \mid \Delta$}$
+
+\begin{gather*}
+  \infer{\Gamma \vdash (\circ) \rightarrow \mathit{type} \mid \Delta}{
+    \Gamma \vdash \mathit{type} \Rightarrow \mathit{type}_0 \mid \Delta
+  }
+  \\
+  \infer{\Gamma \vdash (\circ; x_1: \mathit{type}_1; \mathit{typeTupleSigItem}_2; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \mid \Delta}{
+    \Gamma \vdash \mathit{type}_1 \Leftarrow \mathbf{Type} \mid \Delta_1
+    &
+    \Delta_1; x_1: \mathit{type}_1 \vdash (\circ; \mathit{typeTupleSigItem}_2; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \mid \Delta; x_1: \mathit{type}_1; \Delta_2
+  }
+  \\
+  \infer{\Gamma \vdash (\circ; \mathbf{prom}(x_1): \mathit{type}_1; \mathit{typeTupleSigItem}_2; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \mid \Delta}{
+    \Gamma \vdash \mathit{type}_1 \Rightarrow \mathit{type}_1' \mid \Delta_1
+    &
+    \Delta_1; x_1: \mathit{type}_1 \vdash (\circ; \mathit{typeTupleSigItem}_2; \cdots; \mathit{typeTupleSigItem}_n) \rightarrow \mathit{type} \mid \Delta; x_1: \mathit{type}_1; \Delta_2
   }
 \end{gather*}
