@@ -1,3 +1,47 @@
-\section{1ML: An Extension of ML Module}
+\section{1ML with Explicit Types}
 
 \cite{Rossberg:2018}
+
+\subsection{Internal Language}
+
+\cref{section:fing-modules-internal-language}参照。
+
+\subsection{Syntax}
+
+\begin{align*}
+  \begin{array}{rclr}
+    X
+    & \Coloneq & \cdots &(\text{identifier}) \\
+    T
+    & \Coloneq & E \\
+    & \mid & \mathbf{bool} \\
+    & \mid & \{ D \} \\
+    & \mid & (X: T) \Rightarrow T \\
+    & \mid & \mathbf{type} \\
+    & \mid & \sim E \\
+    & \mid & T\; \mathbf{where}\; \overline{X}: T \\
+    D
+    & \Coloneq & X: T \\
+    & \mid & \mathbf{include}\; T \\
+    & \mid & \epsilon \\
+    & \mid & D_1; D_2 \\
+    E
+    & \Coloneq & X \\
+    & \mid & \mathbf{true} \\
+    & \mid & \mathbf{false} \\
+    & \mid & \mathbf{if}(X \to T; E; E) \\
+    & \mid & \{ B \} \\
+    & \mid & E.X \\
+    & \mid & \mathbf{fun}(X: T) \Rightarrow E \\
+    & \mid & X_1\; X_2 \\
+    & \mid & \mathbf{type}\; T \\
+    & \mid & X \vartriangleright T \\
+    B
+    & \Coloneq & X = E \\
+    & \mid & \mathbf{include}\; E \\
+    & \mid & \epsilon \\
+    & \mid & B_1; B_2
+  \end{array}
+\end{align*}
+
+\subsection{Syntax Abbreviation}
